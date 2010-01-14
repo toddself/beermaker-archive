@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>documents</key>
+	<array>
+		<dict>
+			<key>filename</key>
+			<string>BeerMaker.py</string>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>fileio.py</string>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>IngredientEditor.py</string>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>ingredients.py</string>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>ingredients.pyc</string>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>recipes.py</string>
+		</dict>
+	</array>
+	<key>fileHierarchyDrawerWidth</key>
+	<integer>200</integer>
+	<key>metaData</key>
+	<dict/>
+	<key>showFileHierarchyDrawer</key>
+	<true/>
+	<key>windowFrame</key>
+	<string>{{243, 106}, {1155, 845}}</string>
+</dict>
+</plist>
