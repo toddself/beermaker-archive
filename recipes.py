@@ -24,9 +24,9 @@ class BJCPStyle(SQLObject):
     abv_high = DecimalCol(size=3, precision=1, default=None)
     
 class BJCPCategory(SQLObject):
-    name = UnicodeCol(length=48, default=None)
+    name = UnicodeCol(length=48, default=None, alternateID=True)
     category_id = IntCol(default=None)   
-    
+    notes = UnicodeCol(default=None)
 
 class Recipe(SQLObject):
     name = UnicodeCol(length=255, default=None)
