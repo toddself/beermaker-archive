@@ -25,4 +25,5 @@ class BJCPStyle(SQLObject):
     
 class BJCPCategory(SQLObject):
     name = UnicodeCol(length=48, default=None)
-    category_id = IntCol(default=None)   
+    category_id = IntCol(default=None)  
+    notes = UnicodeCol()

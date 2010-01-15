@@ -41,11 +41,9 @@ class MainWindow(wx.Frame):
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         vbox1 = wx.BoxSizer(wx.VERTICAL)
         vbox2 = wx.BoxSizer(wx.VERTICAL)
-        vbox3 = wx.GridSizer(2,2,0,0)
-        vbox4 = wx.BoxSizer(wx.VERTICAL)
+        vbox3 = wx.BoxSizer(wx.VERTICAL)
         
         pnl1 = wx.Panel(self, -1, style=wx.SIMPLE_BORDER)
-        pnl2 = wx.Panel(self, -1, style=wx.SIMPLE_BORDER)
         
         dataset = self.getDataSet()
         self.lc = SortedAutoWidthListCtrl(self, dataset)
@@ -54,19 +52,19 @@ class MainWindow(wx.Frame):
 
         vbox1.Add(self.lc, 1, wx.EXPAND| wx.ALL, 3)
         vbox2.Add(pnl1, 1, wx.EXPAND | wx.ALL, 3)
-        vbox2.Add(pnl2, 1, wx.EXPAND | wx.ALL, 3)
         
-        self.tc1 = wx.TextCtrl(pnl1, -1)
-        self.tc2 = wx.TextCtrl(pnl1, -1, style=wx.TE_MULTILINE, size=(200,300))
+        self.tc1 = wx.TextCtrl(pnl1, -1, style=wx.EXPAND)
+        self.tc2 = wx.TextCtrl(pnl1, -1, style=wx.TE_MULTILINE | wx.EXPAND, size=(200,300))
         
-        vbox3.AddMany([ (wx.StaticText(pnl1, -1, 'Name'), 0, wx.ALIGN_CENTER),
+        vbox3.AddMany([ (wx.StaticText(pnl1, -1, 'Name'), 0, wx.ALIGN_LEFT),
                         (self.tc1, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL),
-                        (wx.StaticText(pnl1, -1, 'Notes'), 0, wx.ALIGN_CENTER_HORIZONTAL),
+                        (wx.StaticText(pnl1, -1, 'Notes'), 0, wx.ALIGN_LEFT),
                         (self.tc2, 0)])
                         
         pnl1.SetSizer(vbox3)
         
-        self.Bind(wx.EVT_LISTBOX, self.OnSelect, id=26)
+        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnSelect, self.lc)
+        
         
         hbox.Add(vbox1, 1, wx.EXPAND)
         hbox.Add(vbox2, 1, wx.EXPAND)
@@ -92,9 +90,13 @@ class MainWindow(wx.Frame):
             self.lc.SetItemData(index, key)
         
     def OnSelect(self, event):
-        category_id = event.GetSelection()
-        print category_id
-        
+        category_id = event.GetItem().GetData()
+        cat = BJCPCategory.select(BJCPCategory.q.category_id==category_id)[0]
+        self.tc1.ChangeValue(cat.name)
+        if cat.notes:
+            self.tc2.ChangeValue(cat.notes)
+        else:
+            self.tc2.ChangeValue("")
         
 app = wx.PySimpleApp()
 frame = MainWindow(None, -1, 'BJCP Editor')

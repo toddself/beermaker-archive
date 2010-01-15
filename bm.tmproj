@@ -19,18 +19,22 @@
 		<dict>
 			<key>filename</key>
 			<string>bjcp_import.py</string>
+			<key>lastUsed</key>
+			<date>2010-01-15T03:18:13Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>BJCPEditor.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-14T22:07:42Z</date>
+			<date>2010-01-15T03:18:13Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>db.py</string>
+			<key>lastUsed</key>
+			<date>2010-01-15T03:12:45Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -94,39 +98,51 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>65</integer>
+				<integer>56</integer>
 				<key>line</key>
-				<integer>1</integer>
+				<integer>45</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>59</integer>
-				<key>line</key>
-				<integer>1</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>76</integer>
-				<key>line</key>
-				<integer>1</integer>
-			</dict>
+			<integer>26</integer>
 		</dict>
-		<key>models/BJCP.py</key>
+		<key>bjcp_import.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>1</integer>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>db.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>26</integer>
+				<key>line</key>
+				<integer>11</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>models/BJCP.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>24</integer>
+				<key>line</key>
+				<integer>28</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -136,12 +152,14 @@
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>models/BJCP.py</string>
 		<string>BJCPEditor.py</string>
+		<string>bjcp_import.py</string>
+		<string>db.py</string>
+		<string>models/BJCP.py</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{-1230, 0}, {1230, 900}}</string>
+	<string>{{252, 36}, {1261, 984}}</string>
 </dict>
 </plist>

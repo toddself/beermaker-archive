@@ -8,6 +8,13 @@ class DataStore():
     def __init__(self, forceNew = False):
         if forceNew and os.path.exists(self.db_filename):
                 os.unlink(self.db_filename)
+        
+        # fucking serious?
+        if sys.platform == 'win32':
+            self.db_filename = "/"+self.db_filename.replace(":","|")
+            
+        print self.db_filename
+
         connection_string = "%s:%s" % (self.db_driver, self.db_filename)
         connection = connectionForURI(connection_string)
         sqlhub.processConnection = connection
