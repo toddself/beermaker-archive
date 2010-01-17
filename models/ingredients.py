@@ -1,0 +1,176 @@
+from sqlobject import *
+from datetime import datetime
+
+class Measures:
+	MG = 0
+	GM = 1
+	OZ = 2
+	LB = 3
+	KG = 4
+	LB = 5
+	ML = 6
+	TSP = 7
+	TBLS = 8
+	CUP = 9
+	PT = 10
+	QT = 11
+	L = 12
+	GAL = 13
+	ITEMS = 14
+	FAHRENHEIT = 15
+	CELSIUS = 16
+	measures = ['mg','gm','oz','lb','kg','ml','tsp','tbls',
+		'cup','pt','qt','l','gal','items', 'f', 'c']
+
+	MIN = 0
+	HRS = 1
+	DAYS = 2
+	WEEKS = 3
+	timing_parts = ['min', 'hrs', 'days', 'weeks']
+
+class Hop(SQLObject):
+    BITTERING = 0 
+	AROMA = 1
+	BOTH = 2
+	LEAF = 0
+	PELLET = 1
+	PLUG = 2
+	hop_types = ['Bittering', 'Aroma', 'Both',]
+	hop_forms = ['Leaf', 'Pellet', 'Plug']
+	
+	hop_type = IntCol(default=BITTERING)
+	hop_form = IntCol(default=LEAF)
+	alpha = DecimalCol(default=0.0, size=2, precision=3)
+	beta = DecimalCol(default=0.0, size=2, precision=3)
+	stability = DecimalCol(default=0.0, size=2, precision=3)
+	origin = UnicodeCol(default=None)
+	name = UnicodeCol(size=64, default=None)
+	description = UnicodeCol()
+    
+class Grain(SQLObject):
+    name = UnicodeCol(size=64, default=None)
+    origin = UnicodeCol(size=128, default=None)
+    color = DecimalCol(size=3, precision=3, default=0.0)
+    potential = DecimalCol(size=4, precision=4, default=0.0)
+    dry_yield_fine_grain = DecimalCol(size=4, precision=4, default=0.0)
+    coarse_fine_difference = DecimalCol(size=4, precision=4, default=0.0)
+    moisture = DecimalCol(size=4, precision=4, default=0.0)
+    diastic_power = DecimalCol(size=4, precision=4, default=0.0)
+    max_in_batch = DecimalCol(size=4, precision=4, default=0.0)
+    protein = DecimalCol(size=4, precision=4, default=0.0)
+    must_mash = BoolCol(default=False)
+    add_after_boil = BoolCol(default=False)
+    notes = UnicodeCol(default=None)
+    
+class Extract(SQLObject):
+    name = UnicodeCol(size=64, default=None)
+    origin = UnicodeCol(default=None)
+    color = DecimalCol(size=3, precision=3, default=0.0)
+    potential = DecimalCol(size=3, precision=3, default=0.0)
+    dry_yield_fine_grain = DecimalCol(size=3, precision=3, default=0.0)
+    max_in_batch = DecimalCol(size=4, precision=4, default=0.0)
+    add_after_boil = BoolCol(default=False)
+    notes = UnicodeCol(default=None)
+
+class Yeast(SQLObject, Measures):
+	LAGER = 0
+	ALE = 1
+	HYBRID = 2
+	WINE = 3
+	CHAMPAGNE = 4
+	CIDER = 5
+	MEAD = 6
+	SAKE = 7
+	yeast_types = ['Lager', 'Ale', 'Hybrid', 'Wine', 'Champagne', 
+				   'Cider', 'Mead', 'Sake']
+	LIQUID = 0
+	DRY = 1
+	SLANT = 2
+	CULTURE = 3
+	yeast_forms = ['Liquid', 'Dry', 'Slant', 'Culture', ]
+	LOW = 0
+	MEDIUM = 1
+	HIGH = 2
+	VERY_HIGH = 3
+	yeast_flocculations = ['Low','Medium','High','Very High', ]
+
+    name = UnicodeCol(size=64, default=None)
+    lab = UnicodeCol(size=255, default=None)
+    ID = UnicodeCol(size=64, default=None)
+    yeast_type = IntCol(default=LAGER)
+    yeast_form = IntCol(default=LIQUID)
+    flocc = IntCol(default=LOW)
+    starter_size = DecimalCol(size=10, precision=10, default=0.0)
+    starter_units = IntCol(default=Measures.ML)
+    avg_attenuation = DecimalCol(size=3, precision=3, default=0.0)
+    min_temp = DecimalCol(size=5, precision=5, default=0.0)
+    max_temp = DecimalCol(size=5, precision=5, default=0.0)
+    temp_units = IntCol(default=Measures.FAHRENHEIT)
+    max_reuse = IntCol(default=0)
+    best_for = UnicodeCol(default=None)
+    notes = UnicodeCol(default=None)
+    use_starter = BoolCol(default=False)
+    secondary = BoolCol(default=False)
+
+class Water(SQLObject):
+	molecule_types = {'ca': 'Calcium', 'mg': 'Magnesium', 'na': 'Sodium',
+		'so4': 'Sulfate', 'cl': 'Chloride', 'hco3': 'Bicarbonate'}
+	
+	name = UnicodeCol(size=64, default=None)
+	pH = DecimalCol(size=8, precision=8, default=0.0)
+	ca  = DecimalCol(size=8, precision=8, default=0.0)
+	mg = DecimalCol(size=8, precision=8, default=0.0)
+	na = DecimalCol(size=8, precision=8, default=0.0)
+    so4 = DecimalCol(size=8, precision=8, default=0.0)
+    cl = DecimalCol(size=8, precision=8, default=0.0)
+    hco3 = DecimalCol(size=8, precision=8, default=0.0)
+    notes = UnicodeCol(default=None)
+		
+	
+class Misc(SQLObject, Measures):
+	SPICE = 0
+	FINING = 1
+	HERB = 2
+	FLAVOR = 3
+	OTHER = 4
+	WATER_AGENT = 5
+	misc_types = ['Spice', 'Fining', 'Herb', 'Flavor', 'Other', 'Water Agent']
+	MASH = 0
+	BOIL = 1
+	PRIMARY = 2
+	SECONDARY = 3
+	BOTTLING = 4
+	misc_use_ins = ['Mash', 'Boil', 'Primary', 'Secondary', 'Bottling']
+
+    name = UnicodeCol(size=64, default=None)
+    use_for = UnicodeCol(default=None)
+    rec_amount = DecimalCol(size=5, precision=5, default=0.0)
+    rec_units = IntCol(default=Measures.OZ)
+    batch_size = DecimalCol(size=5, precision=5, default=0.0)
+    batch_size_units = IntCol(default=Measures.GAL)
+    use_in = IntCol(default=BOIL)
+    use_time = IntCol(default=0)
+    use_time_units = IntCol(default=Measures.MIN)
+    misc_type = IntCol(default=SPICE)
+
+class Mineral(Misc):
+	def __init__(self):
+	    misc_type = Misc.WATER_AGENT
+
+    
+class Fining(Misc):
+	def __init__(self):
+        misc_type = Misc.FINING
+
+class Flavor(Misc):
+	def __init__(self):
+	    misc_type =Misc.FLAVOR
+	
+class Spice(Misc):
+	def __init__(self):
+	    misc_type = Misc.SPICE
+
+
+class Herb(Misc):
+	def __init__(self):
+	    misc_type = Misc.HERB
