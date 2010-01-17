@@ -1,4 +1,4 @@
-(from sqlobject import *
+from sqlobject import *
 
 class Recipe(SQLObject):
     name = UnicodeCol(length=255, default=None)
