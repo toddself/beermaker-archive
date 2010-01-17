@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>BJCPEditor.py</string>
+	<string>models/ingredients.py</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -20,21 +20,19 @@
 			<key>filename</key>
 			<string>bjcp_import.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-15T03:18:13Z</date>
+			<date>2010-01-17T18:10:27Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>BJCPEditor.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-15T03:47:07Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2010-01-17T12:56:17Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>db.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-15T03:12:45Z</date>
+			<date>2010-01-17T17:45:23Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -51,6 +49,8 @@
 		<dict>
 			<key>filename</key>
 			<string>ingredients.py</string>
+			<key>lastUsed</key>
+			<date>2010-01-17T16:30:36Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -135,14 +135,28 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>models/BJCP.py</key>
+		<key>models/ingredients.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>24</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>28</integer>
+				<integer>251</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>199</integer>
+		</dict>
+		<key>models/recipes.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -154,8 +168,9 @@
 	<array>
 		<string>BJCPEditor.py</string>
 		<string>bjcp_import.py</string>
+		<string>models/ingredients.py</string>
 		<string>db.py</string>
-		<string>models/BJCP.py</string>
+		<string>models/recipes.py</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
