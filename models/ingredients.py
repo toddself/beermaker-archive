@@ -1,5 +1,45 @@
 from sqlobject import *
-from datetime import datetime
+from sqlobject.col import pushKey
+
+class SGCol(DecimalCol):
+    """ Stores Specific Gravity in a decimal column
+    Size is fixed at 4, and the precision is set to 3
+    
+    ex: 1.045    
+    
+    """
+    
+    def __init__(self, **kw):
+        pushKey(kw, 'size', 4)
+        pushKey(kw, 'precision', 3)
+        super(DecimalCol, self).__init__(**kw)
+
+class PercentCol(DecimalCol):
+    """Stores percentages in a decimal column
+    Size is fixed at 5, and the precision is set to 2.  
+    
+    *nb* size is fixed at 5 to allow for 100.00%
+    
+    """
+    
+    def __init__(self, **kw):
+        pushKey(kw, 'size', 5)
+        pushKey(kw, 'precision', 2)
+        super(DecimalCol, self).__init__(**kw)
+
+class SRMCol(DecimalCol):
+    """ Stores the Standard Reference Method color value in a decimal column
+    Size is fixed at 5, precision is set to 1
+    
+    ex: 2.0, 300.5
+    
+    """
+
+    def __init__(self, **kw):
+        pushKey(kw, 'size', 5)
+        pushKey(kw, 'precision', 1)
+        super(DecimalCol, self).__init__(**kw)
+        
 
 class Measures:
 	MG = 0
@@ -36,28 +76,28 @@ class Hop(SQLObject):
 	PELLET = 1
 	PLUG = 2
 	hop_types = ['Bittering', 'Aroma', 'Both',]
-	hop_forms = ['Leaf', 'Pellet', 'Plug']
+	hop_forms = ['Leaf', 'Pellet', 'Plug',]
 	
 	hop_type = IntCol(default=BITTERING)
 	hop_form = IntCol(default=LEAF)
-	alpha = DecimalCol(default=0.0, size=2, precision=3)
-	beta = DecimalCol(default=0.0, size=2, precision=3)
-	stability = DecimalCol(default=0.0, size=2, precision=3)
+	alpha = PercentCol(default=0.0)
+	beta = PercentCol(default=0.0)
+	stability = PercentCol(default=0.0)
 	origin = UnicodeCol(default=None)
 	name = UnicodeCol(size=64, default=None)
-	description = UnicodeCol()
+	description = UnicodeCol(default=None)
     
 class Grain(SQLObject):
     name = UnicodeCol(size=64, default=None)
     origin = UnicodeCol(size=128, default=None)
-    color = DecimalCol(size=3, precision=3, default=0.0)
-    potential = DecimalCol(size=4, precision=4, default=0.0)
-    dry_yield_fine_grain = DecimalCol(size=4, precision=4, default=0.0)
-    coarse_fine_difference = DecimalCol(size=4, precision=4, default=0.0)
-    moisture = DecimalCol(size=4, precision=4, default=0.0)
+    color = SRMCol(default=1.0)
+    potential = SGCol(default=1.000)
+    dry_yield_fine_grain = PercentCol(default=0.0)
+    coarse_fine_difference = PercentCol(default=0.0)
+    moisture = PercentCol(default=0.0)
     diastic_power = DecimalCol(size=4, precision=4, default=0.0)
-    max_in_batch = DecimalCol(size=4, precision=4, default=0.0)
-    protein = DecimalCol(size=4, precision=4, default=0.0)
+    max_in_batch = PercentCol(default=100.00)
+    protein = PercentCol(default=0.0)
     must_mash = BoolCol(default=False)
     add_after_boil = BoolCol(default=False)
     notes = UnicodeCol(default=None)
@@ -65,10 +105,10 @@ class Grain(SQLObject):
 class Extract(SQLObject):
     name = UnicodeCol(size=64, default=None)
     origin = UnicodeCol(default=None)
-    color = DecimalCol(size=3, precision=3, default=0.0)
-    potential = DecimalCol(size=3, precision=3, default=0.0)
-    dry_yield_fine_grain = DecimalCol(size=3, precision=3, default=0.0)
-    max_in_batch = DecimalCol(size=4, precision=4, default=0.0)
+    color = SRMCol(default=1.0)
+    potential = SGCol(default=1.000)
+    dry_yield_fine_grain = PercentCol(default=0.0)
+    max_in_batch = PercentCol(default=0.0)
     add_after_boil = BoolCol(default=False)
     notes = UnicodeCol(default=None)
 
@@ -102,7 +142,7 @@ class Yeast(SQLObject, Measures):
     flocc = IntCol(default=LOW)
     starter_size = DecimalCol(size=10, precision=10, default=0.0)
     starter_units = IntCol(default=Measures.ML)
-    avg_attenuation = DecimalCol(size=3, precision=3, default=0.0)
+    avg_attenuation = PercentCol(default=0.0)
     min_temp = DecimalCol(size=5, precision=5, default=0.0)
     max_temp = DecimalCol(size=5, precision=5, default=0.0)
     temp_units = IntCol(default=Measures.FAHRENHEIT)
