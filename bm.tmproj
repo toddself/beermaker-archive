@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>currentDocument</key>
-	<string>models/ingredients.py</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -13,30 +11,18 @@
 		<dict>
 			<key>filename</key>
 			<string>BeerMaker.py</string>
-			<key>lastUsed</key>
-			<date>2010-01-14T02:20:20Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>bjcp_import.py</string>
-			<key>lastUsed</key>
-			<date>2010-01-17T18:10:27Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>BJCPEditor.py</string>
-			<key>lastUsed</key>
-			<date>2010-01-17T12:56:17Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>db.py</string>
-			<key>lastUsed</key>
-			<date>2010-01-17T17:45:23Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>db.pyc</string>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -48,41 +34,11 @@
 		</dict>
 		<dict>
 			<key>filename</key>
-			<string>ingredients.py</string>
-			<key>lastUsed</key>
-			<date>2010-01-17T16:30:36Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>ingredients.pyc</string>
-		</dict>
-		<dict>
-			<key>expanded</key>
-			<true/>
-			<key>name</key>
-			<string>models</string>
-			<key>regexFolderFilter</key>
-			<string>!.*/(\.[^/]*|CVS|_darcs|_MTN|\{arch\}|blib|.*~\.nib|.*\.(framework|app|pbproj|pbxproj|xcode(proj)?|bundle))$</string>
-			<key>sourceDirectory</key>
-			<string>models</string>
+			<string>models.py</string>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>recipes.pyc</string>
-			<key>lastUsed</key>
-			<date>2010-01-14T04:06:00Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>scratch.py</string>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>styleguide.dtd</string>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>styleguide.xsd</string>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -92,89 +48,10 @@
 	<key>fileHierarchyDrawerWidth</key>
 	<integer>200</integer>
 	<key>metaData</key>
-	<dict>
-		<key>BJCPEditor.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>56</integer>
-				<key>line</key>
-				<integer>45</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>26</integer>
-		</dict>
-		<key>bjcp_import.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>db.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>26</integer>
-				<key>line</key>
-				<integer>11</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>models/ingredients.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>251</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>199</integer>
-		</dict>
-		<key>models/recipes.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-	</dict>
-	<key>openDocuments</key>
-	<array>
-		<string>BJCPEditor.py</string>
-		<string>bjcp_import.py</string>
-		<string>models/ingredients.py</string>
-		<string>db.py</string>
-		<string>models/recipes.py</string>
-	</array>
+	<dict/>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{251, 37}, {1261, 984}}</string>
+	<string>{{255, 167}, {1155, 845}}</string>
 </dict>
 </plist>
