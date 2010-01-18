@@ -1,18 +1,15 @@
 #!/usr/bin/env python
+from xml.dom import minidom
+
+from sqlobject import *
+from sqlobject.dberrors import DuplicateEntryError
 
 from db import DataStore
-from sqlobject import *
-from xml.dom import minidom
-from recipes import BJCPCategory, BJCPStyle
-from sqlobject.dberrors import DuplicateEntryError
+from models import BJCPCategory, BJCPStyle
 
 if __name__ == '__main__':
     # connect to the database
     data = DataStore()
-    
-    # init the db if necessary
-    BJCPCategory.createTable(ifNotExists=True)
-    BJCPStyle.createTable(ifNotExists=True)
     
     # import the XML
     styledoc = minidom.parse('styleguide2008.xml')
@@ -20,7 +17,6 @@ if __name__ == '__main__':
   # generate categories
     for beer_class in styledoc.getElementsByTagName('class'):
         this_class = unicode(beer_class.getAttribute('type'))
-        print this_class
         for category in beer_class.getElementsByTagName('category'):            
             name = unicode(category.getElementsByTagName('name')[0].firstChild.data)
             category_id = int(category.getAttribute('id'))

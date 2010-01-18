@@ -1,6 +1,7 @@
 from sqlobject import *
 from sqlobject.col import pushKey
 
+
 class SGCol(DecimalCol):
     """ Stores Specific Gravity in a decimal column
     Size is fixed at 4, and the precision is set to 3
@@ -39,57 +40,57 @@ class SRMCol(DecimalCol):
         pushKey(kw, 'size', 5)
         pushKey(kw, 'precision', 1)
         super(DecimalCol, self).__init__(**kw)
-        
 
-class Measures:
-	MG = 0
-	GM = 1
-	OZ = 2
-	LB = 3
-	KG = 4
-	LB = 5
-	ML = 6
-	TSP = 7
-	TBLS = 8
-	CUP = 9
-	PT = 10
-	QT = 11
-	L = 12
-	GAL = 13
-	ITEMS = 14
-	FAHRENHEIT = 15
-	CELSIUS = 16
-	measures = ['mg','gm','oz','lb','kg','ml','tsp','tbls',
-		'cup','pt','qt','l','gal','items', 'f', 'c']
+class Measures():
+    MG = 0
+    GM = 1
+    OZ = 2
+    LB = 3
+    KG = 4
+    LB = 5
+    ML = 6
+    TSP = 7
+    TBLS = 8
+    CUP = 9
+    PT = 10
+    QT = 11
+    L = 12
+    GAL = 13
+    ITEMS = 14
+    FAHRENHEIT = 15
+    CELSIUS = 16
+    measures = ['mg','gm','oz','lb','kg','ml','tsp','tbls',
+        'cup','pt','qt','l','gal','items', 'f', 'c']
 
-	MIN = 0
-	HRS = 1
-	DAYS = 2
-	WEEKS = 3
-	timing_parts = ['min', 'hrs', 'days', 'weeks']
+    MIN = 0
+    HRS = 1
+    DAYS = 2
+    WEEKS = 3
+    timing_parts = ['min', 'hrs', 'days', 'weeks']
+
 
 class Hop(SQLObject):
     BITTERING = 0 
-	AROMA = 1
-	BOTH = 2
-	LEAF = 0
-	PELLET = 1
-	PLUG = 2
-	hop_types = ['Bittering', 'Aroma', 'Both',]
-	hop_forms = ['Leaf', 'Pellet', 'Plug',]
-	
-	hop_type = IntCol(default=BITTERING)
-	hop_form = IntCol(default=LEAF)
-	alpha = PercentCol(default=0.0)
-	beta = PercentCol(default=0.0)
-	stability = PercentCol(default=0.0)
-	origin = UnicodeCol(default=None)
-	name = UnicodeCol(size=64, default=None)
-	description = UnicodeCol(default=None)
+    AROMA = 1
+    BOTH = 2
+    LEAF = 0
+    PELLET = 1
+    PLUG = 2
+    hop_types = ['Bittering', 'Aroma', 'Both',]
+    hop_forms = ['Leaf', 'Pellet', 'Plug',]
+    
+    hop_type = IntCol(default=BITTERING)
+    hop_form = IntCol(default=LEAF)
+    alpha = PercentCol(default=0.0)
+    beta = PercentCol(default=0.0)
+    stability = PercentCol(default=0.0)
+    origin = UnicodeCol(default=None)
+    name = UnicodeCol(length=64, default=None)
+    description = UnicodeCol(default=None)
     
 class Grain(SQLObject):
-    name = UnicodeCol(size=64, default=None)
-    origin = UnicodeCol(size=128, default=None)
+    name = UnicodeCol(length=64, default=None)
+    origin = UnicodeCol(length=128, default=None)
     color = SRMCol(default=1.0)
     potential = SGCol(default=1.000)
     dry_yield_fine_grain = PercentCol(default=0.0)
@@ -103,7 +104,7 @@ class Grain(SQLObject):
     notes = UnicodeCol(default=None)
     
 class Extract(SQLObject):
-    name = UnicodeCol(size=64, default=None)
+    name = UnicodeCol(length=64, default=None)
     origin = UnicodeCol(default=None)
     color = SRMCol(default=1.0)
     potential = SGCol(default=1.000)
@@ -120,30 +121,30 @@ class HoppedExtract(Extract, Measures):
     hop_by_weight_unit = IntCol(default=Measures.LB)
 
 class Yeast(SQLObject, Measures):
-	LAGER = 0
-	ALE = 1
-	HYBRID = 2
-	WINE = 3
-	CHAMPAGNE = 4
-	CIDER = 5
-	MEAD = 6
-	SAKE = 7
-	yeast_types = ['Lager', 'Ale', 'Hybrid', 'Wine', 'Champagne', 
-				   'Cider', 'Mead', 'Sake']
-	LIQUID = 0
-	DRY = 1
-	SLANT = 2
-	CULTURE = 3
-	yeast_forms = ['Liquid', 'Dry', 'Slant', 'Culture', ]
-	LOW = 0
-	MEDIUM = 1
-	HIGH = 2
-	VERY_HIGH = 3
-	yeast_flocculations = ['Low','Medium','High','Very High', ]
+    LAGER = 0
+    ALE = 1
+    HYBRID = 2
+    WINE = 3
+    CHAMPAGNE = 4
+    CIDER = 5
+    MEAD = 6
+    SAKE = 7
+    yeast_types = ['Lager', 'Ale', 'Hybrid', 'Wine', 'Champagne', 
+                   'Cider', 'Mead', 'Sake']
+    LIQUID = 0
+    DRY = 1
+    SLANT = 2
+    CULTURE = 3
+    yeast_forms = ['Liquid', 'Dry', 'Slant', 'Culture', ]
+    LOW = 0
+    MEDIUM = 1
+    HIGH = 2
+    VERY_HIGH = 3
+    yeast_flocculations = ['Low','Medium','High','Very High', ]
 
-    name = UnicodeCol(size=64, default=None)
-    lab = UnicodeCol(size=255, default=None)
-    ID = UnicodeCol(size=64, default=None)
+    name = UnicodeCol(length=64, default=None)
+    lab = UnicodeCol(length=255, default=None)
+    yeast_id = UnicodeCol(length=64, default=None)
     yeast_type = IntCol(default=LAGER)
     yeast_form = IntCol(default=LIQUID)
     flocc = IntCol(default=LOW)
@@ -160,36 +161,36 @@ class Yeast(SQLObject, Measures):
     secondary = BoolCol(default=False)
 
 class Water(SQLObject):
-	molecule_types = {'ca': 'Calcium', 'mg': 'Magnesium', 'na': 'Sodium',
-		'so4': 'Sulfate', 'cl': 'Chloride', 'hco3': 'Bicarbonate'}
-	
-	name = UnicodeCol(size=64, default=None)
-	pH = DecimalCol(size=8, precision=8, default=0.0)
-	ca  = DecimalCol(size=8, precision=8, default=0.0)
-	mg = DecimalCol(size=8, precision=8, default=0.0)
-	na = DecimalCol(size=8, precision=8, default=0.0)
+    molecule_types = {'ca': 'Calcium', 'mg': 'Magnesium', 'na': 'Sodium',
+        'so4': 'Sulfate', 'cl': 'Chloride', 'hco3': 'Bicarbonate'}
+    
+    name = UnicodeCol(length=64, default=None)
+    pH = DecimalCol(size=8, precision=8, default=0.0)
+    ca  = DecimalCol(size=8, precision=8, default=0.0)
+    mg = DecimalCol(size=8, precision=8, default=0.0)
+    na = DecimalCol(size=8, precision=8, default=0.0)
     so4 = DecimalCol(size=8, precision=8, default=0.0)
     cl = DecimalCol(size=8, precision=8, default=0.0)
     hco3 = DecimalCol(size=8, precision=8, default=0.0)
     notes = UnicodeCol(default=None)
-		
-	
+        
+    
 class Misc(SQLObject, Measures):
-	SPICE = 0
-	FINING = 1
-	HERB = 2
-	FLAVOR = 3
-	OTHER = 4
-	WATER_AGENT = 5
-	misc_types = ['Spice', 'Fining', 'Herb', 'Flavor', 'Other', 'Water Agent']
-	MASH = 0
-	BOIL = 1
-	PRIMARY = 2
-	SECONDARY = 3
-	BOTTLING = 4
-	misc_use_ins = ['Mash', 'Boil', 'Primary', 'Secondary', 'Bottling']
+    SPICE = 0
+    FINING = 1
+    HERB = 2
+    FLAVOR = 3
+    OTHER = 4
+    WATER_AGENT = 5
+    misc_types = ['Spice', 'Fining', 'Herb', 'Flavor', 'Other', 'Water Agent']
+    MASH = 0
+    BOIL = 1
+    PRIMARY = 2
+    SECONDARY = 3
+    BOTTLING = 4
+    misc_use_ins = ['Mash', 'Boil', 'Primary', 'Secondary', 'Bottling']
 
-    name = UnicodeCol(size=64, default=None)
+    name = UnicodeCol(length=64, default=None)
     use_for = UnicodeCol(default=None)
     rec_amount = DecimalCol(size=5, precision=5, default=0.0)
     rec_units = IntCol(default=Measures.OZ)
@@ -201,26 +202,26 @@ class Misc(SQLObject, Measures):
     misc_type = IntCol(default=SPICE)
 
 class Mineral(Misc):
-	def __init__(self):
-	    misc_type = Misc.WATER_AGENT
+    def __init__(self):
+        misc_type = Misc.WATER_AGENT
 
     
 class Fining(Misc):
-	def __init__(self):
+    def __init__(self):
         misc_type = Misc.FINING
 
 class Flavor(Misc):
-	def __init__(self):
-	    misc_type =Misc.FLAVOR
-	
+    def __init__(self):
+        misc_type =Misc.FLAVOR
+    
 class Spice(Misc):
-	def __init__(self):
-	    misc_type = Misc.SPICE
+    def __init__(self):
+        misc_type = Misc.SPICE
 
 
 class Herb(Misc):
-	def __init__(self):
-	    misc_type = Misc.HERB
+    def __init__(self):
+        misc_type = Misc.HERB
 
 class BJCPStyle(SQLObject):
     name = UnicodeCol(length=128, default=None)
@@ -249,3 +250,71 @@ class BJCPCategory(SQLObject):
     name = UnicodeCol(length=48, default=None)
     category_id = IntCol(default=None)  
     notes = UnicodeCol()
+
+class MashTun(SQLObject, Measures):
+    volume = DecimalCol(size=5, precision=2, default=0.0)
+    volume_unit = IntCol(default=Measures.GAL)
+    temp_loss_30 = DecimalCol(size=5, precision=2, default=0.0)
+    dead_space = DecimalCol(size=5, precision=2, default=0.0)
+    dead_space_unit = IntCol(default=Measures.GAL)
+    top_up_water = DecimalCol(size=5, precision=2, default=0.0)
+    top_up_water_unit = IntCol(default=Measures.GAL)
+    
+class BoilKettle(SQLObject, Measures):
+    boil_volume = DecimalCol(size=5, precision=2, default=0.0)
+    boil_volume_unit = IntCol(default=Measures.GAL)
+    evaporation_rate = PercentCol(default=0.0)
+    dead_space = DecimalCol(size=5, precision=2, default=0.0)
+    dead_space_unit = IntCol(default=Measures.GAL)
+    top_up_water = DecimalCol(size=5, precision=2, default=0.0)
+    top_up_water_unit = IntCol(default=Measures.GAL)
+    final_volume = DecimalCol(size=5, precision=2, default=0.0)
+    final_water_unit = IntCol(default=Measures.GAL)
+    boil_time = IntCol(default=0)
+    boil_time_unit = IntCol(default=Measures.MIN)
+    boil_off = DecimalCol(size=3, precision=2, default=0.0)
+    boil_off_unit = IntCol(default=Measures.GAL)
+    cooling_loss = PercentCol(default=0.0)
+    cooling_loss_vol = DecimalCol(size=3, precision=2, default=0.0)
+    cooling_loss_unit = IntCol(default=Measures.GAL)
+    
+class EquipmentSet(SQLObject):
+    name = UnicodeCol(length=64, default=None)
+    notes = UnicodeCol(default=None)
+    mash_tun = ForeignKey('MashTun')
+    boil_kettle = ForeignKey('BoilKettle')
+    hop_utilization_factor = PercentCol(default=100)
+    
+class MashProfile(SQLObject):
+    BATCH = 0
+    FLY = 1
+    sparge_types = ['Batch', 'Fly']
+    
+    name = UnicodeCol(length=64, default=None)
+    pH = DecimalCol(size=2, precision=1, default=5.4)
+    sparge_type = IntCol(default=BATCH)
+    num_sparges = IntCol(default=1)
+    notes = UnicodeCol(default=None)
+    
+class MashStep(SQLObject, Measures):
+    INFUSION = 0
+    DECOCTION = 1
+    TEMPERATURE = 2
+    step_types = ['Infusion', 'Decoction', 'Temperature',]
+    
+    name = UnicodeCol(length=64, default=None)
+    mash_type = IntCol(default=INFUSION)
+    fixed_water_addition = DecimalCol(size=5, precision=2, default=0.0)
+    fixed_water_addition_unit = IntCol(default=Measures.QT)
+    water_grain_ratio = DecimalCol(size=5, precision=2, default=0.0)
+    water_ratio_unit = IntCol(default=Measures.QT)
+    grain_ratio_unit = IntCol(default=Measures.LB)
+    step_temp = DecimalCol(size=4, precision=1, default=0.0)
+    step_temp_unit = IntCol(default=Measures.FAHRENHEIT)
+    step_time = DecimalCol(size=3, precision=1, default=0.0)
+    rise_time = DecimalCol(size=3, precision=1, default=0.0)
+
+class MashStepOrder(SQLObject):
+    position = IntCol(default=1)
+    step = ForeignKey('MashStep')
+    profile = ForeignKey('MashProfile')

@@ -38,11 +38,9 @@
 		</dict>
 		<dict>
 			<key>filename</key>
-			<string>recipes.pyc</string>
-		</dict>
-		<dict>
-			<key>filename</key>
 			<string>styleguide2008.xml</string>
+			<key>selected</key>
+			<true/>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>

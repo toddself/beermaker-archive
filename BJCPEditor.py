@@ -1,8 +1,14 @@
-import wx, sys
-from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin, ColumnSorterMixin
-from db import DataStore
-from models.BJCP import BJCPStyle, BJCPCategory
+#!/usr/bin/env python
+import os
+import sys
 
+import wx
+from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin, ColumnSorterMixin
+
+from db import DataStore
+from models import BJCPStyle, BJCPCategory
+
+os.environ['VERSIONER_PYTHON_PREFER_32_BIT'] = 'yes'
 
 # box sizer 1 - horizontal
 # +------------------------------------------------------+
