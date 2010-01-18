@@ -14,7 +14,7 @@ class MyFrame(wx.Frame):
         # begin wxGlade: MyFrame.__init__
         kwds["style"] = wx.DEFAULT_FRAME_STYLE
         wx.Frame.__init__(self, *args, **kwds)
-        self.list_ctrl_1 = wx.ListCtrl(self, -1, style=wx.LC_REPORT|wx.LC_SINGLE_SEL|wx.SUNKEN_BORDER)
+        self.list_ctrl_1 = ListCtrlAutoWidthMixin(self, -1, style=wx.LC_REPORT|wx.LC_SINGLE_SEL|wx.SUNKEN_BORDER)
         self.BJCP_Name_txt = wx.StaticText(self, -1, "Name:", style=wx.ALIGN_RIGHT)
         self.BJCP_Name_ctrl = wx.TextCtrl(self, -1, "", style=wx.TE_READONLY)
         self.BJCP_Category_txt = wx.StaticText(self, -1, "Category:", style=wx.ALIGN_RIGHT)
