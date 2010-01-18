@@ -12,10 +12,6 @@ from db import DataStore
 # begin wxGlade: extracode
 # end wxGlade
 
-class AutoWidthListCtrl(wx.ListCtrl, ListCtrlAutoWidthMixin):
-    def __init__(self,parent):
-        wx.ListCtrl.__init__(self, parent, -1, style=wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.SUNKEN_BORDER)
-        ListCtrlAutoWidthMixin.__init__(self)
 
 
 class MyFrame(wx.Frame):
@@ -23,7 +19,7 @@ class MyFrame(wx.Frame):
         # begin wxGlade: MyFrame.__init__
         kwds["style"] = wx.DEFAULT_FRAME_STYLE
         wx.Frame.__init__(self, *args, **kwds)
-        self.BJCP_Style_ctrl = AutoWidthListCtrl(self)
+        self.BJCP_Style_ctrl = wx.ListCtrl(self, -1, style=wx.LC_REPORT|wx.LC_SINGLE_SEL|wx.SUNKEN_BORDER)
         self.BJCP_Name_txt = wx.StaticText(self, -1, "Name:", style=wx.ALIGN_RIGHT)
         self.BJCP_Name_ctrl = wx.TextCtrl(self, -1, "", style=wx.TE_READONLY)
         self.BJCP_Category_txt = wx.StaticText(self, -1, "Category:", style=wx.ALIGN_RIGHT)
@@ -52,18 +48,36 @@ class MyFrame(wx.Frame):
         self.BJCP_OG_ctrl = wx.TextCtrl(self, -1, "", style=wx.TE_READONLY)
         self.BJCP_FG_txt = wx.StaticText(self, -1, "FG:", style=wx.ALIGN_RIGHT)
         self.BJCP_FG_ctrl = wx.TextCtrl(self, -1, "", style=wx.TE_READONLY)
+        
+        # Menu Bar
+        self.BJCP_Category_ctrl_menubar = wx.MenuBar()
+        wxglade_tmp_menu = wx.Menu()
+        wxglade_tmp_menu.Append(101, "Quit", "Quit the Viewer", wx.ITEM_NORMAL)
+        self.BJCP_Category_ctrl_menubar.Append(wxglade_tmp_menu, "File")
+        self.SetMenuBar(self.BJCP_Category_ctrl_menubar)
+        # Menu Bar end
+        self.BJCP_Category_ctrl_statusbar = self.CreateStatusBar(1, 0)
 
         self.__set_properties()
         self.__do_layout()
-        self.getBJCPData()
-        self.populateList()
 
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnStyleSelect, self.BJCP_Style_ctrl)
+        self.Bind(wx.EVT_MENU, self.OnQuit, id=101)
         # end wxGlade
+        
+        self.getBJCPData()
+        self.populateList()
+        self.resizeColumns()
 
     def __set_properties(self):
         # begin wxGlade: MyFrame.__set_properties
-        self.SetTitle("frame_1")
+        self.SetTitle("BJCP Style Viewer")
+        self.SetSize((1106, 860))
+        self.BJCP_Category_ctrl_statusbar.SetStatusWidths([-1])
+        # statusbar fields
+        BJCP_Category_ctrl_statusbar_fields = ["BJCP_Category_ctrl_statusbar"]
+        for i in range(len(BJCP_Category_ctrl_statusbar_fields)):
+            self.BJCP_Category_ctrl_statusbar.SetStatusText(BJCP_Category_ctrl_statusbar_fields[i], i)
         # end wxGlade
 
     def __do_layout(self):
@@ -123,9 +137,11 @@ class MyFrame(wx.Frame):
         sizer_2.Add(sizer_8, 0, wx.EXPAND, 0)
         sizer_1.Add(sizer_2, 2, wx.EXPAND, 0)
         self.SetSizer(sizer_1)
-        sizer_1.Fit(self)
         self.Layout()
         # end wxGlade
+
+    def OnQuit(self):
+        self.Close(True)
 
     def getBJCPData(self):
         data = DataStore()
@@ -156,7 +172,12 @@ class MyFrame(wx.Frame):
             self.BJCP_Style_ctrl.SetStringItem(index, 6, og)
             fg = "%.3f - %.3f" % (style.fg_low, style.fg_high)
             self.BJCP_Style_ctrl.SetStringItem(index, 7, fg)
+            
 
+    def resizeColumns(self):
+        #print self.BJCP_Style_ctrl.GetColumnCount()
+        for column in range(0,self.BJCP_Style_ctrl.GetColumnCount()):
+            self.BJCP_Style_ctrl.SetColumnWidth(column, wx.LIST_AUTOSIZE)
 
     def OnStyleSelect(self, event): # wxGlade: MyFrame.<event_handler>
         selected = self.BJCP_Style_ctrl.GetItem(event.Index,0).GetText()
@@ -182,6 +203,10 @@ class MyFrame(wx.Frame):
         self.BJCP_OG_ctrl.ChangeValue(og)
         self.BJCP_FG_ctrl.ChangeValue(fg)
         
+
+    def OnQuit(self, event): # wxGlade: MyFrame.<event_handler>
+        print "Event handler `OnQuit' not implemented"
+        event.Skip()
 
 # end of class MyFrame
 
