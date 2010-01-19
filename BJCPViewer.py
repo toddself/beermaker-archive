@@ -4,7 +4,6 @@
 import sys
 
 import wx
-from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
 from models import BJCPCategory, BJCPStyle
 from db import DataStore
