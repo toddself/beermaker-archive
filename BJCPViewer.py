@@ -22,7 +22,7 @@ class MyFrame(wx.Frame):
         # Menu Bar
         self.BJCP_Category_ctrl_menubar = wx.MenuBar()
         wxglade_tmp_menu = wx.Menu()
-        wxglade_tmp_menu.Append(101, "Quit", "Quit the Viewer", wx.ITEM_NORMAL)
+        wxglade_tmp_menu.Append(101, "&Quit", "Quit the Viewer", wx.ITEM_NORMAL)
         self.BJCP_Category_ctrl_menubar.Append(wxglade_tmp_menu, "File")
         self.SetMenuBar(self.BJCP_Category_ctrl_menubar)
         # Menu Bar end
@@ -60,7 +60,7 @@ class MyFrame(wx.Frame):
         self.__set_properties()
         self.__do_layout()
 
-        self.Bind(wx.EVT_MENU, self.OnQuit, id=101)
+        self.Bind(wx.EVT_MENU, self.QuitApp, id=101)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnStyleSelect, self.BJCP_Style_ctrl)
         # end wxGlade
         
@@ -139,7 +139,7 @@ class MyFrame(wx.Frame):
         self.Layout()
         # end wxGlade
 
-    def OnQuit(self):
+    def QuitApp(self, event):
         self.Close(True)
 
     def getBJCPData(self):
@@ -160,17 +160,12 @@ class MyFrame(wx.Frame):
             index = self.BJCP_Style_ctrl.InsertStringItem(sys.maxint, style.name)
             cat = "%i%s: %s" % (style.category.category_id, style.subcategory, style.category.name)
             self.BJCP_Style_ctrl.SetStringItem(index, 1, cat)
-            self.BJCP_Style_ctrl.SetStringItem(index, 2, style.beer_type.capitalize())
-            ibus = "%i- %i" % (style.ibu_low, style.ibu_high)
-            self.BJCP_Style_ctrl.SetStringItem(index, 3, ibus)
-            srm = "%.1f - %.1f" % (style.srm_low, style.srm_high)
-            self.BJCP_Style_ctrl.SetStringItem(index, 4, srm)
-            abv = "%.1f - %.1f" % (style.abv_low, style.abv_high)
-            self.BJCP_Style_ctrl.SetStringItem(index, 5, abv)
-            og = "%.3f - %.3f" % (style.og_low, style.og_high)
-            self.BJCP_Style_ctrl.SetStringItem(index, 6, og)
-            fg = "%.3f - %.3f" % (style.fg_low, style.fg_high)
-            self.BJCP_Style_ctrl.SetStringItem(index, 7, fg)
+            self.BJCP_Style_ctrl.SetStringItem(index, 2, style.beer_type.capitalize())            
+            self.BJCP_Style_ctrl.SetStringItem(index, 3, style.ibu_range)
+            self.BJCP_Style_ctrl.SetStringItem(index, 4, style.srm_range)
+            self.BJCP_Style_ctrl.SetStringItem(index, 5, style.abv_range)
+            self.BJCP_Style_ctrl.SetStringItem(index, 6, style.og_range)
+            self.BJCP_Style_ctrl.SetStringItem(index, 7, style.fg_range)
             
 
     def resizeColumns(self):
@@ -191,16 +186,11 @@ class MyFrame(wx.Frame):
         self.BJCP_Examples_ctrl.ChangeValue(style.examples)
         self.BJCP_Impression_ctrl.ChangeValue(style.impression)
         self.BJCP_Flavor_ctrl.ChangeValue(style.flavor)
-        ibus = "%i- %i" % (style.ibu_low, style.ibu_high)
-        srm = "%.1f - %.1f" % (style.srm_low, style.srm_high)
-        abv = "%.1f - %.1f" % (style.abv_low, style.abv_high)
-        og = "%.3f - %.3f" % (style.og_low, style.og_high)
-        fg = "%.3f - %.3f" % (style.fg_low, style.fg_high)
-        self.BJCP_IBUs_ctrl.ChangeValue(ibus)
-        self.BJCP_SRM_ctrl.ChangeValue(srm)
-        self.BJCP_ABV_ctrl.ChangeValue(abv)
-        self.BJCP_OG_ctrl.ChangeValue(og)
-        self.BJCP_FG_ctrl.ChangeValue(fg)
+        self.BJCP_IBUs_ctrl.ChangeValue(style.ibu_range)
+        self.BJCP_SRM_ctrl.ChangeValue(style.srm_range)
+        self.BJCP_ABV_ctrl.ChangeValue(style.abv_range)
+        self.BJCP_OG_ctrl.ChangeValue(style.og_range)
+        self.BJCP_FG_ctrl.ChangeValue(style.fg_range)
         
 
     def OnQuit(self, event): # wxGlade: MyFrame.<event_handler>

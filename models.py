@@ -245,6 +245,52 @@ class BJCPStyle(SQLObject):
     srm_high = SRMCol(default=None)
     abv_low = DecimalCol(size=3, precision=1, default=None)
     abv_high = DecimalCol(size=3, precision=1, default=None)
+    
+    def _get_og_range(self):
+        low = self._SO_get_og_low()
+        high = self._SO_get_og_high()
+        
+        if low == 0 and high == 0:
+            return "varies"
+        else:
+            return "%.3f SG - %.3f SG" % (low, high)
+
+    def _get_fg_range(self):
+        low = self._SO_get_fg_low()
+        high = self._SO_get_fg_high()
+
+        if low == 0 and high == 0:
+            return "varies"
+        else:
+            return "%.3f SG - %.3f SG" % (low, high)
+
+    def _get_srm_range(self):
+        low = self._SO_get_srm_low()
+        high = self._SO_get_srm_high()
+        
+        if low == 0 and high == 0:
+            return "varies"
+        else:
+            return "%.1f SRM - %.1f SRM" % (low, high)
+
+    def _get_abv_range(self):
+        low = self._SO_get_abv_low()
+        high = self._SO_get_abv_high()
+        
+        if low == 0 and high == 0:
+            return "varies"
+        else:
+            return "%.2f%% - %.2f%%" % (low, high)
+            
+    def _get_ibu_range(self):
+        low = self._SO_get_ibu_low()
+        high = self._SO_get_ibu_high()
+        
+        if low == 0 and high == 0:
+            return "varies"
+        else:
+            return "%i IBU - %i IBU" % (low, high)
+
 
 class BJCPCategory(SQLObject):
     name = UnicodeCol(length=48, default=None)
@@ -313,8 +359,63 @@ class MashStep(SQLObject, Measures):
     step_temp_unit = IntCol(default=Measures.FAHRENHEIT)
     step_time = DecimalCol(size=3, precision=1, default=0.0)
     rise_time = DecimalCol(size=3, precision=1, default=0.0)
+    mash_steps = ForeignKey('MashStepOrder')
 
 class MashStepOrder(SQLObject):
     position = IntCol(default=1)
     step = ForeignKey('MashStep')
-    profile = ForeignKey('MashProfile')
+
+class Recipe(SQLObject, Measures):
+    EXTRACT = 0
+    PARTIAL_MASH = 1
+    ALL_GRAIN = 2
+    recipe_types = ['Extract','Partial Mash','All Grain',]
+    
+    SINGLE = 0
+    DOUBLE = 1
+    TRIPLE = 2
+    fermentation_types = ['Single Stage', 'Double Stage', 'Triple Stage']
+    
+    FORCED_CO2 = 0
+    TABLE_SUGAR = 1
+    CORN_SUGAR = 2
+    DRIED_MALT_EXTRACT = 3
+    KRAUSEN = 4
+    carbonation_types = ['Forced CO2', 'Table Sugar', 'Corn Sugar', 'Dried Malt Extract', 'Krausen',]
+    
+    name = UnicodeCol(length=64, default=None)
+    style = ForeignKey('BJCPStyle')
+    brewer = UnicodeCol(length=255, default=None)
+    recipe_type = IntCol(default=EXTRACT)
+    boil_volume = DecimalCol(size=5, precision=2, default=0)
+    boil_volume_units = IntCol(default=Measures.GAL)
+    batch_volume = DecimalCol(size=5, precision=2, default=0)
+    batch_volume_units = IntCol(default=Measures.GAL)
+    equipment = ForeignKey('EquipmentSet')
+    base_boil_on_equipment = BoolCol(default=True)
+    grains = MultipleJoin('Grain')
+    hops = MultipleJoin('Hop')
+    extract = MultipleJoin('Extract')
+    fining = MultipleJoin('Fining')
+    flavor = MulitpleJoin('Flavor')
+    herb = MultipleJoin('Herb')
+    hoppedextract = MultipleJoin('HoppedExtract')
+    mineral = MultipleJoin('Mineral')
+    spice = MultipleJoin('Spice')
+    water = MultipleJoin('Water')
+    yeast = MultipleJoin('Yeast')
+    og = SGCol(default=0)
+    fg = SGCol(default=0)
+    color = SRMCol(default=0)
+    ibu = IntCol(default=0)
+    fermentation_type = IntCol(default=SINGLE)
+    fermentation_stage_1 = IntCol(default=0)
+    fermentation_stage_2 = IntCol(default=0)
+    fermentation_stage_3 = IntCol(default=0)
+    mash = ForeignKey('MashProfile')
+    carbonation_type = IntCol(default=FORCED_CO2)
+    carbonation_volume = DecimalCol(size=3, precision=1, default=0)
+    carbonation_amount = DecimalCol(size=4, precision=2, default=0)
+
+class Batch(SQLObject):
+    pass

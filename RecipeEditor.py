@@ -25,22 +25,11 @@ class wxWindow(wx.Frame):
         self.notebook_1 = wx.Notebook(self, -1, style=0)
         self.notebook_1_pane_1 = wx.Panel(self.notebook_1, -1)
         
-        if sys.platform == 'win32':
-            panelStyle = wx.SIMPLE_BORDER|wx.TAB_TRAVERSAL            
-        else:
-            panelStyle = wx.SIMPLE_BORDER|wx.RAISED_BORDER|wx.TAB_TRAVERSAL
-        
-        # self.panel_4 = wx.Panel(self.notebook_1_pane_1, -1, style=wx.SIMPLE_BORDER|wx.RAISED_BORDER|wx.TAB_TRAVERSAL)
-        # self.panel_3 = wx.Panel(self.notebook_1_pane_1, -1, style=wx.SIMPLE_BORDER|wx.RAISED_BORDER|wx.TAB_TRAVERSAL)
-        # self.panel_2 = wx.Panel(self.notebook_1_pane_1, -1, style=wx.SIMPLE_BORDER|wx.RAISED_BORDER|wx.TAB_TRAVERSAL)
-        # self.panel_5 = wx.Panel(self.notebook_1_pane_1, -1, style=wx.SIMPLE_BORDER|wx.RAISED_BORDER|wx.TAB_TRAVERSAL)
-        # self.panel_1 = wx.Panel(self.notebook_1_pane_1, -1, style=wx.SIMPLE_BORDER|wx.RAISED_BORDER|wx.TAB_TRAVERSAL)
-
-        self.panel_4 = wx.Panel(self.notebook_1_pane_1, -1, style=panelStyle)
-        self.panel_3 = wx.Panel(self.notebook_1_pane_1, -1, style=panelStyle)
-        self.panel_2 = wx.Panel(self.notebook_1_pane_1, -1, style=panelStyle)
-        self.panel_5 = wx.Panel(self.notebook_1_pane_1, -1, style=panelStyle)
-        self.panel_1 = wx.Panel(self.notebook_1_pane_1, -1, style=panelStyle)
+        self.panel_4 = wx.Panel(self.notebook_1_pane_1, -1, style=wx.SIMPLE_BORDER|wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL)
+        self.panel_3 = wx.Panel(self.notebook_1_pane_1, -1, style=wx.SIMPLE_BORDER|wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL)
+        self.panel_2 = wx.Panel(self.notebook_1_pane_1, -1, style=wx.SIMPLE_BORDER|wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL)
+        self.panel_5 = wx.Panel(self.notebook_1_pane_1, -1, style=wx.SIMPLE_BORDER|wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL)
+        self.panel_1 = wx.Panel(self.notebook_1_pane_1, -1, style=wx.SIMPLE_BORDER|wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL)
 
         self.recipeEditor_statusbar = self.CreateStatusBar(1, 0)
         
