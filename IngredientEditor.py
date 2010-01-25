@@ -29,6 +29,16 @@ class IngredientEditor(wx.Frame):
         self.panel_4 = wx.Panel(self.panel_2, -1, style=wx.SIMPLE_BORDER|wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL)
         self.panel_3 = wx.Panel(self.panel_2, -1, style=wx.SIMPLE_BORDER|wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL)
         self.panel_1 = wx.Panel(self, -1, style=wx.SIMPLE_BORDER|wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL)
+        self.ingredientEditor_statusbar = self.CreateStatusBar(1, 0)
+        
+        # Tool Bar
+        self.ingredientEditor_toolbar = wx.ToolBar(self, -1, style=wx.TB_HORIZONTAL|wx.TB_TEXT)
+        self.SetToolBar(self.ingredientEditor_toolbar)
+        self.ingredientEditor_toolbar.AddLabelTool(100, "New Ingredient", wx.Bitmap(newIngredient,wx.BITMAP_TYPE_ANY), wx.Bitmap(newIngredient,wx.BITMAP_TYPE_ANY), wx.ITEM_NORMAL, "New Ingredient", "Add a new ingredient")
+        self.ingredientEditor_toolbar.AddSeparator()
+        self.ingredientEditor_toolbar.AddLabelTool(101, "Add to Inventory", wx.Bitmap(addInventory,wx.BITMAP_TYPE_ANY), wx.Bitmap(addInventory,wx.BITMAP_TYPE_ANY), wx.ITEM_NORMAL, "Add to Inventory", "Add this item to your inventory")
+        self.ingredientEditor_toolbar.AddLabelTool(102, "View Inventory", wx.Bitmap(viewInventory,wx.BITMAP_TYPE_ANY), wx.Bitmap(viewInventory,wx.BITMAP_TYPE_ANY), wx.ITEM_NORMAL, "View Inventory", "View your inventory")
+        # Tool Bar end
         self.topLevelCtrl = wx.ListCtrl(self.panel_1, -1, style=wx.LC_SINGLE_SEL|wx.SUNKEN_BORDER)
         self.middleLevelCtrl = wx.ListCtrl(self.panel_1, -1, style=wx.LC_SINGLE_SEL|wx.SUNKEN_BORDER)
         self.bottomLevelCtrl = wx.ListCtrl(self.panel_1, -1, style=wx.LC_SINGLE_SEL|wx.SUNKEN_BORDER)
@@ -46,24 +56,14 @@ class IngredientEditor(wx.Frame):
         self.coarseFineDifferenceCtrl = wx.TextCtrl(self.panel_4, -1, "")
         self.label_9_copy_1 = wx.StaticText(self.panel_4, -1, "Moisture")
         self.moistureCtrl = wx.TextCtrl(self.panel_4, -1, "")
-        self.label_9_copy_4 = wx.StaticText(self.panel_4, -1, "Diastatic Power:")
-        self.distaticPowerCtrl = wx.TextCtrl(self.panel_4, -1, "")
+        self.label_9_copy_4 = wx.StaticText(self.panel_4, -1, "Distatic Power:")
+        self.diastaticPowerCtrl = wx.TextCtrl(self.panel_4, -1, "")
         self.label_9_copy_2 = wx.StaticText(self.panel_4, -1, "Max in Batch:")
         self.maxInBatchCtrl = wx.TextCtrl(self.panel_4, -1, "")
         self.mustMashCtrl = wx.CheckBox(self.panel_4, -1, "Must Mash")
         self.addAfterBoilCtrl = wx.CheckBox(self.panel_4, -1, "Add After Boil")
         self.label_10 = wx.StaticText(self.panel_5, -1, "Notes")
-        self.notesCtrl = wx.TextCtrl(self.panel_5, -1, "", style=wx.TE_MULTILINE)
-        self.ingredientEditor_statusbar = self.CreateStatusBar(1, 0)
-        
-        # Tool Bar
-        self.ingredientEditor_toolbar = wx.ToolBar(self, -1, style=wx.TB_HORIZONTAL|wx.TB_TEXT)
-        self.SetToolBar(self.ingredientEditor_toolbar)
-        self.ingredientEditor_toolbar.AddLabelTool(100, "New Ingredient", wx.Bitmap(newIngredient,wx.BITMAP_TYPE_ANY), wx.Bitmap(newIngredient,wx.BITMAP_TYPE_ANY), wx.ITEM_NORMAL, "New Ingredient", "Add a new ingredient")
-        self.ingredientEditor_toolbar.AddSeparator()
-        self.ingredientEditor_toolbar.AddLabelTool(101, "Add to Inventory", wx.Bitmap(addInventory,wx.BITMAP_TYPE_ANY), wx.Bitmap(addInventory,wx.BITMAP_TYPE_ANY), wx.ITEM_NORMAL, "Add to Inventory", "Add this item to your inventory")
-        self.ingredientEditor_toolbar.AddLabelTool(102, "View Inventory", wx.Bitmap(viewInventory,wx.BITMAP_TYPE_ANY), wx.Bitmap(viewInventory,wx.BITMAP_TYPE_ANY), wx.ITEM_NORMAL, "View Inventory", "View your inventory")
-        # Tool Bar end
+        self.text_ctrl_1 = wx.TextCtrl(self.panel_5, -1, "", style=wx.TE_MULTILINE)
 
         self.__set_properties()
         self.__do_layout()
@@ -71,6 +71,18 @@ class IngredientEditor(wx.Frame):
         self.Bind(wx.EVT_TOOL, self.NewIngredient, id=100)
         self.Bind(wx.EVT_TOOL, self.AddInventory, id=101)
         self.Bind(wx.EVT_TOOL, self.ViewInventory, id=102)
+        self.Bind(wx.EVT_TEXT, self.ItemChanged, self.nameCtrl)
+        self.Bind(wx.EVT_TEXT, self.ItemChanged, self.originCtrl)
+        self.Bind(wx.EVT_TEXT, self.ItemChanged, self.colorCtrl)
+        self.Bind(wx.EVT_TEXT, self.ItemChanged, self.potentialCtrl)
+        self.Bind(wx.EVT_TEXT, self.ItemChanged, self.dyfgCtrl)
+        self.Bind(wx.EVT_TEXT, self.ItemChanged, self.coarseFineDifferenceCtrl)
+        self.Bind(wx.EVT_TEXT, self.ItemChanged, self.moistureCtrl)
+        self.Bind(wx.EVT_TEXT, self.ItemChanged, self.diastaticPowerCtrl)
+        self.Bind(wx.EVT_TEXT, self.ItemChanged, self.maxInBatchCtrl)
+        self.Bind(wx.EVT_CHECKBOX, self.ItemChanged, self.mustMashCtrl)
+        self.Bind(wx.EVT_CHECKBOX, self.ItemChanged, self.addAfterBoilCtrl)
+        self.Bind(wx.EVT_TEXT, self.ItemChanged, self.text_ctrl_1)
         # end wxGlade
 
         self.PopulateBrowser()
@@ -125,7 +137,7 @@ class IngredientEditor(wx.Frame):
         grid_sizer_1.Add(self.label_9_copy_1, 0, wx.ALL|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL|wx.ADJUST_MINSIZE, 3)
         grid_sizer_1.Add(self.moistureCtrl, 1, wx.ALL|wx.EXPAND|wx.ADJUST_MINSIZE, 3)
         grid_sizer_1.Add(self.label_9_copy_4, 0, wx.ALL|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL|wx.ADJUST_MINSIZE, 3)
-        grid_sizer_1.Add(self.distaticPowerCtrl, 1, wx.ALL|wx.EXPAND|wx.ADJUST_MINSIZE, 3)
+        grid_sizer_1.Add(self.diastaticPowerCtrl, 1, wx.ALL|wx.EXPAND|wx.ADJUST_MINSIZE, 3)
         grid_sizer_1.Add(self.label_9_copy_2, 0, wx.ALL|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL|wx.ADJUST_MINSIZE, 3)
         grid_sizer_1.Add(self.maxInBatchCtrl, 1, wx.ALL|wx.EXPAND|wx.ADJUST_MINSIZE, 3)
         grid_sizer_1.Add(sizer_6, 1, wx.EXPAND, 0)
@@ -222,6 +234,10 @@ class IngredientEditor(wx.Frame):
 
     def ViewInventory(self, event): # wxGlade: IngredientEditor.<event_handler>
         print "Event handler `ViewInventory' not implemented!"
+        event.Skip()
+
+    def ItemChanged(self, event): # wxGlade: IngredientEditor.<event_handler>
+        print "Event handler `ItemChanged' not implemented"
         event.Skip()
 
 # end of class IngredientEditor
