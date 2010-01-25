@@ -63,7 +63,7 @@ class IngredientEditor(wx.Frame):
         self.mustMashCtrl = wx.CheckBox(self.panel_4, -1, "Must Mash")
         self.addAfterBoilCtrl = wx.CheckBox(self.panel_4, -1, "Add After Boil")
         self.label_10 = wx.StaticText(self.panel_5, -1, "Notes")
-        self.text_ctrl_1 = wx.TextCtrl(self.panel_5, -1, "", style=wx.TE_MULTILINE)
+        self.notesCtrl = wx.TextCtrl(self.panel_5, -1, "", style=wx.TE_MULTILINE)
 
         self.__set_properties()
         self.__do_layout()
@@ -82,7 +82,7 @@ class IngredientEditor(wx.Frame):
         self.Bind(wx.EVT_TEXT, self.ItemChanged, self.maxInBatchCtrl)
         self.Bind(wx.EVT_CHECKBOX, self.ItemChanged, self.mustMashCtrl)
         self.Bind(wx.EVT_CHECKBOX, self.ItemChanged, self.addAfterBoilCtrl)
-        self.Bind(wx.EVT_TEXT, self.ItemChanged, self.text_ctrl_1)
+        self.Bind(wx.EVT_TEXT, self.ItemChanged, self.notesCtrl)
         # end wxGlade
 
         self.PopulateBrowser()
@@ -152,7 +152,7 @@ class IngredientEditor(wx.Frame):
         self.panel_4.SetSizer(sizer_5)
         sizer_3.Add(self.panel_4, 0, wx.ALL|wx.EXPAND, 3)
         sizer_9.Add(self.label_10, 0, wx.ALL|wx.ADJUST_MINSIZE, 3)
-        sizer_9.Add(self.text_ctrl_1, 1, wx.ALL|wx.EXPAND|wx.ADJUST_MINSIZE, 3)
+        sizer_9.Add(self.notesCtrl, 1, wx.ALL|wx.EXPAND|wx.ADJUST_MINSIZE, 3)
         self.panel_5.SetSizer(sizer_9)
         sizer_3.Add(self.panel_5, 1, wx.ALL|wx.EXPAND, 3)
         self.panel_2.SetSizer(sizer_3)
