@@ -173,54 +173,45 @@ class IngredientEditor(wx.Frame):
         self.itemModified = False
         self.saveInterval = False
 
-    def _SaveGrain(self):
-        name = self.nameCtrl.GetValue()
-        origin = self.originCtrl.GetValue()
-        try:
-            color = Decimal(self.colorCtrl.GetValue()).quantize(SRM_QUANT)
-            potential = Decimal(self.potentialCtrl.GetValue()).quanitze(SG_QUANT)
-            dyfg = Decimal(self.dyfgCtrl.GetValue()).quantize(PERCENT_QUANT)
-            cfd = Decimal(self.cfdCtrl.GetValue()).quantize(PERCENT_QUANT)
-            moisture = Decimal(self.moistureCtrl.GetValue()).quantize(PERCENT_QUANT)
-            diastatic = Decimal(self.diastaticPowerCtrl.GetValue()).quantize(Decimal(10) ** -1)
-            max_in_batch = Decimal(self.maxInBatchCtrl.GetValue()).quantize(PERCENT_QUANT)
-        except InvalidOperation:
-            pass
-            
-        if self.mustMashCtrl.IsChecked():
-            mush_mash = True
-        else:
-            mush_mash = False            
-        if self.addAfterBoilCtrl.IsChecked():
-            add_after_boil = True
-        else:
-            add_after_boil = False        
-        notes = self.notesCtrl.GetValue()   
-          
-        if self.IngredientID:
-            thisGrain = Grain.get(self.IngredientID)
-        elif Grain.select(Grain.q.name==name)[0]:
-            # pop up dialogue asking to save over currently existing item named such
+    def _SaveGrain(self):        
+        if self.ingredientID:
+            thisGrain = Grain.get(self.ingredientID)
+        elif Grain.select(Grain.q.name==self.nameCtrl.GetValue()).count() > 0:
+            # pop up dialogue
             pass
         else:
             thisGrain = Grain()
+                
+        if self.nameCtrl.IsModified():
+            thisGrain.name = unicode(self.nameCtrl.GetValue())
+        if self.originCtrl.IsModified():
+            thisGrain.origin = unicode(self.originCtrl.GetValue())
+        if self.colorCtrl.IsModified():
+            thisGrain.color = Decimal(self.colorCtrl.GetValue*()).quantize(SRM_QUANT)        
+        if self.potentialCtrl.IsModified():
+            thisGrain.potential = Decimal(self.potentialCtrl.GetValue()).quanitze(SG_QUANT)
+        if self.dyfgCtrl.IsModified():
+            thisGrain.dry_yield_fine_grain = Decimal(self.dyfgCtrl.GetValue()).quantize(PERCENT_QUANT)
+        if self.coarseFineDifferenceCtrl.IsModified():
+            thisGrain.coarse_fine_difference =  Decimal(self.coarseFineDifferenceCtrl.GetValue()).quantize(PERCENT_QUANT)
+        if self.moistureCtrl.IsModified():
+            thisGrain.moisture =  Decimal(self.moistureCtrl.GetValue()).quantize(PERCENT_QUANT)
+        if self.diastaticPowerCtrl.IsModified():
+            thisGrain.diastatic_power = Decimal(self.diastaticPowerCtrl.GetValue()).quantize(Decimal(10) ** -1)
+        if self.maxInBatchCtrl.IsModified():
+            thisGrain.max_in_batch = Decimal(self.maxInBatchCtrl.GetValue()).quantize(PERCENT_QUANT)
+        if self.mustMashCtrl.IsChecked:
+            thisGrain.mush_mash = True
+        else:
+            thisGrain.mush_mash = False
+        if self.addAfterBoilCtrl.IsChecked():
+            thisGrain.add_after_boil = True
+        else:
+            thisGrain.add_after_boil = False        
+        if self.notesCtrl.IsModified():
+            thisGrain.notes = self.notesCtrl.GetValue()   
         
-        thisGrain.set(name = name, 
-            origin = origin, 
-            color = color, 
-            potential = potential, 
-            dry_yield_fine_grain = dyfg, 
-            coarse_fine_difference = cfg, 
-            moisture = moisture, 
-            diastatic_power = diastatic, 
-            max_in_batch = max_in_batch, 
-            mush_mash = mush_mash, 
-            add_after_boil = add_after_boil, 
-            notes = notes
-        )
-        
-        self.IngredientID = thisGrain.id
-
+        self.ingredientID = thisGrain.id
 
     def PopulateBrowser(self):
         base_list = ['Hops','Grains','Extracts','Yeasts','Miscellaneous']
