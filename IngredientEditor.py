@@ -4,7 +4,7 @@
 
 import os
 import sys
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 import wx
 
@@ -100,8 +100,11 @@ class IngredientEditor(wx.Frame):
         self.ingredientEditor_toolbar.Realize()
         # end wxGlade
         
-        self.ItemModified = False
+        self.ttemModified = False
         db = DataStore()
+        self.saveInterval = None
+        self.ingredientType = 'grain'
+        self.ingredientID = 0
 
     def __do_layout(self):
         # begin wxGlade: IngredientEditor.__do_layout
@@ -163,21 +166,27 @@ class IngredientEditor(wx.Frame):
         pass
         
     def _SaveItem(self):
-        if self.ingredientType == "Grain":
+        print self.ingredientID
+        if self.ingredientType == "grain":
             self._SaveGrain()
         
         self.itemModified = False
+        self.saveInterval = False
 
     def _SaveGrain(self):
-        name = self.nameCtrl.GetText()
-        origin = self.originCtrl.GetText()
-        color = Decimal(self.colorCtrl.GetText()).quantize(SRM_QUANT)
-        potential = Decimal(self.potentialCtrl.GetText()).quanitze(SG_QUANT)
-        dyfg = Decimal(self.dyfgCtrl.GetText()).quantize(PERCENT_QUANT)
-        cfd = Decimal(self.cfdCtrl.GetText()).quantize(PERCENT_QUANT)
-        moisture = Decimal(self.moistureCtrl.GetText()).quantize(PERCENT_QUANT)
-        diastatic = Decimal(self.diastaticPowerCtrl.GetText()).quantize(Decimal(10) ** -1)
-        max_in_batch = Decimal(self.maxInBatchCtrl.GetText()).quantize(PERCENT_QUANT)
+        name = self.nameCtrl.GetValue()
+        origin = self.originCtrl.GetValue()
+        try:
+            color = Decimal(self.colorCtrl.GetValue()).quantize(SRM_QUANT)
+            potential = Decimal(self.potentialCtrl.GetValue()).quanitze(SG_QUANT)
+            dyfg = Decimal(self.dyfgCtrl.GetValue()).quantize(PERCENT_QUANT)
+            cfd = Decimal(self.cfdCtrl.GetValue()).quantize(PERCENT_QUANT)
+            moisture = Decimal(self.moistureCtrl.GetValue()).quantize(PERCENT_QUANT)
+            diastatic = Decimal(self.diastaticPowerCtrl.GetValue()).quantize(Decimal(10) ** -1)
+            max_in_batch = Decimal(self.maxInBatchCtrl.GetValue()).quantize(PERCENT_QUANT)
+        except InvalidOperation:
+            pass
+            
         if self.mustMashCtrl.IsChecked():
             mush_mash = True
         else:
@@ -186,7 +195,7 @@ class IngredientEditor(wx.Frame):
             add_after_boil = True
         else:
             add_after_boil = False        
-        notes = self.notesCtrl.GetText()   
+        notes = self.notesCtrl.GetValue()   
           
         if self.IngredientID:
             thisGrain = Grain.get(self.IngredientID)
@@ -237,8 +246,13 @@ class IngredientEditor(wx.Frame):
         event.Skip()
 
     def ItemChanged(self, event): # wxGlade: IngredientEditor.<event_handler>
-        print "Event handler `ItemChanged' not implemented"
+        self.itemModified = True
+        if self.saveInterval:
+            pass
+        else:
+            self.saveInterval = wx.FutureCall(2000, self._SaveItem)
         event.Skip()
+
 
 # end of class IngredientEditor
 
