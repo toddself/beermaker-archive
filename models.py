@@ -87,6 +87,7 @@ class Hop(SQLObject):
     origin = UnicodeCol(default=None)
     name = UnicodeCol(length=64, default=None)
     description = UnicodeCol(default=None)
+    substitutes = UnicodeCol(default=None)
     
 class Grain(SQLObject):
     name = UnicodeCol(length=64, default=None)
@@ -102,16 +103,17 @@ class Grain(SQLObject):
     must_mash = BoolCol(default=False)
     add_after_boil = BoolCol(default=False)
     notes = UnicodeCol(default=None)
+    maltster = UnicodeCol(default=None, length=128)
     
 class Extract(SQLObject):
     name = UnicodeCol(length=64, default=None)
     origin = UnicodeCol(default=None)
     color = SRMCol(default=1.0)
     potential = SGCol(default=1.000)
-    dry_yield_fine_grain = PercentCol(default=0.0)
     max_in_batch = PercentCol(default=0.0)
     add_after_boil = BoolCol(default=False)
     notes = UnicodeCol(default=None)
+    supplier = UnicodeCol(default=None, length=128)
 
 class HoppedExtract(Extract, Measures):
     alpha = PercentCol(default=0.0)

@@ -4,12 +4,15 @@ from xml.dom import minidom
 from sqlobject import *
 from sqlobject.dberrors import DuplicateEntryError
 
-from db import DataStore
+import db
 from models import BJCPCategory, BJCPStyle
 
 if __name__ == '__main__':
+    main()
+
+def main():
     # connect to the database
-    data = DataStore()
+    data = db.DataStore()
     
     # import the XML
     styledoc = minidom.parse('styleguide2008.xml')
@@ -35,8 +38,8 @@ if __name__ == '__main__':
                 # we're only interested in the last letter -- the number is duplicative data
                 subcategory_id = unicode(sub_category.getAttribute('id')[-1:]).upper()
                 # initialize the variables needed
-                name = aroma = appearance = mouthfeel = impression = comments = examples = None
-                og_low = og_high = fg_low = fg_high = srm_low = srm_high = abv_low = ibu_low = ibu_high = 0
+                name = aroma = flavor = appearance = mouthfeel = impression = comments = examples = None
+                og_low = og_high = abv_high = fg_low = fg_high = srm_low = srm_high = abv_low = ibu_low = ibu_high = 0
 
                 # loop over the text nodes and set the value of the node equal to the xml node name
                 for element in sub_category.childNodes:

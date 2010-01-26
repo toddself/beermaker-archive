@@ -2,12 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>currentDocument</key>
+	<string>IngredientEditor.py</string>
 	<key>documents</key>
 	<array>
-		<dict>
-			<key>filename</key>
-			<string>backup.py</string>
-		</dict>
 		<dict>
 			<key>filename</key>
 			<string>beermaker.db</string>
@@ -27,10 +25,14 @@
 		<dict>
 			<key>filename</key>
 			<string>bjcp_import.py</string>
+			<key>lastUsed</key>
+			<date>2010-01-25T23:15:32Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>BJCPViewer.py</string>
+			<key>lastUsed</key>
+			<date>2010-01-25T22:31:41Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -39,6 +41,8 @@
 		<dict>
 			<key>filename</key>
 			<string>db.py</string>
+			<key>lastUsed</key>
+			<date>2010-01-25T20:46:15Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -55,6 +59,10 @@
 		<dict>
 			<key>filename</key>
 			<string>IngredientEditor.py</string>
+			<key>lastUsed</key>
+			<date>2010-01-25T23:15:47Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -63,10 +71,8 @@
 		<dict>
 			<key>filename</key>
 			<string>models.py</string>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>models.pyc</string>
+			<key>lastUsed</key>
+			<date>2010-01-25T23:15:47Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -84,10 +90,89 @@
 	<key>fileHierarchyDrawerWidth</key>
 	<integer>200</integer>
 	<key>metaData</key>
-	<dict/>
+	<dict>
+		<key>BJCPViewer.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>81</integer>
+				<key>line</key>
+				<integer>159</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>146</integer>
+		</dict>
+		<key>IngredientEditor.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>25</integer>
+				<key>line</key>
+				<integer>175</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>13</integer>
+		</dict>
+		<key>bjcp_import.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>20</integer>
+		</dict>
+		<key>db.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>26</integer>
+				<key>line</key>
+				<integer>35</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>models.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>52</integer>
+				<key>line</key>
+				<integer>98</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>168</integer>
+		</dict>
+	</dict>
+	<key>openDocuments</key>
+	<array>
+		<string>IngredientEditor.py</string>
+		<string>BJCPViewer.py</string>
+		<string>models.py</string>
+		<string>bjcp_import.py</string>
+		<string>db.py</string>
+	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{250, 33}, {1155, 845}}</string>
+	<string>{{254, 39}, {1210, 966}}</string>
 </dict>
 </plist>

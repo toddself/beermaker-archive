@@ -7,6 +7,9 @@ from sqlobject import *
 
 import models
 
+import bjcp_import
+import data_import
+
 class DataStore():
     db_filename = os.path.abspath('beermaker.db')
     db_driver = 'sqlite'
@@ -43,3 +46,8 @@ if __name__ == '__main__':
         
             table.createTable()
             print "Created: %s" % table.__name__
+    
+    print "importing bjcp styles"
+    bjcp_import.main()
+    print "importing data"
+    data_import.main()
