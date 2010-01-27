@@ -150,6 +150,8 @@ class Yeast(SQLObject, Measures):
     yeast_type = IntCol(default=LAGER)
     yeast_form = IntCol(default=LIQUID)
     flocc = IntCol(default=LOW)
+    amount = DecimalCol(size=5, precision=2, default=0)
+    amount_units = IntCol(default=Measures.ML)
     starter_size = DecimalCol(size=10, precision=10, default=0.0)
     starter_units = IntCol(default=Measures.ML)
     avg_attenuation = PercentCol(default=0.0)

@@ -2,8 +2,8 @@
 from xml.dom import minidom
 
 import db
-from models import Hop, Grain, Extract, HoppedExtract, Yeast
-from algorithms import sg_from_yield
+from models import Hop, Grain, Extract, HoppedExtract, Yeast, Measures
+from algorithms import sg_from_yield, c2f
 
 if __name__ == '__main__':
     main()
@@ -100,7 +100,7 @@ def main():
             except AttributeError:
                 pass
             try:    
-                dry_yield_fine_grain = 0
+                dry_yield_fine_grain = float(g('YIELD')[0].firstChild.data)
             except AttributeError:
                 pass
             try:    
@@ -202,3 +202,101 @@ def main():
             max_in_batch=max_in_batch,
             add_after_boil=add_after_boil
             )
+            
+    for y in d.getElementsByTagName('YEAST'):
+        g = y.getElementsByTagName
+        
+        #set some reasonable defaults
+        name = lab = yeast_id = best_for = notes = None
+        yeast_type = yeast_form = flocc = starter_size =\
+            starter_units = avg_attenuation = min_temp =\
+            max_temp = temp_units = max_reuse = 0
+        use_starter = secondary = False        
+        
+        try:
+            name = unicode(g('NAME')[0].firstChild.data)
+        except AttributeError:
+            pass
+        try:
+            yeast_type = Yeast.yeast_types.index(g('TYPE')[0].firstChild.data)
+        except AttributeError:
+            pass
+        try:
+            yeast_form = Yeast.yeast_forms.index(g('FORM')[0].firstChild.data)
+        except AttributeError:
+            pass
+        try:
+            yeast_id = unicode(g('PRODUCT_ID')[0].firstChild.data)
+        except AttributeError:
+            pass
+        try:
+            flocc = Yeast.yeast_flocculations.index(g('FLOCCULATION')[0].firstChild.data)
+        except AttributeError:
+            pass
+        try:
+            avg_attenuation = float(g('ATTENUATION')[0].firstChild.data)
+        except AttributeError:
+            pass
+        try:
+            min_temp = c2f(float(g('MIN_TEMPERATURE')[0].firstChild.data))
+        except AttributeError:
+            pass
+        try:
+            max_temp = c2f(float(g('MAX_TEMPERATURE')[0].firstChild.data))
+        except AttributeError:
+            pass
+        try:
+            max_reuse = int(g('MAX_REUSE')[0].firstChild.data)
+        except AttributeError:
+            pass
+        try:
+            best_for = unicode(g('BEST_FOR')[0].firstChild.data)
+        except AttributeError:
+            pass
+        try:
+            notes = unicode(g('NOTES')[0].firstChild.data)
+        except AttributeError:
+            pass            
+        try:
+            if g('ADD_TO_SECONDARY')[0].firstChild.data == 'FALSE':
+                add_to_secondary = False
+            else:
+                add_to_secondary = True
+        except AttributeError:
+            pass
+        try:
+            amount = float(g('AMOUNT')[0].firstChild.data)*1000
+        except AttributeError:
+            pass
+        try:
+            if g('AMOUNT_IS_WEIGHT')[0].firstChild.data == 'FALSE':
+                amount_units = Measures.ML
+            else:
+                amount_units = Measures.GM
+        except AttributeError:
+            pass
+
+        temp_units = Measures.FAHRENHEIT            
+        if yeast_type == Yeast.yeast_forms.index('Liquid'):
+            use_starter = True
+        else:
+            use_starter = False
+        
+        thisYeast = Yeast(name=name,
+        yeast_type=yeast_type,
+        yeast_form=yeast_form,
+        yeast_id=yeast_id,
+        flocc=flocc,
+        avg_attenuation=avg_attenuation,
+        min_temp=min_temp,
+        max_temp=max_temp,
+        max_reuse=max_reuse,
+        best_for=best_for,
+        notes=notes,
+        secondary=add_to_secondary,
+        temp_units=temp_units,
+        use_starter=use_starter,
+        amount=amount,
+        amount_units=amount_units
+        )
+

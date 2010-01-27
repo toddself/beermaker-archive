@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>IngredientEditor.py</string>
+	<string>data_import.py</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -26,23 +26,39 @@
 			<key>filename</key>
 			<string>bjcp_import.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-25T23:15:32Z</date>
+			<date>2010-01-27T03:20:04Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>data_import.py</string>
+			<key>lastUsed</key>
+			<date>2010-01-27T03:24:12Z</date>
+			<key>selected</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>algorithms.py</string>
+			<key>lastUsed</key>
+			<date>2010-01-27T03:11:28Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>BJCPViewer.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-25T22:31:41Z</date>
+			<date>2010-01-27T02:36:20Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>BJCPViewer.wxg</string>
+			<key>lastUsed</key>
+			<date>2010-01-27T02:36:21Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>db.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-25T20:46:15Z</date>
+			<date>2010-01-27T03:09:36Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -60,9 +76,7 @@
 			<key>filename</key>
 			<string>IngredientEditor.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-25T23:15:47Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2010-01-27T02:36:02Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -72,7 +86,7 @@
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-25T23:15:47Z</date>
+			<date>2010-01-27T03:24:12Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -91,33 +105,19 @@
 	<integer>200</integer>
 	<key>metaData</key>
 	<dict>
-		<key>BJCPViewer.py</key>
+		<key>algorithms.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>81</integer>
+				<integer>11</integer>
 				<key>line</key>
-				<integer>159</integer>
+				<integer>14</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>146</integer>
-		</dict>
-		<key>IngredientEditor.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>25</integer>
-				<key>line</key>
-				<integer>175</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
 			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>13</integer>
 		</dict>
 		<key>bjcp_import.py</key>
 		<dict>
@@ -132,6 +132,20 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>20</integer>
+		</dict>
+		<key>data_import.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>17</integer>
+				<key>line</key>
+				<integer>262</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>250</integer>
 		</dict>
 		<key>db.py</key>
 		<dict>
@@ -152,22 +166,22 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>52</integer>
+				<integer>46</integer>
 				<key>line</key>
-				<integer>98</integer>
+				<integer>146</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>168</integer>
+			<integer>123</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>IngredientEditor.py</string>
-		<string>BJCPViewer.py</string>
+		<string>data_import.py</string>
 		<string>models.py</string>
 		<string>bjcp_import.py</string>
+		<string>algorithms.py</string>
 		<string>db.py</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
