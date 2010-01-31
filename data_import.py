@@ -2,7 +2,7 @@
 from xml.dom import minidom
 
 import db
-from models import Hop, Grain, Extract, HoppedExtract, Yeast, Measures
+from models import Hop, Grain, Extract, HoppedExtract, Yeast, Measures, Fining, Mineral, Flavor, Spice, Herb, Misc
 from algorithms import sg_from_yield, c2f
 
 if __name__ == '__main__':
@@ -300,3 +300,49 @@ def main():
         amount_units=amount_units
         )
 
+    for m in d.getElementsByTagName('MISC'):
+        g = m.getElementsByTagName
+        
+        misc_type = g('TYPE')[0].firstChild.data
+        if misc_type == "Fining":
+            misc_obj = Fining
+        elif misc_type == 'Other':
+            misc_obj = Misc
+        elif misc_type == 'Flavor':
+            misc_obj = Flavor
+        elif misc_type == 'Water Agent':
+            misc_obj = Mineral
+        else:
+            print "No matched type, boss %s" % misc_type
+            pass
+
+
+
+        name = use_for = notes = None
+        rec_amount = rec_units = batch_size = batch_size_units = \
+            use_in = use_time = use_time_units = 0
+
+        try:
+            name = unicode(g('NAME')[0].firstChild.data)
+        except AttributeError:
+            pass
+        try:
+            use_for = unicode(g('USE_FOR')[0].firstChild.data)
+        except AttributeError:
+            pass
+        try:
+            use_in = Misc.misc_use_ins.index(g('USE')[0].firstChild.data)
+        except AttributeError:
+            pass
+        
+
+        thisMisc = misc_obj(name=name,
+            use_for=use_for,
+            rec_amount=rec_amount,
+            rec_units=rec_units,
+            batch_size=batch_size,
+            batch_size_units=batch_size_units,
+            use_in=use_in,
+            use_time=use_time,
+            use_time_units=use_time_units
+        )

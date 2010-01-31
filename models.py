@@ -204,28 +204,33 @@ class Misc(SQLObject, Measures):
     use_time = IntCol(default=0)
     use_time_units = IntCol(default=Measures.MIN)
     misc_type = IntCol(default=SPICE)
+    notes = UnicodeCol(default=None)
 
 class Mineral(Misc):
-    def __init__(self):
+    def __init__(self, *args, **kw):
         misc_type = Misc.WATER_AGENT
-
+        Misc.__init__(self, *args, **kw)
     
 class Fining(Misc):
-    def __init__(self):
+    def __init__(self, *args, **kw):
         misc_type = Misc.FINING
+        Misc.__init__(self, *args, **kw)
 
 class Flavor(Misc):
-    def __init__(self):
-        misc_type =Misc.FLAVOR
+    def __init__(self, *args, **kw):
+        misc_type = Misc.FLAVOR
+        Misc.__init__(self, *args, **kw)        
     
 class Spice(Misc):
-    def __init__(self):
+    def __init__(self, *args, **kw):
         misc_type = Misc.SPICE
-
+        Misc.__init__(self, *args, **kw)
 
 class Herb(Misc):
-    def __init__(self):
+    def __init__(self, *args, **kw):
         misc_type = Misc.HERB
+        Misc.__init__(self, *args, **kw)
+
 
 class BJCPStyle(SQLObject):
     name = UnicodeCol(length=128, default=None)
