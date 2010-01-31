@@ -25,7 +25,10 @@ import wx
 # begin wxGlade: extracode
 # end wxGlade
 
-icon = os.path.abspath('img/icon.gif')
+new_recipe = os.path.abspath('img/new_recipe.png')
+add_batch = os.path.abspath('img/add_batch.png')
+edit_recipe = os.path.abspath('img/edit_recipe.png')
+
 
 class MainFrame(wx.Frame):
     def __init__(self, *args, **kwds):
@@ -45,9 +48,9 @@ class MainFrame(wx.Frame):
         # Tool Bar
         self.BeerMakerToolbars = wx.ToolBar(self, -1, style=wx.TB_HORIZONTAL|wx.TB_TEXT)
         self.SetToolBar(self.BeerMakerToolbars)
-        self.BeerMakerToolbars.AddLabelTool(200, "New Recipe", wx.Bitmap(icon,wx.BITMAP_TYPE_ANY), wx.Bitmap(icon,wx.BITMAP_TYPE_ANY), wx.ITEM_NORMAL, "New Recipe", "Create a new recipe")
-        self.BeerMakerToolbars.AddLabelTool(201, "New Batch", wx.Bitmap(icon,wx.BITMAP_TYPE_ANY), wx.Bitmap(icon,wx.BITMAP_TYPE_ANY), wx.ITEM_NORMAL, "New Batch", "Create a new batch of an existing recipe")
-        self.BeerMakerToolbars.AddLabelTool(202, "Edit Recipe/Batch", wx.Bitmap(icon,wx.BITMAP_TYPE_ANY), wx.Bitmap(icon,wx.BITMAP_TYPE_ANY), wx.ITEM_NORMAL, "Edit current item", "Edit the current recipe or batch")
+        self.BeerMakerToolbars.AddLabelTool(200, "New Recipe", wx.Bitmap(new_recipe,wx.BITMAP_TYPE_ANY), wx.Bitmap(new_recipe,wx.BITMAP_TYPE_ANY), wx.ITEM_NORMAL, "New Recipe", "Create a new recipe")
+        self.BeerMakerToolbars.AddLabelTool(201, "New Batch", wx.Bitmap(add_batch,wx.BITMAP_TYPE_ANY), wx.Bitmap(add_batch,wx.BITMAP_TYPE_ANY), wx.ITEM_NORMAL, "New Batch", "Create a new batch of an existing recipe")
+        self.BeerMakerToolbars.AddLabelTool(202, "Edit Recipe/Batch", wx.Bitmap(edit_recipe,wx.BITMAP_TYPE_ANY), wx.Bitmap(edit_recipe,wx.BITMAP_TYPE_ANY), wx.ITEM_NORMAL, "Edit current item", "Edit the current recipe or batch")
         # Tool Bar end
         self.RecipeList = wx.ListCtrl(self, -1, style=wx.LC_REPORT|wx.LC_SINGLE_SEL|wx.LC_SORT_ASCENDING|wx.SUNKEN_BORDER)
 
