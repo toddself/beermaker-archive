@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>currentDocument</key>
-	<string>data_import.py</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -13,56 +11,56 @@
 		<dict>
 			<key>filename</key>
 			<string>BeerMaker.py</string>
+			<key>lastUsed</key>
+			<date>2010-01-31T19:15:45Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>BeerMaker.wxg</string>
+			<key>lastUsed</key>
+			<date>2010-01-31T19:16:09Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>BeerMaker_gui.py</string>
+			<key>lastUsed</key>
+			<date>2010-01-31T19:15:55Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>bjcp_import.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-27T03:20:04Z</date>
+			<date>2010-01-31T19:16:32Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>data_import.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-27T03:24:12Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2010-01-31T19:15:43Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>algorithms.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-27T03:11:28Z</date>
+			<date>2010-01-31T19:16:37Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>BJCPViewer.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-27T02:36:20Z</date>
+			<date>2010-01-31T19:16:41Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>BJCPViewer.wxg</string>
 			<key>lastUsed</key>
-			<date>2010-01-27T02:36:21Z</date>
+			<date>2010-01-31T19:16:48Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>db.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-27T03:09:36Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>db.pyc</string>
+			<date>2010-01-31T19:16:53Z</date>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -76,25 +74,33 @@
 			<key>filename</key>
 			<string>IngredientEditor.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-27T02:36:02Z</date>
+			<date>2010-01-31T19:16:56Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>ListCtrlWithTree.py</string>
+			<key>lastUsed</key>
+			<date>2010-01-31T19:17:00Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-27T03:24:12Z</date>
+			<date>2010-01-31T19:16:15Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>RecipeEditor.py</string>
+			<key>lastUsed</key>
+			<date>2010-01-31T19:16:20Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>RecipeEditor.wxg</string>
+			<key>lastUsed</key>
+			<date>2010-01-31T19:16:28Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -104,86 +110,7 @@
 	<key>fileHierarchyDrawerWidth</key>
 	<integer>200</integer>
 	<key>metaData</key>
-	<dict>
-		<key>algorithms.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>11</integer>
-				<key>line</key>
-				<integer>14</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>bjcp_import.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>20</integer>
-		</dict>
-		<key>data_import.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>17</integer>
-				<key>line</key>
-				<integer>262</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>250</integer>
-		</dict>
-		<key>db.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>26</integer>
-				<key>line</key>
-				<integer>35</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>models.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>46</integer>
-				<key>line</key>
-				<integer>146</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>123</integer>
-		</dict>
-	</dict>
-	<key>openDocuments</key>
-	<array>
-		<string>data_import.py</string>
-		<string>models.py</string>
-		<string>bjcp_import.py</string>
-		<string>algorithms.py</string>
-		<string>db.py</string>
-	</array>
+	<dict/>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
