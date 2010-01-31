@@ -27,7 +27,6 @@ class DataStore():
             if os.path.exists(self.db_filename):    
                 print "Do you want to replace the currently existing database: %s [Y/n]" % self.db_filename    
                 delete = raw_input().upper()
-                print delete
                 if delete == "Y" or delete == '':
                     
                     os.unlink(self.db_filename)            
@@ -48,6 +47,6 @@ if __name__ == '__main__':
             print "Created: %s" % table.__name__
     
     print "importing bjcp styles"
-    bjcp_import.main()
+    bjcp_import.process_bjcp_styles()
     print "importing data"
-    data_import.main()
+    data_import.process_bt_database()

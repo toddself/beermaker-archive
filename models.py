@@ -1,6 +1,7 @@
+from datetime import datetime
+
 from sqlobject import *
 from sqlobject.col import pushKey
-
 
 class SGCol(DecimalCol):
     """ Stores Specific Gravity in a decimal column
@@ -425,6 +426,140 @@ class Recipe(SQLObject, Measures):
     carbonation_type = IntCol(default=FORCED_CO2)
     carbonation_volume = DecimalCol(size=3, precision=1, default=0)
     carbonation_amount = DecimalCol(size=4, precision=2, default=0)
+    brewed_on = DateCol(default=datetime.now())
+    
+class Inventory(SQLObject):
+    hop = ForeignKey('Hop', default=None)
+    grain = ForeignKey('Grain', default=None)
+    extract = ForeignKey('Extract', default=None)
+    hopped_extract = ForeignKey('HoppedExtract', default=None)
+    yeast = ForeignKey('Yeast', default=None)
+    fining = ForeignKey('Fining', default=None)
+    mineral = ForeignKey('Mineral', default=None)
+    flavor = ForeignKey('Flavor', default=None)
+    spice = ForeignKey('Spice', default=None)
+    herb = ForeignKey('Herb', default=None)
+    misc = ForeignKey('Misc', default=None)
+    amount = DecimalCol(size=6, precision=2, default=0)
+    amount_units = IntCol(default=Measures.GM)
+    purchased_on = DateCol(default=datetime.now())
+    purchased_from = UnicodeCol(default=None, length=256)
+    price = CurrencyCol(default=0)
+    notes = UnicodeCol(default=None)
+    
+    def _set_hop(self, value):
+        if self.grain != None or self.extract != None or \
+          self.hopped_extract != None or self.yeast != None or \
+          self.fining != None or self.mineral != None or \
+          self.flavor != None or self.spice != None or \
+          self.herb != None or self.misc != None:
+            raise InventorySingle('Inventory objects can only track one item')
+        else:
+            self._SO_set_hop(value)
 
-class Batch(SQLObject):
-    pass
+    def _set_grain(self, value):
+        if self.hop != None or self.extract != None or \
+          self.hopped_extract != None or self.yeast != None or \
+          self.fining != None or self.mineral != None or \
+          self.flavor != None or self.spice != None or \
+          self.herb != None or self.misc != None:
+            raise InventorySingle('Inventory objects can only track one item')    
+        else:
+            self._SO_set_grain(value)
+            
+    def _set_extract(self, value):
+        if self.grain != None or self.hop != None or \
+          self.hopped_extract != None or self.yeast != None or \
+          self.fining != None or self.mineral != None or \
+          self.flavor != None or self.spice != None or \
+          self.herb != None or self.misc != None:
+            raise InventorySingle('Inventory objects can only track one item')        
+        else:
+            self._SO_set_extract(value)
+
+    def _set_hopped_extract(self, value):
+        if self.grain != None or self.extract != None or \
+          self.hop != None or self.yeast != None or \
+          self.fining != None or self.mineral != None or \
+          self.flavor != None or self.spice != None or \
+          self.herb != None or self.misc != None:
+            raise InventorySingle('Inventory objects can only track one item')
+        else:
+            self._SO_set_hopped_extract(value)
+
+    def _set_yeast(self, value):
+        if self.grain != None or self.extract != None or \
+          self.hopped_extract != None or self.hop != None or \
+          self.fining != None or self.mineral != None or \
+          self.flavor != None or self.spice != None or \
+          self.herb != None or self.misc != None:
+            raise InventorySingle('Inventory objects can only track one item')            
+        else:
+            self._SO_set_yeast(value)
+
+    def _set_fining(self, value):
+        if self.grain != None or self.extract != None or \
+          self.hopped_extract != None or self.yeast != None or \
+          self.hop != None or self.mineral != None or \
+          self.flavor != None or self.spice != None or \
+          self.herb != None or self.misc != None:
+            raise InventorySingle('Inventory objects can only track one item')
+        else:
+            self._SO_set_fining(value)
+
+    def _set_mineral(self, value):
+        if self.grain != None or self.extract != None or \
+          self.hopped_extract != None or self.yeast != None or \
+          self.fining != None or self.hop != None or \
+          self.flavor != None or self.spice != None or \
+          self.herb != None or self.misc != None:
+            raise InventorySingle('Inventory objects can only track one item')    
+        else:
+            self._SO_set_mineral(value)
+
+    def _set_flavor(self, value):
+        if self.grain != None or self.extract != None or \
+          self.hopped_extract != None or self.yeast != None or \
+          self.fining != None or self.mineral != None or \
+          self.hop != None or self.spice != None or \
+          self.herb != None or self.misc != None:
+            raise InventorySingle('Inventory objects can only track one item')        
+        else:
+            self._SO_set_flavor(value)
+
+    def _set_spice(self, value):
+        if self.grain != None or self.extract != None or \
+          self.hopped_extract != None or self.yeast != None or \
+          self.fining != None or self.mineral != None or \
+          self.flavor != None or self.hop != None or \
+          self.herb != None or self.misc != None:
+            raise InventorySingle('Inventory objects can only track one item')
+        else:
+            self._SO_set_spice(value)
+
+    def _set_herb(self, value):
+        if self.grain != None or self.extract != None or \
+          self.hopped_extract != None or self.yeast != None or \
+          self.fining != None or self.mineral != None or \
+          self.flavor != None or self.spice != None or \
+          self.hop != None or self.misc != None:
+            raise InventorySingle('Inventory objects can only track one item')
+        else:
+            self._SO_set_herb(value)
+        
+    def _set_misc(self, value):
+        if self.grain != None or self.extract != None or \
+          self.hopped_extract != None or self.yeast != None or \
+          self.fining != None or self.mineral != None or \
+          self.flavor != None or self.spice != None or \
+          self.herb != None or self.hop != None:
+            raise InventorySingle('Inventory objects can only track one item')
+        else:
+            self._SO_set_misc(value)
+    
+class InventorySingle(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __unicode__(self, value):
+        return repr(self.value)
+        

@@ -8,9 +8,9 @@ import db
 from models import BJCPCategory, BJCPStyle
 
 if __name__ == '__main__':
-    main()
+    process_bjcp_styles()
 
-def main():
+def process_bjcp_styles():
     # connect to the database
     data = db.DataStore()
     
@@ -41,25 +41,108 @@ def main():
                 name = aroma = flavor = appearance = mouthfeel = impression = comments = examples = None
                 og_low = og_high = abv_high = fg_low = fg_high = srm_low = srm_high = abv_low = ibu_low = ibu_high = 0
 
+                g = sub_category.getElementsByTagName
                 # loop over the text nodes and set the value of the node equal to the xml node name
-                for element in sub_category.childNodes:
-                    if element.localName != None and element.localName != "stats":
-                        try:
-                            vars()[element.localName] = unicode(element.firstChild.data)
-                        except AttributeError:
-                            pass
-                    # stats we'll have to handle differently
-                    elif element.localName == "stats":
-                        for stat in element.childNodes:
-                            if stat.localName != None and stat.localName != "exceptions":
-                                if stat.localName == 'ibu':
-                                    ibu_low = int(stat.getElementsByTagName('low')[0].firstChild.data)
-                                    ibu_high = int(stat.getElementsByTagName('high')[0].firstChild.data)
-                                else:
-                                    vars()["%s_high" % stat.localName] = float(stat.getElementsByTagName('high')[0].firstChild.data)
-                                    vars()["%s_low" % stat.localName] = float(stat.getElementsByTagName('low')[0].firstChild.data)
-                          
-            BJCPStyle(name = name, 
+                try:
+                    name = unicode(g('name')[0].firstChild.data)
+                except (IndexError, AttributeError):
+                    pass
+                try:
+                    aroma = unicode(g('aroma')[0].firstChild.data)
+                except (IndexError, AttributeError):
+                    pass
+                try:
+                    appearance = unicode(g('appearance')[0].firstChild.data)
+                except (IndexError, AttributeError):
+                    pass
+                try:
+                    flavor = unicode(g('flavor')[0].firstChild.data)
+                except (IndexError, AttributeError):
+                    pass
+                try:
+                    mouthfeel = unicode(g('mouthfeel')[0].firstChild.data)
+                except (IndexError, AttributeError):
+                    pass
+                try:
+                    impression = unicode(g('impression')[0].firstChild.data)
+                except (IndexError, AttributeError):
+                    pass
+                try:
+                    comments = unicode(g('comments')[0].firstChild.data)
+                except (IndexError, AttributeError):
+                    pass
+                try:
+                    examples = unicode(g('examples')[0].firstChild.data)
+                except (IndexError, AttributeError):
+                    pass
+
+                s = g('stats')[0].getElementsByTagName
+        
+                if not s('exceptions'):                
+                    try:
+                        ibu_low = int(s('ibu')[0].getElementsByTagName('low')[0].firstChild.data)
+                    except (IndexError, AttributeError):
+                        pass
+                    try:
+                        ibu_high = int(s('ibu')[0].getElementsByTagName('high')[0].firstChild.data)
+                    except (IndexError, AttributeError):
+                        pass
+                    try:
+                        og_low = float(s('og')[0].getElementsByTagName('low')[0].firstChild.data)
+                    except (IndexError, AttributeError):
+                        pass
+                    try:
+                        og_high = float(s('og')[0].getElementsByTagName('high')[0].firstChild.data)
+                    except (IndexError, AttributeError):
+                        pass
+                    try:
+                        fg_low = float(s('fg')[0].getElementsByTagName('low')[0].firstChild.data)
+                    except (IndexError, AttributeError):
+                        pass
+                    try:
+                        fg_high = float(s('fg')[0].getElementsByTagName('high')[0].firstChild.data)
+                    except (IndexError, AttributeError):
+                        pass
+                    try:
+                        srm_low = float(s('srm')[0].getElementsByTagName('low')[0].firstChild.data)
+                    except (IndexError, AttributeError):
+                        pass
+                    try:
+                        srm_high = float(s('srm')[0].getElementsByTagName('high')[0].firstChild.data)
+                    except (IndexError, AttributeError):
+                        pass
+                    try:
+                        abv_low = float(s('abv')[0].getElementsByTagName('low')[0].firstChild.data)
+                    except (IndexError, AttributeError):
+                        pass
+                    try:
+                        abv_high = float(s('abv')[0].getElementsByTagName('high')[0].firstChild.data)
+                    except (IndexError, AttributeError):
+                        pass
+
+                # I have no fucking clue why this stopped fucking working
+                # for element in sub_category.childNodes:
+                #     if element.localName != None and element.localName != "stats":
+                #         try:
+                #             print element.localName
+                #             print element.firstChild.data
+                #             vars()[element.localName] = unicode(element.firstChild.data)
+                #             print "this name: %s" % vars()[element.localName]
+                #         except AttributeError:
+                #             pass
+                #     # stats we'll have to handle differently
+                #     elif element.localName == "stats":
+                #         for stat in element.childNodes:
+                #             if stat.localName != None and stat.localName != "exceptions":
+                #                 if stat.localName == 'ibu':
+                #                     ibu_low = int(stat.getElementsByTagName('low')[0].firstChild.data)
+                #                     ibu_high = int(stat.getElementsByTagName('high')[0].firstChild.data)
+                #                 else:
+                #                     vars()["%s_high" % stat.localName] = float(stat.getElementsByTagName('high')[0].firstChild.data)
+                #                     vars()["%s_low" % stat.localName] = float(stat.getElementsByTagName('low')[0].firstChild.data)
+
+                print "adding style: %s" % name          
+                BJCPStyle(name = name, 
                     beer_type = this_class, 
                     category = this_category,
                     subcategory = subcategory_id,                      

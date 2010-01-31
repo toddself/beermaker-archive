@@ -5,14 +5,24 @@ import db
 from models import Hop, Grain, Extract, HoppedExtract, Yeast, Measures, Fining, Mineral, Flavor, Spice, Herb, Misc
 from algorithms import sg_from_yield, c2f
 
-if __name__ == '__main__':
-    main()
+
     
-def main():
+def process_bt_database():
     ds = db.DataStore()
     
     d = minidom.parse('database.xml')
     
+    print "adding hops"
+    process_hops(d)
+    print "adding fermentables"
+    process_fermentables(d)
+    print "adding yeasts"
+    process_yeasts(d)
+    print "adding miscellaneous"
+    process_misc(d)
+    
+    
+def process_hops(d):
     # process all the hops
     for hop in d.getElementsByTagName('HOP'):
         g = hop.getElementsByTagName
@@ -56,6 +66,7 @@ def main():
         except AttributeError:
             pass
 
+        print "adding hop: %s" % name
         thisHop = Hop(name=name,
             alpha=alpha,
             beta=beta,
@@ -66,7 +77,8 @@ def main():
             hop_form=hop_form,
             stability=stability
             )
-        
+
+def process_fermentables(d):
     # process all the fermentables
     for f in d.getElementsByTagName('FERMENTABLE'):
         g = f.getElementsByTagName
@@ -138,6 +150,7 @@ def main():
             except AttributeError:
                 pass
                 
+            print 'adding grain: %s' % name
             thisGrain = Grain(name=name,
                 origin=origin,
                 maltster=maltster,
@@ -193,16 +206,18 @@ def main():
             except AttributeError:
                  pass
 
+            print "adding extract: %s" % name
             thisExtract = Extract(name=name,
-            origin=origin,
-            supplier=supplier,
-            notes=notes,
-            color=color,
-            potential=potential,
-            max_in_batch=max_in_batch,
-            add_after_boil=add_after_boil
+                origin=origin,
+                supplier=supplier,
+                notes=notes,
+                color=color,
+                potential=potential,
+                max_in_batch=max_in_batch,
+                add_after_boil=add_after_boil
             )
-            
+
+def process_yeasts(d):            
     for y in d.getElementsByTagName('YEAST'):
         g = y.getElementsByTagName
         
@@ -281,27 +296,32 @@ def main():
             use_starter = True
         else:
             use_starter = False
-        
+
+        print "adding yeast: %s" % name
         thisYeast = Yeast(name=name,
-        yeast_type=yeast_type,
-        yeast_form=yeast_form,
-        yeast_id=yeast_id,
-        flocc=flocc,
-        avg_attenuation=avg_attenuation,
-        min_temp=min_temp,
-        max_temp=max_temp,
-        max_reuse=max_reuse,
-        best_for=best_for,
-        notes=notes,
-        secondary=add_to_secondary,
-        temp_units=temp_units,
-        use_starter=use_starter,
-        amount=amount,
-        amount_units=amount_units
+            yeast_type=yeast_type,
+            yeast_form=yeast_form,
+            yeast_id=yeast_id,
+            flocc=flocc,
+            avg_attenuation=avg_attenuation,
+            min_temp=min_temp,
+            max_temp=max_temp,
+            max_reuse=max_reuse,
+            best_for=best_for,
+            notes=notes,
+            secondary=add_to_secondary,
+            temp_units=temp_units,
+            use_starter=use_starter,
+            amount=amount,
+            amount_units=amount_units
         )
 
+def process_misc(d):
     for m in d.getElementsByTagName('MISC'):
         g = m.getElementsByTagName
+        
+        herbs = ['Heather Tips', ]
+        spices = ['Whole Coriander', 'Vanilla Beans', 'Paradise Seed', 'Licorice Root', 'Bitter Orange Peel', 'Sweet Orange Peel']
         
         misc_type = g('TYPE')[0].firstChild.data
         if misc_type == "Fining":
@@ -335,7 +355,16 @@ def main():
         except AttributeError:
             pass
         
+        if name in herbs and misc_obj == Flavor:
+            misc_obj = Herb
+        
+        if name in spices and misc_obj == Flavor:
+            misc_obj = Spice
+            
+        if name == u'Paradise Seed':
+            name = u'Grains of Paradise'
 
+        print "adding misc: %s" % name
         thisMisc = misc_obj(name=name,
             use_for=use_for,
             rec_amount=rec_amount,
@@ -346,3 +375,6 @@ def main():
             use_time=use_time,
             use_time_units=use_time_units
         )
+
+if __name__ == '__main__':
+    process_bt_database()
