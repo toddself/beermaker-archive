@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>currentDocument</key>
+	<string>ui/beermaker.py</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -10,27 +12,9 @@
 		</dict>
 		<dict>
 			<key>filename</key>
-			<string>BeerMaker.py</string>
-			<key>lastUsed</key>
-			<date>2010-01-31T19:15:45Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>BeerMaker.wxg</string>
-			<key>lastUsed</key>
-			<date>2010-01-31T19:16:09Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>BeerMaker_gui.py</string>
-			<key>lastUsed</key>
-			<date>2010-01-31T19:15:55Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
 			<string>bjcp_import.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-31T19:16:32Z</date>
+			<date>2010-02-01T16:54:07Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -46,15 +30,29 @@
 		</dict>
 		<dict>
 			<key>filename</key>
-			<string>BJCPViewer.py</string>
-			<key>lastUsed</key>
-			<date>2010-01-31T19:16:41Z</date>
+			<string>LICENSE</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>old</string>
+			<key>regexFolderFilter</key>
+			<string>!.*/(\.[^/]*|CVS|_darcs|_MTN|\{arch\}|blib|.*~\.nib|.*\.(framework|app|pbproj|pbxproj|xcode(proj)?|bundle))$</string>
+			<key>sourceDirectory</key>
+			<string>old</string>
 		</dict>
 		<dict>
 			<key>filename</key>
-			<string>BJCPViewer.wxg</string>
-			<key>lastUsed</key>
-			<date>2010-01-31T19:16:48Z</date>
+			<string>README</string>
+		</dict>
+		<dict>
+			<key>expanded</key>
+			<true/>
+			<key>name</key>
+			<string>ui</string>
+			<key>regexFolderFilter</key>
+			<string>!.*/(\.[^/]*|CVS|_darcs|_MTN|\{arch\}|blib|.*~\.nib|.*\.(framework|app|pbproj|pbxproj|xcode(proj)?|bundle))$</string>
+			<key>sourceDirectory</key>
+			<string>ui</string>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -72,35 +70,9 @@
 		</dict>
 		<dict>
 			<key>filename</key>
-			<string>IngredientEditor.py</string>
-			<key>lastUsed</key>
-			<date>2010-01-31T19:16:56Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>ListCtrlWithTree.py</string>
-			<key>lastUsed</key>
-			<date>2010-01-31T19:17:00Z</date>
-			<key>selected</key>
-			<true/>
-		</dict>
-		<dict>
-			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
 			<date>2010-01-31T19:16:15Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>RecipeEditor.py</string>
-			<key>lastUsed</key>
-			<date>2010-01-31T19:16:20Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>RecipeEditor.wxg</string>
-			<key>lastUsed</key>
-			<date>2010-01-31T19:16:28Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -110,10 +82,60 @@
 	<key>fileHierarchyDrawerWidth</key>
 	<integer>200</integer>
 	<key>metaData</key>
-	<dict/>
+	<dict>
+		<key>bjcp_import.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>2</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>81</integer>
+				<key>line</key>
+				<integer>16</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>2</integer>
+			</dict>
+		</dict>
+		<key>ui/beermaker.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>16</integer>
+				<key>line</key>
+				<integer>28</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+	</dict>
+	<key>openDocuments</key>
+	<array>
+		<string>ui/beermaker.py</string>
+		<string>bjcp_import.py</string>
+	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{254, 39}, {1210, 966}}</string>
+	<string>{{135, 0}, {1210, 878}}</string>
 </dict>
 </plist>
