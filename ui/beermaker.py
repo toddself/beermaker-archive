@@ -41,18 +41,19 @@ class BaseWindow():
     def buildMenuBar(self):
         menu_bar = wx.MenuBar()
         for menu_item in self.menuData():
-            label = menu_item[0]
-            items = menu_item[1]
+            label = menu_item[1]
+            items = menu_item[2]
             menu_bar.Append(self.createMenu(items), label)
         self.SetMenuBar(menu_bar)
     
     def createMenu(self, data):
-        menu = wx.Menu
+        menu = wx.Menu()
         for item in data:
-            if len(item) == 2:
-                label = item[0]
-                sub_menu = self.createMenu(item[1])
-                menu.AppendMenu(wx.NewId(), label, sub_menu)
+            if type(item) == type(()):
+                menu_id = item[0]
+                label = item[1]
+                sub_menu = self.createMenu(item[2])
+                menu.AppendMenu(menu_id, label, sub_menu)
             else:
                 self.createMenuItem(menu, *item)
         return menu
@@ -66,44 +67,113 @@ class BaseWindow():
         
             
     def menuData(self):
-        return [("&File",
-                    ("&New",
-                        (MENU_NEW_RECIPE, "New &Recipe", "Create a new recipe", self.newRecipe),
-                        (MENU_NEW_BATCH, "New &Batch", "Create a new batch of the current recipe or batch", self.newBatch),
-                    ),
+        return [(guid.MENU_FILE, "&File",
+                (
+                    guid.MENU_NEW, "&New",
+                        (
+                            (guid.MENU_NEW_RECIPE, "New &Recipe", "Create a new recipe", self.newRecipe),
+                            (guid.MENU_NEW_BATCH, "New &Batch", "Create a new batch of the current recipe or batch", self.newBatch)
+                        ),
                     ("","","",""),
-                    (MENU_PRINT, "&Print Current", "Print currently selected recipe or batch", self.printItem),
-                    (MENU_QUIT, "&Quit BeerMaker", "Quit the application", self.quitApplication),
+                    (guid.MENU_PRINT, "&Print Current", "Print currently selected recipe or batch", self.printItem),
+                    (guid.MENU_QUIT, "&Quit BeerMaker", "Quit the application", self.quitApplication),
                 ),
-                ("&Edit",
-                    (MENU_PREFERENCES, "&Preferences", "Edit your preferences", self.viewPreferences),
-                )
-                ("&View",
-                    (MENU_INVENTORY_EDITOR, "&Inventory", "Manage the amount of what you have on hand", self.viewInventory),
-                    (MENU_MASH_EDITOR, "&Mashes", "Manage your mash profiles", self.viewMashes),
-                    (MENU_EQUPIMENT_EDITOR, "&Equipment", "Manage your equipment profiles", self.viewEquipment),
-                    (MENU_INGREDIENT_EDTIOR, "&Ingredients", "Manage the ingredient database", self.viewIngredients),
+                (guid.MENU_EDIT, "&Edit",
+                    (guid.MENU_PREFERENCES, "&Preferences", "Edit your preferences", self.viewPreferences),
+                ),
+                (guid.MENU_VIEW, "&View",
+                    (guid.MENU_INVENTORY_EDITOR, "&Inventory", "Manage the amount of what you have on hand", self.viewInventory),
+                    (guid.MENU_MASH_EDITOR, "&Mashes", "Manage your mash profiles", self.viewMashes),
+                    (guid.MENU_EQUPIMENT_EDITOR, "&Equipment", "Manage your equipment profiles", self.viewEquipment),
+                    (guid.MENU_INGREDIENT_EDTIOR, "&Ingredients", "Manage the ingredient database", self.viewIngredients),
                     ("","","",""),
-                    (MENU_CALCULATORS, "&Calculators", "View all the calculators", self.viewCalculators),
-                )
-                
-        )]
+                    (guid.MENU_CALCULATORS, "&Calculators", "View all the calculators", self.viewCalculators),
+                ))]
             
     def toolbarData(self):
         return (
-            (TB_NEW_RECIPE, tb_new_recipe, "New Recipe", "Create a new recipe", self.newRecipe),
-            (TB_NEW_BATCH, tb_new_batch, "New Recipe", "Create a new batch of the current recipe or batch", self.newBatch),
+            (guid.TB_NEW_RECIPE, tb_new_recipe, "New Recipe", "Create a new recipe", self.newRecipe),
+            (guid.TB_NEW_BATCH, tb_new_batch, "New Recipe", "Create a new batch of the current recipe or batch", self.newBatch),
             ("","","",""),
-            (TB_INVENTORY_EDITOR, tb_inventory_editor, "Inventory Editor", "Manage the amount of what you have on hand". self.viewInventory),
+            (guid.TB_INVENTORY_EDITOR, tb_inventory_editor, "Inventory Editor", "Manage the amount of what you have on hand". self.viewInventory),
             ("","","",""),
-            (TB_MASH_EDITOR, tb_mash_editor, "Mash Editor", "Manage your mash profiles", self.viewMashes),
+            (guid.TB_MASH_EDITOR, tb_mash_editor, "Mash Editor", "Manage your mash profiles", self.viewMashes),
             ("","","",""),
-            (TB_EQUPIMENT_EDITOR, tb_equipment_editor, "Equipment Editor", "Manage your equipment profiles", self.viewEquipment),
+            (guid.TB_EQUPIMENT_EDITOR, tb_equipment_editor, "Equipment Editor", "Manage your equipment profiles", self.viewEquipment),
             ("","","",""),
-            (TB_INGREDIENT_EDITOR, tb_ingredient_editor, "Ingredient Editor", "Manage the ingredient database", self.viewIngredients),
+            (guid.TB_INGREDIENT_EDITOR, tb_ingredient_editor, "Ingredient Editor", "Manage the ingredient database", self.viewIngredients),
             ("","","",""),
-            (TB_CALCULATORS, tb_calculators, "Calculators", "View all the calculators", self.viewCalculators),
+            (guid.TB_CALCULATORS, tb_calculators, "Calculators", "View all the calculators", self.viewCalculators),
             ("","","",""),
-            (TB_PREFERENCES, tb_preferences, "Preferences", "View your preferences", self.viewPreferences),
+            (guid.TB_PREFERENCES, tb_preferences, "Preferences", "View your preferences", self.viewPreferences),
 
         )
+
+class MainFrame(wx.Frame, BaseWindow):
+    def __init__(self, *args, **kw):
+        kw['style'] = wx.DEFAULT_FRAME_STYLE
+        wx.Frame.__init__(self, *args, **kw)
+        
+        # make a status bar
+        self.status_bar = self.CreateStatusBar(1,0)
+        
+        # make some menus
+        self.menus = self.buildMenuBar()
+        
+        # make some toolbars
+        self.tools = self.buildToolbar()
+        
+        self.SetTitle("BeerMaker")
+        self.SetSize((1024, 768))       
+        
+    def newRecipe(self):
+        pass
+    
+    def newBatch(self):
+        pass
+        
+    def viewInventory(self):
+        """docstring for viewIventory"""
+        pass
+        
+    def viewMashes(self):
+        """docstring for viewMashes"""
+        pass 
+    
+    def viewEquipment(self):
+        """docstring for viewEquipment"""
+        pass
+
+    def viewIngredients(self):
+        """docstring for viewIngredients"""
+        pass
+
+    def viewCalculators(self):
+        """docstring for viewCalculators"""
+        pass
+        
+    def viewPreferences(self):
+        """docstring for viewPreferences"""
+        pass
+        
+    def printItem(self):
+        """docstring for printItem"""
+        pass
+    
+    def quitApplication(self):
+        """docstring for quitApplication"""
+        pass
+
+class BeerMaker(wx.App):
+    def OnInit(self):
+        wx.InitAllImageHandlers()
+        BeerMaker = MainFrame(None, -1, "")
+        self.SetTopWindow(BeerMaker)
+        BeerMaker.Show()
+        return 1
+
+# end of class BeerMaker
+
+if __name__ == "__main__":
+    BeerMaker = BeerMaker(0)
+    BeerMaker.MainLoop()
