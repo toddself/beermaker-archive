@@ -16,27 +16,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from wx import NewId
+import os
 
-MENU_NEW_RECIPE = NewId()
-MENU_NEW_BATCH = NewId()
-MENU_PRINT = NewId()
-MENU_QUIT = NewId()
-MENU_PREFERENCES = NewId()
-MENU_INVENTORY_EDITOR = NewId()
-MENU_MASH_EDITOR = NewId()
-MENU_EQUPIMENT_EDITOR = NewId()
-MENU_INGREDIENT_EDTIOR = NewId()
-MENU_CALCULATORS = NewId()
-TB_NEW_RECIPE = NewId()
-TB_NEW_BATCH = NewId()
-TB_INVENTORY_EDITOR = NewId()
-TB_MASH_EDITOR = NewId()
-TB_EQUPIMENT_EDITOR = NewId()
-TB_INGREDIENT_EDITOR = NewId()
-TB_CALCULATORS = NewId()
-TB_PREFERENCES = NewId()
-MENU_FILE = NewId()
-MENU_VIEW = NewId()
-MENU_EDIT = NewId()
-MENU_NEW = NewId()
+tb_new_recipe = os.path.abspath('../img/new_recipe.png')
+tb_new_batch = os.path.abspath('../img/add_batch.png')
+
+# for placement only -- need to create icons
+tb_inventory_editor = os.path.abspath('../img/icon.gif')
+tb_mash_editor = os.path.abspath('../img/icon.gif')
+tb_equipment_editor = os.path.abspath('../img/icon.gif')
+tb_ingredient_editor = os.path.abspath('../img/icon.gif')
+tb_calculators = os.path.abspath('../img/icon.gif')
+tb_preferences = os.path.abspath('../img/icon.gif')

@@ -18,16 +18,20 @@
 
 import wx
 
+# we're importing these for now so we have better separation of data and ui elements
+# these will eventually move into a skinning system
 import guid
+import iconsrc
 
 class BaseWindow():
     def __init__(self):
         pass
         
-    def buildToolBar(self):
-        toolbar = self.CreateToolBar()
+    def buildToolbar(self):
+        toolbar = wx.ToolBar(self, -1, style=wx.TB_TEXT)
+        self.SetToolBar(toolbar)
         for button in self.toolbarData():
-            toolbar.createTool(toolbar, *button)
+            self.createTool(toolbar, *button)
         toolbar.Realize()
         
     def createTool(self, toolbar, tb_id, fn_icon, label, help, handler):
@@ -35,7 +39,8 @@ class BaseWindow():
             toolbar.AddSeparator()
             return
         else:
-            tool = toolbar.AddSimpleTool(tb_id, fn_icon, label, help)
+            icon = wx.Bitmap(fn_icon, wx.BITMAP_TYPE_ANY)
+            tool = toolbar.AddLabelTool(tb_id, label, icon, icon, wx.ITEM_NORMAL, label, help)
             self.Bind(wx.EVT_MENU, handler, tool)
     
     def buildMenuBar(self):
@@ -92,20 +97,20 @@ class BaseWindow():
             
     def toolbarData(self):
         return (
-            (guid.TB_NEW_RECIPE, tb_new_recipe, "New Recipe", "Create a new recipe", self.newRecipe),
-            (guid.TB_NEW_BATCH, tb_new_batch, "New Recipe", "Create a new batch of the current recipe or batch", self.newBatch),
-            ("","","",""),
-            (guid.TB_INVENTORY_EDITOR, tb_inventory_editor, "Inventory Editor", "Manage the amount of what you have on hand". self.viewInventory),
-            ("","","",""),
-            (guid.TB_MASH_EDITOR, tb_mash_editor, "Mash Editor", "Manage your mash profiles", self.viewMashes),
-            ("","","",""),
-            (guid.TB_EQUPIMENT_EDITOR, tb_equipment_editor, "Equipment Editor", "Manage your equipment profiles", self.viewEquipment),
-            ("","","",""),
-            (guid.TB_INGREDIENT_EDITOR, tb_ingredient_editor, "Ingredient Editor", "Manage the ingredient database", self.viewIngredients),
-            ("","","",""),
-            (guid.TB_CALCULATORS, tb_calculators, "Calculators", "View all the calculators", self.viewCalculators),
-            ("","","",""),
-            (guid.TB_PREFERENCES, tb_preferences, "Preferences", "View your preferences", self.viewPreferences),
+            (guid.TB_NEW_RECIPE, iconsrc.tb_new_recipe, "New Recipe", "Create a new recipe", self.newRecipe),
+            (guid.TB_NEW_BATCH, iconsrc.tb_new_batch, "New Recipe", "Create a new batch of the current recipe or batch", self.newBatch),
+            ("","","","",""),
+            (guid.TB_INVENTORY_EDITOR, iconsrc.tb_inventory_editor, "Inventory Editor", "Manage the amount of what you have on hand", self.viewInventory),
+            ("","","","",""),
+            (guid.TB_MASH_EDITOR, iconsrc.tb_mash_editor, "Mash Editor", "Manage your mash profiles", self.viewMashes),
+            ("","","","",""),
+            (guid.TB_EQUPIMENT_EDITOR, iconsrc.tb_equipment_editor, "Equipment Editor", "Manage your equipment profiles", self.viewEquipment),
+            ("","","","",""),
+            (guid.TB_INGREDIENT_EDITOR, iconsrc.tb_ingredient_editor, "Ingredient Editor", "Manage the ingredient database", self.viewIngredients),
+            ("","","","",""),
+            (guid.TB_CALCULATORS, iconsrc.tb_calculators, "Calculators", "View all the calculators", self.viewCalculators),
+            ("","","","",""),
+            (guid.TB_PREFERENCES, iconsrc.tb_preferences, "Preferences", "View your preferences", self.viewPreferences),
 
         )
 
@@ -118,7 +123,7 @@ class MainFrame(wx.Frame, BaseWindow):
         self.status_bar = self.CreateStatusBar(1,0)
         
         # make some menus
-        self.menus = self.buildMenuBar()
+        # self.menus = self.buildMenuBar()
         
         # make some toolbars
         self.tools = self.buildToolbar()
