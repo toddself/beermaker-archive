@@ -35,8 +35,10 @@ class RecipeEditor(wx.Frame, BaseWindow):
         
         self.tools = self.buildToolbar()
         self.SetTitle('Recipe Editor')
-        self.SetSize((800,600))
+        self.SetSize((1024,800))
         
+        
+        self.panel = wx.Panel(self, -1)
 
     def newRecipe(self):
         pass

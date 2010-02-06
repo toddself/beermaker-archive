@@ -50,7 +50,7 @@ class MainFrame(wx.Frame, BaseWindow):
         # start the layout
         self.SetTitle("BeerMaker")
         self.SetSize((1024, 768))       
-        self.panel = wx.Panel(self,-1)
+        self.panel = wx.Panel(self, -1)
 
         # generate the list control
         self.recipe_list = wx.ListCtrl(self.panel, -1, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
@@ -106,8 +106,9 @@ class MainFrame(wx.Frame, BaseWindow):
             self.recipe_list.SetColumnWidth(column, wx.LIST_AUTOSIZE)
         
         
-    def newRecipe(self):
-        pass
+    def newRecipe(self, event):
+        recipe_editor = RecipeEditor(self, -1, "")
+        recipe_editor.Show()
     
     def newBatch(self):
         pass
