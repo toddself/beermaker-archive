@@ -41,78 +41,128 @@ class BaseWindow():
         else:
             icon = wx.Bitmap(fn_icon, wx.BITMAP_TYPE_ANY)
             tool = toolbar.AddLabelTool(tb_id, label, icon, icon, wx.ITEM_NORMAL, label, help)
-            self.Bind(wx.EVT_MENU, handler, tool)
+            self.Bind(wx.EVT_MENU, handler, tool)    
     
     def buildMenuBar(self):
         menu_bar = wx.MenuBar()
-        for menu_item in self.menuData():
-            label = menu_item[1]
-            items = menu_item[2]
+        for menu in self.menuData():
+            label = menu['name']
+            items = menu['items']
             menu_bar.Append(self.createMenu(items), label)
         self.SetMenuBar(menu_bar)
     
-    def createMenu(self, data):
+    def createMenu(self, items):
         menu = wx.Menu()
-        for item in data:
-            if type(item) == type(()):
-                menu_id = item[0]
-                label = item[1]
-                sub_menu = self.createMenu(item[2])
+        for item in items:
+            if item.has_key('items'):
+                menu_id = wx.NewId()
+                label = item['name']
+                sub_menu = self.createMenu(item['items'])
                 menu.AppendMenu(menu_id, label, sub_menu)
             else:
-                self.createMenuItem(menu, *item)
+                self.createMenuItem(menu, item['id'], item['name'], item['help'], item['method'])
         return menu
         
-    def createMenuItem(self, menu, menu_id, label, status, handler, kind=wx.ITEM_NORMAL):
-        if not menu_id:
-            menu.AppendSeperator()
+    def createMenuItem(self, menu, menu_id, name, help, method, kind=wx.ITEM_NORMAL):
+        if menu_id == 'separator':
+            menu.AppendSeparator()
             return
-        menu_item = menu.Append(menu_id, label, status, kind)
-        self.Bind(wx.EVT_MENU, handler, menu_item)
+        menu_item = menu.Append(menu_id, name, help, kind)
+        self.Bind(wx.EVT_MENU, method, menu_item)
         
             
     def menuData(self):
-        return [(guid.MENU_FILE, "&File",
-                (
-                    guid.MENU_NEW, "&New",
-                        (
-                            (guid.MENU_NEW_RECIPE, "New &Recipe", "Create a new recipe", self.newRecipe),
-                            (guid.MENU_NEW_BATCH, "New &Batch", "Create a new batch of the current recipe or batch", self.newBatch)
-                        ),
-                    ("","","",""),
-                    (guid.MENU_PRINT, "&Print Current", "Print currently selected recipe or batch", self.printItem),
-                    (guid.MENU_QUIT, "&Quit BeerMaker", "Quit the application", self.quitApplication),
-                ),
-                (guid.MENU_EDIT, "&Edit",
-                    (guid.MENU_PREFERENCES, "&Preferences", "Edit your preferences", self.viewPreferences),
-                ),
-                (guid.MENU_VIEW, "&View",
-                    (guid.MENU_INVENTORY_EDITOR, "&Inventory", "Manage the amount of what you have on hand", self.viewInventory),
-                    (guid.MENU_MASH_EDITOR, "&Mashes", "Manage your mash profiles", self.viewMashes),
-                    (guid.MENU_EQUPIMENT_EDITOR, "&Equipment", "Manage your equipment profiles", self.viewEquipment),
-                    (guid.MENU_INGREDIENT_EDTIOR, "&Ingredients", "Manage the ingredient database", self.viewIngredients),
-                    ("","","",""),
-                    (guid.MENU_CALCULATORS, "&Calculators", "View all the calculators", self.viewCalculators),
-                ))]
-            
-    def toolbarData(self):
-        return (
-            (guid.TB_NEW_RECIPE, iconsrc.tb_new_recipe, "New Recipe", "Create a new recipe", self.newRecipe),
-            (guid.TB_NEW_BATCH, iconsrc.tb_new_batch, "New Recipe", "Create a new batch of the current recipe or batch", self.newBatch),
-            ("","","","",""),
-            (guid.TB_INVENTORY_EDITOR, iconsrc.tb_inventory_editor, "Inventory Editor", "Manage the amount of what you have on hand", self.viewInventory),
-            ("","","","",""),
-            (guid.TB_MASH_EDITOR, iconsrc.tb_mash_editor, "Mash Editor", "Manage your mash profiles", self.viewMashes),
-            ("","","","",""),
-            (guid.TB_EQUPIMENT_EDITOR, iconsrc.tb_equipment_editor, "Equipment Editor", "Manage your equipment profiles", self.viewEquipment),
-            ("","","","",""),
-            (guid.TB_INGREDIENT_EDITOR, iconsrc.tb_ingredient_editor, "Ingredient Editor", "Manage the ingredient database", self.viewIngredients),
-            ("","","","",""),
-            (guid.TB_CALCULATORS, iconsrc.tb_calculators, "Calculators", "View all the calculators", self.viewCalculators),
-            ("","","","",""),
-            (guid.TB_PREFERENCES, iconsrc.tb_preferences, "Preferences", "View your preferences", self.viewPreferences),
+        file_menu = {'name': "&File",
+        'items': 
+            ({'name': '&New',
+            'items': 
+                ({'name': "New &Recipe",
+                'id': guid.MENU_NEW_RECIPE,
+                'help': 'Create a new recipe',
+                'method': self.newRecipe},
+    
+                {'name': "New &Batch",
+                'id': guid.MENU_NEW_BATCH,
+                'help': 'Create a new batch of the current recipe or batch',
+                'method': self.newBatch})            
+            },
 
-        )
+            {'name': 'separator',
+            'id': 'separator',
+            'help': 'separator',
+            'method': 'separator'},    
+
+            {'name': "&Print Current",
+            'id': guid.MENU_PRINT,
+            'help': 'Print currently selected recipe or batch',
+            'method': self.printItem},
+
+            {'name': "&Quit BeerMaker",
+            'help': 'Terminate BeerMaker',
+            'id': guid.MENU_QUIT,
+            'method': self.quitApplication},)}
+
+        edit_menu = {'name': '&Edit',
+        'items':
+            ({'name': '&Preferences',
+            'help': 'Edit Preferences',
+            'id': guid.MENU_PREFERENCES,
+            'method': self.viewPreferences},)}
+
+        view_menu = {'name': '&View',
+        'items':
+            ({'name': '&Inventory',
+            'id': guid.MENU_INVENTORY_EDITOR,
+            'help': 'Manage the inventory of items you have on hand',
+            'method': self.viewInventory},
+
+            {'name': '&Mashes',
+            'id': guid.MENU_MASH_EDITOR,
+            'help': 'Manage your mash profiles',
+            'method': self.viewMashes},
+
+            {'name': '&Equipment',
+            'id': guid.MENU_EQUIPMENT_EDITOR,
+            'help': 'Manage your equipment profiles',
+            'method': self.viewEquipment},
+
+            {'name': '&Ingredients',
+            'id': guid.MENU_INGREDIENT_EDTIOR,
+            'help': 'Manage the ingredient database',
+            'method': self.viewIngredients},
+
+            {'name': 'separator',
+            'id': 'separator',
+            'help': 'separator',
+            'method': 'separator'},    
+
+            {'name': '&Calculators',
+            'id': guid.MENU_CALCULATORS,
+            'help': 'View all the calculators',
+            'method': self.viewCalculators},)}
+
+        menu = (file_menu, edit_menu, view_menu)
+
+        return menu    
+
+    def toolbarData(self):
+         return (
+             (guid.TB_NEW_RECIPE, iconsrc.tb_new_recipe, "New Recipe", "Create a new recipe", self.newRecipe),
+             (guid.TB_NEW_BATCH, iconsrc.tb_new_batch, "New Batch", "Create a new batch of the current recipe or batch", self.newBatch),
+             ("","","","",""),
+             (guid.TB_INVENTORY_EDITOR, iconsrc.tb_inventory_editor, "Inventory Editor", "Manage the amount of what you have on hand", self.viewInventory),
+             ("","","","",""),
+             (guid.TB_MASH_EDITOR, iconsrc.tb_mash_editor, "Mash Editor", "Manage your mash profiles", self.viewMashes),
+             ("","","","",""),
+             (guid.TB_EQUPIMENT_EDITOR, iconsrc.tb_equipment_editor, "Equipment Editor", "Manage your equipment profiles", self.viewEquipment),
+             ("","","","",""),
+             (guid.TB_INGREDIENT_EDITOR, iconsrc.tb_ingredient_editor, "Ingredient Editor", "Manage the ingredient database", self.viewIngredients),
+             ("","","","",""),
+             (guid.TB_CALCULATORS, iconsrc.tb_calculators, "Calculators", "View all the calculators", self.viewCalculators),
+             ("","","","",""),
+             (guid.TB_PREFERENCES, iconsrc.tb_preferences, "Preferences", "View your preferences", self.viewPreferences),
+     
+         )
 
 class MainFrame(wx.Frame, BaseWindow):
     def __init__(self, *args, **kw):
@@ -123,7 +173,7 @@ class MainFrame(wx.Frame, BaseWindow):
         self.status_bar = self.CreateStatusBar(1,0)
         
         # make some menus
-        # self.menus = self.buildMenuBar()
+        self.menus = self.buildMenuBar()
         
         # make some toolbars
         self.tools = self.buildToolbar()
