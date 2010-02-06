@@ -18,13 +18,13 @@
 
 import os
 
-tb_new_recipe = os.path.abspath('../img/new_recipe.png')
-tb_new_batch = os.path.abspath('../img/add_batch.png')
+tb_new_recipe = os.path.abspath('img/new_recipe.png')
+tb_new_batch = os.path.abspath('img/add_batch.png')
 
 # for placement only -- need to create icons
-tb_inventory_editor = os.path.abspath('../img/icon.gif')
-tb_mash_editor = os.path.abspath('../img/icon.gif')
-tb_equipment_editor = os.path.abspath('../img/icon.gif')
-tb_ingredient_editor = os.path.abspath('../img/icon.gif')
-tb_calculators = os.path.abspath('../img/icon.gif')
-tb_preferences = os.path.abspath('../img/icon.gif')
+tb_inventory_editor = os.path.abspath('img/icon.gif')
+tb_mash_editor = os.path.abspath('img/icon.gif')
+tb_equipment_editor = os.path.abspath('img/icon.gif')
+tb_ingredient_editor = os.path.abspath('img/icon.gif')
+tb_calculators = os.path.abspath('img/icon.gif')
+tb_preferences = os.path.abspath('img/icon.gif')
