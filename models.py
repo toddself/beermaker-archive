@@ -272,6 +272,9 @@ class BJCPStyle(SQLObject):
     abv_low = DecimalCol(size=3, precision=1, default=None)
     abv_high = DecimalCol(size=3, precision=1, default=None)
     
+    def _get_combined_category_id(self):
+        return "%s%s" % (self.category.category_id, self.subcategory)
+    
     def _get_og_range(self):
         low = self._SO_get_og_low()
         high = self._SO_get_og_high()
@@ -443,7 +446,11 @@ class Recipe(SQLObject, Measures):
     carbonation_volume = DecimalCol(size=3, precision=1, default=0)
     carbonation_amount = DecimalCol(size=4, precision=2, default=0)
     brewed_on = DateCol(default=datetime.now())
-    
+
+class Batch(SQLObject):
+    master_id = ForeignKey('Recipe')
+    batch_id = ForeignKey('Recipe')
+
 class Inventory(SQLObject):
     hop = ForeignKey('Hop', default=None)
     grain = ForeignKey('Grain', default=None)
@@ -579,3 +586,8 @@ class InventorySingle(Exception):
     def __unicode__(self, value):
         return repr(self.value)
         
+class BatchIsNotMaster(Exception):
+    def __init__(self,value):
+        self.value = value
+    def __unicode__(self,value):
+        return repr(self.value)

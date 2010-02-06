@@ -23,6 +23,9 @@ import wx
 import guid
 import iconsrc
 
+from db import DataStore
+from models import Recipe, Batch
+
 class BaseWindow():
     def __init__(self):
         pass
@@ -178,8 +181,45 @@ class MainFrame(wx.Frame, BaseWindow):
         # make some toolbars
         self.tools = self.buildToolbar()
         
+        
+        # start the layout
         self.SetTitle("BeerMaker")
         self.SetSize((1024, 768))       
+        self.panel = wx.Panel(self,-1)
+
+        # generate the list control
+        self.recipe_list = wx.ListCtrl(self.panel, -1, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
+
+        # set the sizers
+        self.main_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.main_sizer.Add(self.recipe_list, 1, wx.ALL|wx.EXPAND, 3)
+        self.panel.SetSizer(self.main_sizer)
+        
+        # load data
+        self.populateList()
+    
+    def populateList(self):
+        self.recipe_list.InsertColumn(guid.RL_NAME, 'Name')
+        self.recipe_list.InsertColumn(guid.RL_CATEGORY, 'Category')
+        self.recipe_list.InsertColumn(guid.RL_NUMBER, 'Number')
+        self.recipe_list.InsertColumn(guid.RL_IBU, 'IBU')
+        self.recipe_list.InsertColumn(guid.RL_SRM, 'SRM')
+        self.recipe_list.InsertColumn(guid.RL_ABV, 'ABV')
+        self.recipe_list.InsertColumn(guid.RL_OG, 'OG')
+        self.recipe_list.InsertColumn(guid.RL_FG, 'FG')
+        self.recipe_list.InsertColumn(guid.RL_BREWED_ON, 'Brewed On')
+        
+        for batch in list(Batch.select(distinct=True)):
+            recipe = Recipe.get(batch.master_id)
+            index = self.recipe_list.InsertStringItem(wx.NewId(), recipe.name)
+            self.recipe_list.SetStringItem(index, guid.RL_CATEGORY, recipe.style.name)
+            self.recipe_list.SetStringItem(index, guid.RL_NUMBER, recipe.style.combined_category_id)
+            self.recipe_list.SetStringItem(index, guid.RL_IBU, recipe.ibu)
+            self.recipe_list.SetStringItem(index, guid.RL.SRM, recipe.srm)
+            self.recipe_list.SetStringItem(index, guid.RL_ABV, recipe.abv)
+            self.recipe_list.SetStringItem(index, guid.RL_OG, recipe.og)
+            self.recipe_list.SetStringItem(index, guid.RL_FG, recipe.fg)
+            self.recipe_list.SetStringItem(index, guid.RL_BREWED_ON, recipe.brewed_on)        
         
     def newRecipe(self):
         pass
@@ -222,6 +262,7 @@ class MainFrame(wx.Frame, BaseWindow):
 class BeerMaker(wx.App):
     def OnInit(self):
         wx.InitAllImageHandlers()
+        ds = DataStore()
         BeerMaker = MainFrame(None, -1, "")
         self.SetTopWindow(BeerMaker)
         BeerMaker.Show()
