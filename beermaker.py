@@ -23,57 +23,126 @@ import wx
 import guid
 import iconsrc
 
+# import data objects
 from db import DataStore
 from models import Recipe, Batch
 
-class BaseWindow():
-    def __init__(self):
+# import gui elements
+from base import BaseWindow
+from editors import RecipeEditor
+        
+        
+class MainFrame(wx.Frame, BaseWindow):
+    def __init__(self, *args, **kw):
+        kw['style'] = wx.DEFAULT_FRAME_STYLE
+        wx.Frame.__init__(self, *args, **kw)
+        
+        # make a status bar
+        self.status_bar = self.CreateStatusBar(1,0)
+        
+        # make some menus
+        self.menus = self.buildMenuBar()
+        
+        # make some toolbars
+        self.tools = self.buildToolbar()
+        
+        # start the layout
+        self.SetTitle("BeerMaker")
+        self.SetSize((1024, 768))       
+        self.panel = wx.Panel(self,-1)
+
+        # generate the list control
+        self.recipe_list = wx.ListCtrl(self.panel, -1, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
+
+        # set the sizers
+        self.main_sizer = wx.BoxSizer(wx.VERTICAL)
+        self.main_sizer.Add(self.recipe_list, 1, wx.ALL|wx.EXPAND, 3)
+        self.panel.SetSizer(self.main_sizer)
+        
+        # set up our resize event
+        #self.Bind(wx.EVT_SIZE, self.resizeColumns)
+        
+        # load data
+        self.populateList()
+
+    def createListColumns(self):
+        self.list_columns_set = True
+        self.recipe_list.InsertColumn(guid.RL_NAME, 'Name')
+        self.recipe_list.InsertColumn(guid.RL_CATEGORY, 'Category')
+        self.recipe_list.InsertColumn(guid.RL_NUMBER, 'Number')
+        self.recipe_list.InsertColumn(guid.RL_IBU, 'IBU')
+        self.recipe_list.InsertColumn(guid.RL_SRM, 'SRM')
+        self.recipe_list.InsertColumn(guid.RL_ABV, 'ABV')
+        self.recipe_list.InsertColumn(guid.RL_OG, 'OG')
+        self.recipe_list.InsertColumn(guid.RL_FG, 'FG')
+        self.recipe_list.InsertColumn(guid.RL_BREWED_ON, 'Brewed On')        
+            
+    def populateList(self):
+        if not self.list_columns_set:
+            self.createListColumns()
+            
+        # we need a list that'll hold the index -> recipe id matching
+        self.recipe_index_id = []
+
+        for batch in list(Batch.select(distinct=True)):
+            recipe = Recipe.get(batch.master_id)            
+            index = self.recipe_list.InsertStringItem(wx.NewId(), recipe.name)
+            # we're gonna store this for later
+            self.recipe_index_id[index] = batch.master_id
+            self.recipe_list.SetStringItem(index, guid.RL_CATEGORY, recipe.style.name)
+            self.recipe_list.SetStringItem(index, guid.RL_NUMBER, recipe.style.combined_category_id)
+            self.recipe_list.SetStringItem(index, guid.RL_IBU, recipe.ibu)
+            self.recipe_list.SetStringItem(index, guid.RL.SRM, recipe.srm)
+            self.recipe_list.SetStringItem(index, guid.RL_ABV, recipe.abv)
+            self.recipe_list.SetStringItem(index, guid.RL_OG, recipe.og)
+            self.recipe_list.SetStringItem(index, guid.RL_FG, recipe.fg)
+            self.recipe_list.SetStringItem(index, guid.RL_BREWED_ON, recipe.brewed_on)        
+        
+        # self.resizeColumns()
+            
+    def resizeColumns(self):
+        for column in range(0, self.recipe_list.GetColumnCount()):
+            self.recipe_list.SetColumnWidth(column, wx.LIST_AUTOSIZE)
+        
+        
+    def newRecipe(self):
+        pass
+    
+    def newBatch(self):
         pass
         
-    def buildToolbar(self):
-        toolbar = wx.ToolBar(self, -1, style=wx.TB_TEXT)
-        self.SetToolBar(toolbar)
-        for button in self.toolbarData():
-            self.createTool(toolbar, *button)
-        toolbar.Realize()
+    def viewInventory(self):
+        """docstring for viewIventory"""
+        pass
         
-    def createTool(self, toolbar, tb_id, fn_icon, label, help, handler):
-        if not tb_id:
-            toolbar.AddSeparator()
-            return
-        else:
-            icon = wx.Bitmap(fn_icon, wx.BITMAP_TYPE_ANY)
-            tool = toolbar.AddLabelTool(tb_id, label, icon, icon, wx.ITEM_NORMAL, label, help)
-            self.Bind(wx.EVT_MENU, handler, tool)    
+    def viewMashes(self):
+        """docstring for viewMashes"""
+        pass 
     
-    def buildMenuBar(self):
-        menu_bar = wx.MenuBar()
-        for menu in self.menuData():
-            label = menu['name']
-            items = menu['items']
-            menu_bar.Append(self.createMenu(items), label)
-        self.SetMenuBar(menu_bar)
+    def viewEquipment(self):
+        """docstring for viewEquipment"""
+        pass
+
+    def viewIngredients(self):
+        """docstring for viewIngredients"""
+        pass
+
+    def viewCalculators(self):
+        """docstring for viewCalculators"""
+        pass
+        
+    def viewPreferences(self):
+        """docstring for viewPreferences"""
+        pass
+        
+    def printItem(self):
+        """docstring for printItem"""
+        pass
     
-    def createMenu(self, items):
-        menu = wx.Menu()
-        for item in items:
-            if item.has_key('items'):
-                menu_id = wx.NewId()
-                label = item['name']
-                sub_menu = self.createMenu(item['items'])
-                menu.AppendMenu(menu_id, label, sub_menu)
-            else:
-                self.createMenuItem(menu, item['id'], item['name'], item['help'], item['method'])
-        return menu
+    def quitApplication(self):
+        """docstring for quitApplication"""
+        pass
         
-    def createMenuItem(self, menu, menu_id, name, help, method, kind=wx.ITEM_NORMAL):
-        if menu_id == 'separator':
-            menu.AppendSeparator()
-            return
-        menu_item = menu.Append(menu_id, name, help, kind)
-        self.Bind(wx.EVT_MENU, method, menu_item)
-        
-            
     def menuData(self):
         file_menu = {'name': "&File",
         'items': 
@@ -83,7 +152,7 @@ class BaseWindow():
                 'id': guid.MENU_NEW_RECIPE,
                 'help': 'Create a new recipe',
                 'method': self.newRecipe},
-    
+
                 {'name': "New &Batch",
                 'id': guid.MENU_NEW_BATCH,
                 'help': 'Create a new batch of the current recipe or batch',
@@ -164,100 +233,9 @@ class BaseWindow():
              (guid.TB_CALCULATORS, iconsrc.tb_calculators, "Calculators", "View all the calculators", self.viewCalculators),
              ("","","","",""),
              (guid.TB_PREFERENCES, iconsrc.tb_preferences, "Preferences", "View your preferences", self.viewPreferences),
-     
+
          )
-
-class MainFrame(wx.Frame, BaseWindow):
-    def __init__(self, *args, **kw):
-        kw['style'] = wx.DEFAULT_FRAME_STYLE
-        wx.Frame.__init__(self, *args, **kw)
-        
-        # make a status bar
-        self.status_bar = self.CreateStatusBar(1,0)
-        
-        # make some menus
-        self.menus = self.buildMenuBar()
-        
-        # make some toolbars
-        self.tools = self.buildToolbar()
-        
-        
-        # start the layout
-        self.SetTitle("BeerMaker")
-        self.SetSize((1024, 768))       
-        self.panel = wx.Panel(self,-1)
-
-        # generate the list control
-        self.recipe_list = wx.ListCtrl(self.panel, -1, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
-
-        # set the sizers
-        self.main_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.main_sizer.Add(self.recipe_list, 1, wx.ALL|wx.EXPAND, 3)
-        self.panel.SetSizer(self.main_sizer)
-        
-        # load data
-        self.populateList()
     
-    def populateList(self):
-        self.recipe_list.InsertColumn(guid.RL_NAME, 'Name')
-        self.recipe_list.InsertColumn(guid.RL_CATEGORY, 'Category')
-        self.recipe_list.InsertColumn(guid.RL_NUMBER, 'Number')
-        self.recipe_list.InsertColumn(guid.RL_IBU, 'IBU')
-        self.recipe_list.InsertColumn(guid.RL_SRM, 'SRM')
-        self.recipe_list.InsertColumn(guid.RL_ABV, 'ABV')
-        self.recipe_list.InsertColumn(guid.RL_OG, 'OG')
-        self.recipe_list.InsertColumn(guid.RL_FG, 'FG')
-        self.recipe_list.InsertColumn(guid.RL_BREWED_ON, 'Brewed On')
-        
-        for batch in list(Batch.select(distinct=True)):
-            recipe = Recipe.get(batch.master_id)
-            index = self.recipe_list.InsertStringItem(wx.NewId(), recipe.name)
-            self.recipe_list.SetStringItem(index, guid.RL_CATEGORY, recipe.style.name)
-            self.recipe_list.SetStringItem(index, guid.RL_NUMBER, recipe.style.combined_category_id)
-            self.recipe_list.SetStringItem(index, guid.RL_IBU, recipe.ibu)
-            self.recipe_list.SetStringItem(index, guid.RL.SRM, recipe.srm)
-            self.recipe_list.SetStringItem(index, guid.RL_ABV, recipe.abv)
-            self.recipe_list.SetStringItem(index, guid.RL_OG, recipe.og)
-            self.recipe_list.SetStringItem(index, guid.RL_FG, recipe.fg)
-            self.recipe_list.SetStringItem(index, guid.RL_BREWED_ON, recipe.brewed_on)        
-        
-    def newRecipe(self):
-        pass
-    
-    def newBatch(self):
-        pass
-        
-    def viewInventory(self):
-        """docstring for viewIventory"""
-        pass
-        
-    def viewMashes(self):
-        """docstring for viewMashes"""
-        pass 
-    
-    def viewEquipment(self):
-        """docstring for viewEquipment"""
-        pass
-
-    def viewIngredients(self):
-        """docstring for viewIngredients"""
-        pass
-
-    def viewCalculators(self):
-        """docstring for viewCalculators"""
-        pass
-        
-    def viewPreferences(self):
-        """docstring for viewPreferences"""
-        pass
-        
-    def printItem(self):
-        """docstring for printItem"""
-        pass
-    
-    def quitApplication(self):
-        """docstring for quitApplication"""
-        pass
 
 class BeerMaker(wx.App):
     def OnInit(self):

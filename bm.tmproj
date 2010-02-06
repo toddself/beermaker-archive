@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>ui/beermaker.py</string>
+	<string>beermaker.py</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -20,7 +20,7 @@
 			<key>filename</key>
 			<string>data_import.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-31T19:15:43Z</date>
+			<date>2010-02-06T15:41:43Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -47,8 +47,6 @@
 			<string>README</string>
 		</dict>
 		<dict>
-			<key>expanded</key>
-			<true/>
 			<key>name</key>
 			<string>ui</string>
 			<key>regexFolderFilter</key>
@@ -58,9 +56,27 @@
 		</dict>
 		<dict>
 			<key>filename</key>
+			<string>beermaker.py</string>
+			<key>lastUsed</key>
+			<date>2010-02-06T19:19:19Z</date>
+			<key>selected</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>guid.py</string>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>iconsrc.py</string>
+			<key>lastUsed</key>
+			<date>2010-02-06T19:17:54Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
 			<string>db.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-31T19:16:53Z</date>
+			<date>2010-02-06T19:18:54Z</date>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -74,7 +90,7 @@
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-31T19:16:15Z</date>
+			<date>2010-02-06T16:33:48Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -85,55 +101,100 @@
 	<integer>200</integer>
 	<key>metaData</key>
 	<dict>
-		<key>ui/beermaker.py</key>
+		<key>beermaker.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>18</integer>
+				<integer>8</integer>
 				<key>line</key>
-				<integer>82</integer>
+				<integer>185</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>163</integer>
+		</dict>
+		<key>db.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>iconsrc.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>38</integer>
+				<key>line</key>
+				<integer>29</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>56</integer>
+			<integer>0</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>41</integer>
+				<integer>34</integer>
 				<key>line</key>
-				<integer>83</integer>
+				<integer>29</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>18</integer>
+				<integer>38</integer>
 				<key>line</key>
-				<integer>82</integer>
+				<integer>29</integer>
 			</dict>
 		</dict>
-		<key>ui/guid.py</key>
+		<key>models.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>18</integer>
+				<integer>35</integer>
 				<key>line</key>
-				<integer>23</integer>
+				<integer>268</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
+			<integer>410</integer>
+		</dict>
+		<key>old/BJCPViewer.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>225</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
 			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>153</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>ui/beermaker.py</string>
-		<string>ui/guid.py</string>
+		<string>old/BJCPViewer.py</string>
+		<string>beermaker.py</string>
+		<string>db.py</string>
+		<string>iconsrc.py</string>
+		<string>models.py</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
