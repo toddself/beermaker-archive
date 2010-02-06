@@ -36,6 +36,7 @@ class MainFrame(wx.Frame, BaseWindow):
     def __init__(self, *args, **kw):
         kw['style'] = wx.DEFAULT_FRAME_STYLE
         wx.Frame.__init__(self, *args, **kw)
+        self.list_columns_set = False
         
         # make a status bar
         self.status_bar = self.CreateStatusBar(1,0)
@@ -142,7 +143,31 @@ class MainFrame(wx.Frame, BaseWindow):
     def quitApplication(self):
         """docstring for quitApplication"""
         pass
+    
+    def visitWebsite(self):
+        """docstring for visitWebsite"""
+        pass
         
+    def undo(self):
+        """docstring for undo"""
+        pass
+
+    def redo(self):
+        """docstring for redo"""
+        pass
+
+    def copy(self):
+        """docstring for copy"""
+        pass
+
+    def paste(self):
+        """docstring for paste"""
+        pass
+
+    def cut(self):
+        """docstring for cut"""
+        pass
+
     def menuData(self):
         file_menu = {'name': "&File",
         'items': 
@@ -176,7 +201,42 @@ class MainFrame(wx.Frame, BaseWindow):
 
         edit_menu = {'name': '&Edit',
         'items':
-            ({'name': '&Preferences',
+            ({'name': '&Undo',
+            'help': 'Undo last command',
+            'id': guid.MENU_EDIT_UNDO,
+            'method': self.undo},
+            
+            {'name': '&Redo',
+            'help': 'Redo last command',
+            'id': guid.MENU_EDIT_REDO,
+            'method': self.redo},
+
+            {'name': 'separator',
+            'id': 'separator',
+            'help': 'separator',
+            'method': 'separator'},   
+            
+            {'name': '&Copy',
+            'help': '',
+            'id': guid.MENU_EDIT_COPY,
+            'method': self.copy},
+            
+            {'name': 'C&ut',
+            'help': '',
+            'id': guid.MENU_EDIT_CUT,
+            'method': self.cut},
+            
+            {'name': '&Paste',
+            'help': '',
+            'id': guid.MENU_EDIT_PASTE,
+            'method': self.paste},
+      
+            {'name': 'separator',
+            'id': 'separator',
+            'help': 'separator',
+            'method': 'separator'},
+            
+            {'name': 'Pr&eferences',
             'help': 'Edit Preferences',
             'id': guid.MENU_PREFERENCES,
             'method': self.viewPreferences},)}
@@ -212,8 +272,15 @@ class MainFrame(wx.Frame, BaseWindow):
             'id': guid.MENU_CALCULATORS,
             'help': 'View all the calculators',
             'method': self.viewCalculators},)}
+            
+        help_menu = {'name': '&Help',
+        'items':
+            ({'name': 'Visit Website',
+            'id': guid.MENU_HELP_WEBSITE,
+            'help': 'Visit the website',
+            'method': self.visitWebsite},)}
 
-        menu = (file_menu, edit_menu, view_menu)
+        menu = (file_menu, edit_menu, view_menu, help_menu)
 
         return menu    
 
