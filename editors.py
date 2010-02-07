@@ -27,18 +27,54 @@ from models import Recipe, Batch
 from base import BaseWindow
 
 class RecipeEditor(wx.Frame, BaseWindow):
-    def __init__(self, *args, **kw):
-        kw['style'] = wx.DEFAULT_FRAME_STYLE
-        wx.Frame.__init__(self, *args, **kw)
+    def __init__(self, parent, fid, title, pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.DEFAULT_FRAME_STYLE):
+        wx.Frame.__init__(self, parent, fid, title, pos, size, style)
         
         self.status_bar = self.CreateStatusBar(1,0)
         
         self.tools = self.buildToolbar()
-        self.SetTitle('Recipe Editor')
         self.SetSize((1024,800))
         
-        
         self.panel = wx.Panel(self, -1)
+        self.main_sizer = wx.BoxSizer(wx.VERTICAL)
+        self._doLayout(self.main_sizer)
+        self.panel.SetSize(self.main_sizer)
+
+
+    def _setLayout(self):
+        """
+        _setLayout returns a tuple containing multiple dictionaries.  these dictionaries are then used
+        to generate the layout for the window
+        """
+
+        window = ({
+        'element': 'sizer',
+        'format': wx.HORIZONTAL,
+        'type': 'box',
+        'elements': (
+            {'element': 'txt',
+            'type': 'static',
+            'value': 'Name:',
+            'greed': 0,
+            'padding': 3,
+            'style': wx.ALL|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL|wx.ADJUST_MINSIZE},
+            {'element': 'txt',
+            'type': 'ctrl',
+            'greed': 1,
+            'padding': 3,
+            'style': wx.ALL|wx.EXPAND|wx.ADJUST_MINSIZE|wx.ALIGN_CENTER_VERTICAL
+            'bind': ((wx.EVT_TEXT, self.textChanged),)},
+            )
+        },)
+
+
+    def _doLayout(self, top_sizer):
+        for widget in self._setLayout():
+            if widget['element'] == 'sizer':
+                if widget['type'] == 'box':
+                    newSizer = wx.BoxSizer(widget['format'])
+                    self._
+            
 
     def newRecipe(self):
         pass
