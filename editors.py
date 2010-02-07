@@ -38,42 +38,51 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.panel = wx.Panel(self, -1)
         self.main_sizer = wx.BoxSizer(wx.VERTICAL)
         self._doLayout(self.main_sizer)
-        self.panel.SetSize(self.main_sizer)
+        self.panel.SetSizer(self.main_sizer)
+        
+        # top row elements: name, style, brewed on, brewed by
+        top_row = wx.BoxSizer(wx.HORIZONTAL)
+        
 
 
-    def _setLayout(self):
-        """
-        _setLayout returns a tuple containing multiple dictionaries.  these dictionaries are then used
-        to generate the layout for the window
-        """
-
-        window = ({
-        'element': 'sizer',
-        'format': wx.HORIZONTAL,
-        'type': 'box',
-        'elements': (
-            {'element': 'txt',
-            'type': 'static',
-            'value': 'Name:',
-            'greed': 0,
-            'padding': 3,
-            'style': wx.ALL|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL|wx.ADJUST_MINSIZE},
-            {'element': 'txt',
-            'type': 'ctrl',
-            'greed': 1,
-            'padding': 3,
-            'style': wx.ALL|wx.EXPAND|wx.ADJUST_MINSIZE|wx.ALIGN_CENTER_VERTICAL
-            'bind': ((wx.EVT_TEXT, self.textChanged),)},
-            )
-        },)
-
-
-    def _doLayout(self, top_sizer):
-        for widget in self._setLayout():
-            if widget['element'] == 'sizer':
-                if widget['type'] == 'box':
-                    newSizer = wx.BoxSizer(widget['format'])
-                    self._
+    # def _setLayout(self):
+    #     """
+    #     _setLayout returns a tuple containing multiple dictionaries.  these dictionaries are then used
+    #     to generate the layout for the window
+    #     """
+    # 
+    #     window = ({
+    #     'element': 'sizer',
+    #     'format': wx.HORIZONTAL,
+    #     'type': 'box',
+    #     'elements': (
+    #         {'element': 'txt',
+    #         'type': 'static',
+    #         'value': 'Name:',
+    #         'greed': 0,
+    #         'padding': 3,
+    #         'style': wx.ALL|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL|wx.ADJUST_MINSIZE},
+    #         {'element': 'txt',
+    #         'type': 'ctrl',
+    #         'greed': 1,
+    #         'padding': 3,
+    #         'style': wx.ALL|wx.EXPAND|wx.ADJUST_MINSIZE|wx.ALIGN_CENTER_VERTICAL
+    #         'bind': ((wx.EVT_TEXT, self.textChanged),)},
+    #         )
+    #     },)
+    # 
+    # def _doLayout(self, top_sizer):
+    #     for widget in self._setLayout():
+    #         top_sizer.Add(*self._createLayoutElement(widget))
+    # 
+    # def _createLayoutElement(self, widget_dict):
+    #     for widget in widget_dict:
+    #         if widget['element'] == 'sizer':
+    #             if widget['type'] == 'box':
+    #                 newSizer = wx.BoxSizer(widget['format'])
+    #                 newSizer.Add(*self._createLayoutElement(widget))
+    #         elif widget['element'] == 'txt':
+    #             if widget['type']
             
 
     def newRecipe(self):
