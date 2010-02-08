@@ -58,13 +58,13 @@
 			<key>filename</key>
 			<string>base.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-08T18:24:52Z</date>
+			<date>2010-02-08T18:58:48Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>editors.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-08T18:28:28Z</date>
+			<date>2010-02-08T19:20:04Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -72,7 +72,7 @@
 			<key>filename</key>
 			<string>beermaker.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-08T18:24:40Z</date>
+			<date>2010-02-08T19:19:47Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -104,7 +104,7 @@
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-08T18:21:26Z</date>
+			<date>2010-02-08T18:43:54Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -127,7 +127,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>6</integer>
+			<integer>55</integer>
 		</dict>
 		<key>beermaker.py</key>
 		<dict>
@@ -141,7 +141,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>81</integer>
+			<integer>146</integer>
 		</dict>
 		<key>db.py</key>
 		<dict>
@@ -162,14 +162,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>61</integer>
+				<integer>49</integer>
 				<key>line</key>
-				<integer>41</integer>
+				<integer>82</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>25</integer>
+			<integer>62</integer>
 		</dict>
 		<key>models.py</key>
 		<dict>
@@ -197,36 +197,36 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>93</integer>
+			<integer>94</integer>
 		</dict>
 		<key>old/RecipeEditor.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>99</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>44</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>45</integer>
+			<integer>27</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>beermaker.py</string>
 		<string>editors.py</string>
+		<string>old/RecipeEditor.py</string>
 		<string>base.py</string>
 		<string>old/BJCPViewer.py</string>
 		<string>db.py</string>
 		<string>models.py</string>
-		<string>old/RecipeEditor.py</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{102, 104}, {1192, 874}}</string>
+	<string>{{105, 97}, {1192, 874}}</string>
 </dict>
 </plist>

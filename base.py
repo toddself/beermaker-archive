@@ -23,7 +23,7 @@ class BaseWindow():
     BaseWindow() provides some useful utilities for creating and managing application windows
     """
 
-    TC_STYLE = wx.ALL|wx.EXPAND|wx.ALIGN_CENTER_VERTICAL
+    TC_STYLE = wx.ALL|wx.ALIGN_CENTER_VERTICAL
     ST_STYLE = wx.ALL|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL
 
     def __init__(self):

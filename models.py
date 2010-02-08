@@ -78,6 +78,8 @@ class Measures():
     CELSIUS = 16
     measures = ['mg','gm','oz','lb','kg','ml','tsp','tbls',
         'cup','pt','qt','l','gal','items', 'f', 'c']
+        
+    liquid_measures = [ML,L,PT,QT,CUP,GAL]
 
     MIN = 0
     HRS = 1
