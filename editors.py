@@ -34,8 +34,8 @@ class RecipeEditor(wx.Frame, BaseWindow):
         # set up the ui basics
         self.status_bar = self.CreateStatusBar(1,0)
         self.tools = self.buildToolbar()
-        self.section_header_font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
-        self.section_header_font.SetPointSize(self.section_header_font.GetPointSize()-1)   
+        self.f = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        self.f.SetPointSize(self.section_header_font.GetPointSize()-1)   
         
         # set up if this is a batch or a master recipe
         self.is_batch = False   
@@ -51,7 +51,9 @@ class RecipeEditor(wx.Frame, BaseWindow):
         # top row sizer: name, style, brewed on and brewer name
         top_row_ctrls = wx.BoxSizer(wx.HORIZONTAL)
         self.name_txt = wx.StaticText(self.main_panel, -1, "Name:")
+        self.name_txt.SetFont(self.f)
         self.name_ctrl = wx.TextCtrl(self.main_panel, -1, "")
+        self.name_ctrl.SetFont(self.f)
         self.style_txt = wx.StaticText(self.main_panel, -1, "Style:")
         self.style_ctrl = wx.Choice(self.main_panel, -1, choices=self._getStyleChoices())
         self.brewer_txt = wx.StaticText(self.main_panel, -1, "Brewer:")
@@ -77,13 +79,13 @@ class RecipeEditor(wx.Frame, BaseWindow):
         bottom_row_ctrls = wx.BoxSizer(wx.HORIZONTAL)
         self.boil_vol_txt = wx.StaticText(self.main_panel, -1, "Boil Volume:")
         self.boil_vol_ctrl = wx.TextCtrl(self.main_panel, -1, "")
-        self.boil_vol_units_ctrl = wx.Choice(self.main_panel, -1, choices=self._getLiquidVolumeChoices())
+        self.boil_vol_units_ctrl = wx.Choice(self.main_panel, -1, size=(-1,-1), choices=self._getLiquidVolumeChoices())
         self.batch_vol_txt = wx.StaticText(self.main_panel, -1, "Batch Volume:")
         self.batch_vol_ctrl = wx.TextCtrl(self.main_panel, -1, "")
         self.batch_vol_units_ctrl = wx.Choice(self.main_panel, -1, choices=self._getLiquidVolumeChoices())
         self.equipment_txt = wx.StaticText(self.main_panel, -1, "Equipment:")
         self.equipment_ctrl = wx.Choice(self.main_panel, -1, choices=self._getEquipmentChoices())
-        self.base_boil_volume_ctrl = wx.CheckBox(self.main_panel, -1, "Base boil volume on equipment")
+        self.base_boil_volume_ctrl = wx.CheckBox(self.main_panel, -1, "Boil set to equipment")
         
         bottom_row_ctrls.Add(self.boil_vol_txt, 0, self.ST_STYLE, 3)
         bottom_row_ctrls.Add(self.boil_vol_ctrl, 0, self.TC_STYLE, 3)
@@ -104,7 +106,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
 
     def _createSectionHeader(self, title):
         section_head = wx.StaticText(self.main_panel, -1, title)
-        section_head.SetFont(self.section_header_font)
+        section_head.SetFont(self.f)
         section_line = wx.StaticLine(self.main_panel, -1, style=wx.LI_HORIZONTAL)
         
         tb = wx.BoxSizer(wx.HORIZONTAL)
