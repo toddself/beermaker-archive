@@ -17,7 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import wx
-import wx.cal as cal
+import wx.calendar as cal
 
 import guid
 import iconsrc
@@ -32,52 +32,81 @@ class RecipeEditor(wx.Frame, BaseWindow):
         wx.Frame.__init__(self, parent, fid, title, pos, size, style)
         
         self.status_bar = self.CreateStatusBar(1,0)
-        
         self.tools = self.buildToolbar()
-        self.SetSize((1024,800))
         
         self.main_panel = wx.Panel(self, -1)
         self.main_sizer = wx.BoxSizer(wx.VERTICAL)
-        self._doLayout(self.main_sizer)
-        self.main_panel.SetSizer(self.main_sizer)
-        
+
         # top row elements: name, style, brewed on, brewed by
+        self.top_section_title = wx.StaticText(self.main_panel, -1, "Recipe Basics")
+        self.top_section_line_divider = wx.StaticLine(self.main_panel, -1, style=wx.LI_HORIZONTAL)
+        
+        top_row_title = wx.BoxSizer(wx.HORIZONTAL)
+        top_row_title.Add(self.top_section_title, 0, wx.ALL|wx.ALIGN_BOTTOM, 3)
+        top_row_title.Add(self.top_section_line_divider, 1, wx.EXPAND|wx.ALIGN_BOTTOM)
+        
         self.name_txt = wx.StaticText(self.main_panel, -1, "Name:")
         self.name_ctrl = wx.TextCtrl(self.main_panel, -1, "")
         self.style_txt = wx.StaticText(self.main_panel, -1, "Name:")
         self.style_ctrl = wx.Choice(self.main_panel, -1, choices=self._getStyleChoices())
         self.brewed_on_txt = wx.StaticText(self.main_panel, -1, "Brewed On:")
         self.brewed_on_ctrl = wx.TextCtrl(self.main_panel, -1, "")
+        self.brewer_txt = wx.StaticText(self.main_panel, -1, "Brewer:")
+        self.brewer_ctrl = wx.TextCtrl(self.main_panel, -1, "")
         
-        top_row = wx.BoxSizer(wx.HORIZONTAL)
+        # top row sizer:
+        # top_row_panel = wx.Panel(self.main_panel, -1, style=wx.SIMPLE_BORDER|wx.SUNKEN_BORDER)
+        top_row_ctrls = wx.BoxSizer(wx.HORIZONTAL)
+        top_row_ctrls.Add(self.name_txt, 0, self.ST_STYLE, 3)
+        top_row_ctrls.Add(self.name_ctrl, 1, self.TC_STYLE, 3)
+        top_row_ctrls.Add(self.style_txt, 0, self.ST_STYLE, 3)
+        top_row_ctrls.Add(self.style_ctrl, 1, self.TC_STYLE, 3)
+        top_row_ctrls.Add(self.brewed_on_txt, 0, self.ST_STYLE, 3)
+        top_row_ctrls.Add(self.brewed_on_ctrl, 0, self.TC_STYLE, 3)
+        top_row_ctrls.Add(self.brewer_txt, 0, self.ST_STYLE, 3)
+        top_row_ctrls.Add(self.brewer_ctrl, 1, self.TC_STYLE, 3)
+        # top_row_panel.SetSizer(top_row_ctrls)
         
+        
+        
+        top_row = wx.BoxSizer(wx.VERTICAL)
+        top_row.Add(top_row_title, 0, wx.ALL|wx.EXPAND, 3)
+        # top_row.Add(top_row_panel, 0, wx.ALL|wx.EXPAND, 3)
+        top_row.Add(top_row_ctrls, 0, wx.ALL|wx.EXPAND, 3)
+        
+        self.main_sizer.Add(top_row, 0, wx.EXPAND|wx.ALL, 3)
+
+        self.main_panel.SetSizer(self.main_sizer)
+        
+        self.Bind(wx.EVT_LEFT_DOWN, self._showCalendar, self.brewed_on_ctrl)
 
     def _getStyleChoices(self):
         styles = []
         for style in list(BJCPStyle.select()):
-            styles.append("%s: %s" % style.get_combined_category_id, style.name)
+            styles.append("%s: %s" % (style.combined_category_id, style.name))
         
         return styles
         
-    def _showCalendar(self, event):
-        # do we have a date?
-        if self.brewed_on_ctrl.GetValue != "":
-            
-        
+    def _showCalendar(self, event):        
         # make a new panel for the calendar to live on and generate the calendar widget
         self.calendar_panel = wx.Panel(self.main_panel)
-        calendar = cal.CalendarCtrl(calendar_panel, -1. wx.DateTime_Now(), style=CAL_SUNDAY_FIRST|CAL_SHOW_SURROUNDING_WEEKS|CAL_SEQUENTIAL_MONTH_SELECTION)
+        self.calendar = cal.CalendarCtrl(self.calendar_panel, -1, wx.DateTime_Now(), style=cal.CAL_SUNDAY_FIRST|cal.CAL_SHOW_SURROUNDING_WEEKS|cal.CAL_SEQUENTIAL_MONTH_SELECTION)
         self.Bind(wx.EVT_CALENDAR, self._selectDate, id=calendar.GetId())
+    
+        # do we have a date?
+        if self.recipe_brewed_on != None:
+            self.calendar.PySetDate(self.recipe_brewed_on)
         
         # make the sizer, add the calendar and set the sizer to the panel
-        calendar_sizer = wx.BoxSizer(wx.VERTICAL)
-        calendar_sizer.Add(calendar, 0, wx.ALL, 3)
-        self.calendar_panel.SetSizer(calendar_panel)
+        self.calendar_sizer = wx.BoxSizer(wx.VERTICAL)
+        self.calendar_sizer.Add(self.calendar, 0, wx.ALL, 3)
+        self.calendar_panel.SetSizer(self.calendar_sizer)
         
         # position and show the calendar
         self.calendar_panel.Raise()
         self.calendar_panel.SetPosition((0,0))
         self.calendar_panel.Show()
+        event.Skip()
     
     def _selectDate(self, event):
         # we've got the date selected, so we'll hide the calendar
@@ -86,6 +115,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
         dt = str(date).split(' ')
         s = ' '.join(str(s) for s in dt)
         self.brewed_on_ctrl.SetValue(s)
+        self.recipe_brewed_on = self.calendar.PyGetDate()
   
     def newRecipe(self):
         pass
@@ -143,7 +173,8 @@ class RecipeEditor(wx.Frame, BaseWindow):
 class RE(wx.App):
     def OnInit(self):
         wx.InitAllImageHandlers()
-        reditor = RecipeEditor(None, -1, "")
+        ds = DataStore()
+        reditor = RecipeEditor(None, -1, "", size=(1024,768))
         self.SetTopWindow(reditor)
         reditor.Show()
         return 1
