@@ -108,3 +108,49 @@ class BaseWindow():
             return
         menu_item = menu.Append(menu_id, name, help, kind)
         self.Bind(wx.EVT_MENU, method, menu_item)
+        
+    def _doLayout(self):
+        """
+        _doLayout generates the ui from a list of dictionaries.  This method expects a method to be defined
+        called layoutData which returns a list.  this does not handle creating frames or dialogs, just the ui 
+        for a pre-defined window.
+        
+        _doLayout returns a wx.BoxSizer(wx.VERTICAL) containing all the items defined by your dictionary list
+        """
+
+        for w in self.layoutData():
+            if w.haskey('sizer'):
+                s = self._createSizer(self, w)
+            else:
+                raise LayoutEngineError('Expected outer element to be a sizer')
+            
+            if w.haskey('widgets'):
+                for e in w.widgets:
+                    self._addWidgetToSizer(e, s)
+            else:
+                raise LayoutEngineError('Sizer is empty. Expected at least one element')
+                
+    def _addWidgetToSizer(self, widget, sizer):
+        pass
+    
+    def _createSectionHeader(self, title, font=None, scale=-1):
+        if font == None:
+            try:
+                self.ui_font
+            except AttributeError:
+                f = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+                f.SetPointSize(f.GetPointSize() + scale)
+            else:
+                f = self.ui_font
+        else:
+            f = font
+                
+        section_head = wx.StaticText(self.main_panel, -1, title)
+        section_head.SetFont(f)
+        section_line = wx.StaticLine(self.main_panel, -1, style=wx.LI_HORIZONTAL)
+        
+        tb = wx.BoxSizer(wx.HORIZONTAL)
+        tb.Add(section_head, 0, wx.ALL|wx.ALIGN_BOTTOM, 3)
+        tb.Add(section_line, 1, wx.ALIGN_BOTTOM|wx.BOTTOM, 6)
+        
+        return tb

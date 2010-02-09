@@ -35,7 +35,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.status_bar = self.CreateStatusBar(1,0)
         self.tools = self.buildToolbar()
         self.f = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
-        self.f.SetPointSize(self.section_header_font.GetPointSize()-1)   
+        self.f.SetPointSize(self.f.GetPointSize()-1)   
         
         # set up if this is a batch or a master recipe
         self.is_batch = False   
@@ -55,11 +55,17 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.name_ctrl = wx.TextCtrl(self.main_panel, -1, "")
         self.name_ctrl.SetFont(self.f)
         self.style_txt = wx.StaticText(self.main_panel, -1, "Style:")
+        self.style_txt.SetFont(self.f)
         self.style_ctrl = wx.Choice(self.main_panel, -1, choices=self._getStyleChoices())
+        self.style_ctrl.SetFont(self.f)
         self.brewer_txt = wx.StaticText(self.main_panel, -1, "Brewer:")
+        self.brewer_txt.SetFont(self.f)
         self.brewer_ctrl = wx.TextCtrl(self.main_panel, -1, "")
+        self.brewer_ctrl.SetFont(self.f)
         self.recipe_type_txt = wx.StaticText(self.main_panel, -1, "Type:")
+        self.recipe_type_txt.SetFont(self.f)
         self.recipe_type_ctrl = wx.Choice(self.main_panel, -1, choices=self._getRecipeTypeChoices())
+        self.recipe_type_ctrl.SetFont(self.f)
         
         top_row_ctrls.Add(self.name_txt, 0, self.ST_STYLE, 3)
         top_row_ctrls.Add(self.name_ctrl, 1, self.TC_STYLE, 3)
@@ -104,16 +110,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
         
         return basic_info
 
-    def _createSectionHeader(self, title):
-        section_head = wx.StaticText(self.main_panel, -1, title)
-        section_head.SetFont(self.f)
-        section_line = wx.StaticLine(self.main_panel, -1, style=wx.LI_HORIZONTAL)
-        
-        tb = wx.BoxSizer(wx.HORIZONTAL)
-        tb.Add(section_head, 0, wx.ALL|wx.ALIGN_BOTTOM, 3)
-        tb.Add(section_line, 1, wx.ALIGN_BOTTOM|wx.BOTTOM, 6)
-        
-        return tb
+
 
     def _getStyleChoices(self):
         return ["%s: %s" % (st.combined_category_id, st.name) for st in list(BJCPStyle.select())]
