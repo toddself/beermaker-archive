@@ -129,9 +129,41 @@ class BaseWindow():
                     self._addWidgetToSizer(e, s)
             else:
                 raise LayoutEngineError('Sizer is empty. Expected at least one element')
+    
+    def _createSizer(self, sizer):
+        pass
                 
     def _addWidgetToSizer(self, widget, sizer):
-        pass
+        """
+        required info for adding to sizer
+        proportion
+        sizer_style
+        border
+        
+        optional information:
+        TODO: add info about other sizers
+        """
+        args = {'proportion': 0, 'sizer_style': wx.ALL, 'border': 0}
+        for key in args.keys():
+            if widget.haskey(key):
+                args[key] = widget[key]
+        sizer.Add(self._createWidget(), *args.values())
+                
+        
+    def _createWidget(self, widget):
+        """
+        full definition:
+        widget - this is the widget we'll be making
+        value - any default value the widget should get
+        input - 
+        choices
+        style
+        sizer_style
+        optional - method or parameter to check. if this key is present,
+            item is considered to be optional and will only be displayed if the condition is true
+        """
+        
+                
     
     def _createSectionHeader(self, title, font=None, scale=-1):
         if font == None:

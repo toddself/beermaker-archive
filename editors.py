@@ -47,6 +47,18 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.main_sizer.Add(self._basicInfo(), 0, wx.EXPAND|wx.ALL, 3)
         self.main_panel.SetSizer(self.main_sizer)
 
+
+    def layoutData(self):
+        return ({'sizer': wx.BoxSizer, 'style': wx.HORIZONTAL, 'widgets':
+                    ({'widget': wx.StaticText, 'value': 'Name:', 'input': True},
+                    {'widget': wx.StaticText, 'value': 'Style:'},
+                    {'widget': wx.Choice, 'choices': self._getStyleChoices()},
+                    {'widget': wx.StaticText, 'value': 'Brewer:', 'input': True},
+                    {'widget': wx.StaticText, 'value': 'Brewed on', 'optional': self.is_batch},
+                    {'widget': wx.DatePickerCtrl, 'style': wx.DP_DEFAULT, 'optional': self.is_batch},
+                    {'widget': wx.StaticText, 'value': 'Type:'},
+                    {'widget': wx.Choice, 'choices': self._getRecipeTypeChoices()},)})
+
     def _basicInfo(self):
         # top row sizer: name, style, brewed on and brewer name
         top_row_ctrls = wx.BoxSizer(wx.HORIZONTAL)
