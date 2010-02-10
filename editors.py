@@ -42,87 +42,90 @@ class RecipeEditor(wx.Frame, BaseWindow):
         
         # set up the main view
         self.main_panel = wx.Panel(self, -1)
-        self.main_sizer = wx.BoxSizer(wx.VERTICAL)
+        # self.main_sizer = wx.BoxSizer(wx.VERTICAL)
         
-        self.main_sizer.Add(self._basicInfo(), 0, wx.EXPAND|wx.ALL, 3)
-        self.main_panel.SetSizer(self.main_sizer)
+        # self.main_sizer.Add(self._basicInfo(), 0, wx.EXPAND|wx.ALL, 3)
+        self.main_panel.SetSizer(self.buildLayout(self.main_panel))
 
 
     def layoutData(self):
         return ({'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'widgets':
-                    ({'widget': wx.StaticText, 'value': 'Name:'},
+                    ({'widget': wx.StaticText, 'label': 'Name:'},
                     {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
-                    {'widget': wx.StaticText, 'value': 'Style:'},
+                    {'widget': wx.StaticText, 'label': 'Style:'},
                     {'widget': wx.Choice, 'choices': self._getStyleChoices()},
-                    {'widget': wx.StaticText, 'value': 'Brewer:'},
+                    {'widget': wx.StaticText, 'label': 'Brewer:'},
                     {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
-                    {'widget': wx.StaticText, 'value': 'Brewed on', 'display': self.is_batch},
+                    {'widget': wx.StaticText, 'label': 'Brewed on', 'display': self.is_batch},
                     {'widget': wx.DatePickerCtrl, 'style': wx.DP_DEFAULT, 'display': self.is_batch},
-                    {'widget': wx.StaticText, 'value': 'Type:'},
-                    {'widget': wx.Choice, 'choices': self._getRecipeTypeChoices()},)})
+                    {'widget': wx.StaticText, 'label': 'Type:'},
+                    {'widget': wx.Choice, 'choices': self._getRecipeTypeChoices()},)},)
+                    
+    def onTextEvent(self, event):
+        pass
 
-    def _basicInfo(self):
-        # top row sizer: name, style, brewed on and brewer name
-        top_row_ctrls = wx.BoxSizer(wx.HORIZONTAL)
-        self.name_txt = wx.StaticText(self.main_panel, -1, "Name:")
-        self.name_txt.SetFont(self.f)
-        self.name_ctrl = wx.TextCtrl(self.main_panel, -1, "")
-        self.name_ctrl.SetFont(self.f)
-        self.style_txt = wx.StaticText(self.main_panel, -1, "Style:")
-        self.style_txt.SetFont(self.f)
-        self.style_ctrl = wx.Choice(self.main_panel, -1, choices=self._getStyleChoices())
-        self.style_ctrl.SetFont(self.f)
-        self.brewer_txt = wx.StaticText(self.main_panel, -1, "Brewer:")
-        self.brewer_txt.SetFont(self.f)
-        self.brewer_ctrl = wx.TextCtrl(self.main_panel, -1, "")
-        self.brewer_ctrl.SetFont(self.f)
-        self.recipe_type_txt = wx.StaticText(self.main_panel, -1, "Type:")
-        self.recipe_type_txt.SetFont(self.f)
-        self.recipe_type_ctrl = wx.Choice(self.main_panel, -1, choices=self._getRecipeTypeChoices())
-        self.recipe_type_ctrl.SetFont(self.f)
-        
-        top_row_ctrls.Add(self.name_txt, 0, self.ST_STYLE, 3)
-        top_row_ctrls.Add(self.name_ctrl, 1, self.TC_STYLE, 3)
-        top_row_ctrls.Add(self.style_txt, 0, self.ST_STYLE, 3)
-        top_row_ctrls.Add(self.style_ctrl, 1, self.TC_STYLE, 3)
-        if self.is_batch:
-            self.brewed_on_txt = wx.StaticText(self.main_panel, -1, "Brewed On:")
-            self.brewed_on_ctrl = wx.DatePickerCtrl(self.main_panel, -1, style=wx.DP_DEFAULT)
-            top_row_ctrls.Add(self.brewed_on_txt, 0, self.ST_STYLE, 3)
-            top_row_ctrls.Add(self.brewed_on_ctrl, 0, self.TC_STYLE, 3)
-        top_row_ctrls.Add(self.brewer_txt, 0, self.ST_STYLE, 3)
-        top_row_ctrls.Add(self.brewer_ctrl, 1, self.TC_STYLE, 3)
-        top_row_ctrls.Add(self.recipe_type_txt, 0, self.ST_STYLE, 3)
-        top_row_ctrls.Add(self.recipe_type_ctrl, 1, self.TC_STYLE, 3)
-        
-        # bottom row sizer: boil volume, batch volume, equipment setup
-        bottom_row_ctrls = wx.BoxSizer(wx.HORIZONTAL)
-        self.boil_vol_txt = wx.StaticText(self.main_panel, -1, "Boil Volume:")
-        self.boil_vol_ctrl = wx.TextCtrl(self.main_panel, -1, "")
-        self.boil_vol_units_ctrl = wx.Choice(self.main_panel, -1, size=(-1,-1), choices=self._getLiquidVolumeChoices())
-        self.batch_vol_txt = wx.StaticText(self.main_panel, -1, "Batch Volume:")
-        self.batch_vol_ctrl = wx.TextCtrl(self.main_panel, -1, "")
-        self.batch_vol_units_ctrl = wx.Choice(self.main_panel, -1, choices=self._getLiquidVolumeChoices())
-        self.equipment_txt = wx.StaticText(self.main_panel, -1, "Equipment:")
-        self.equipment_ctrl = wx.Choice(self.main_panel, -1, choices=self._getEquipmentChoices())
-        self.base_boil_volume_ctrl = wx.CheckBox(self.main_panel, -1, "Boil set to equipment")
-        
-        bottom_row_ctrls.Add(self.boil_vol_txt, 0, self.ST_STYLE, 3)
-        bottom_row_ctrls.Add(self.boil_vol_ctrl, 0, self.TC_STYLE, 3)
-        bottom_row_ctrls.Add(self.boil_vol_units_ctrl, 0, self.TC_STYLE, 3)
-        bottom_row_ctrls.Add(self.batch_vol_txt, 0, self.ST_STYLE, 3)
-        bottom_row_ctrls.Add(self.batch_vol_ctrl, 0, self.TC_STYLE, 3)
-        bottom_row_ctrls.Add(self.batch_vol_units_ctrl, 0, self.TC_STYLE, 3)
-        bottom_row_ctrls.Add(self.equipment_txt, 0, self.ST_STYLE, 3)
-        bottom_row_ctrls.Add(self.equipment_ctrl, 0, self.TC_STYLE, 3)
-        bottom_row_ctrls.Add(self.base_boil_volume_ctrl, 2, self.ST_STYLE|wx.EXPAND|wx.FIXED_MINSIZE, 3)
-        
-        basic_info = wx.BoxSizer(wx.VERTICAL)
-        basic_info.Add(self._createSectionHeader("Recipe Basics"), 0, wx.ALL|wx.EXPAND|wx.FIXED_MINSIZE, 3)
-        basic_info.Add(top_row_ctrls, 0, wx.ALL|wx.EXPAND, 3)
-        basic_info.Add(bottom_row_ctrls, 0, wx.ALL|wx.EXPAND, 3)
-        
-        return basic_info
+    # def _basicInfo(self):
+    #     # top row sizer: name, style, brewed on and brewer name
+    #     top_row_ctrls = wx.BoxSizer(wx.HORIZONTAL)
+    #     self.name_txt = wx.StaticText(self.main_panel, -1, "Name:")
+    #     self.name_txt.SetFont(self.f)
+    #     self.name_ctrl = wx.TextCtrl(self.main_panel, -1, "")
+    #     self.name_ctrl.SetFont(self.f)
+    #     self.style_txt = wx.StaticText(self.main_panel, -1, "Style:")
+    #     self.style_txt.SetFont(self.f)
+    #     self.style_ctrl = wx.Choice(self.main_panel, -1, choices=self._getStyleChoices())
+    #     self.style_ctrl.SetFont(self.f)
+    #     self.brewer_txt = wx.StaticText(self.main_panel, -1, "Brewer:")
+    #     self.brewer_txt.SetFont(self.f)
+    #     self.brewer_ctrl = wx.TextCtrl(self.main_panel, -1, "")
+    #     self.brewer_ctrl.SetFont(self.f)
+    #     self.recipe_type_txt = wx.StaticText(self.main_panel, -1, "Type:")
+    #     self.recipe_type_txt.SetFont(self.f)
+    #     self.recipe_type_ctrl = wx.Choice(self.main_panel, -1, choices=self._getRecipeTypeChoices())
+    #     self.recipe_type_ctrl.SetFont(self.f)
+    #     
+    #     top_row_ctrls.Add(self.name_txt, 0, self.ST_STYLE, 3)
+    #     top_row_ctrls.Add(self.name_ctrl, 1, self.TC_STYLE, 3)
+    #     top_row_ctrls.Add(self.style_txt, 0, self.ST_STYLE, 3)
+    #     top_row_ctrls.Add(self.style_ctrl, 1, self.TC_STYLE, 3)
+    #     if self.is_batch:
+    #         self.brewed_on_txt = wx.StaticText(self.main_panel, -1, "Brewed On:")
+    #         self.brewed_on_ctrl = wx.DatePickerCtrl(self.main_panel, -1, style=wx.DP_DEFAULT)
+    #         top_row_ctrls.Add(self.brewed_on_txt, 0, self.ST_STYLE, 3)
+    #         top_row_ctrls.Add(self.brewed_on_ctrl, 0, self.TC_STYLE, 3)
+    #     top_row_ctrls.Add(self.brewer_txt, 0, self.ST_STYLE, 3)
+    #     top_row_ctrls.Add(self.brewer_ctrl, 1, self.TC_STYLE, 3)
+    #     top_row_ctrls.Add(self.recipe_type_txt, 0, self.ST_STYLE, 3)
+    #     top_row_ctrls.Add(self.recipe_type_ctrl, 1, self.TC_STYLE, 3)
+    #     
+    #     # bottom row sizer: boil volume, batch volume, equipment setup
+    #     bottom_row_ctrls = wx.BoxSizer(wx.HORIZONTAL)
+    #     self.boil_vol_txt = wx.StaticText(self.main_panel, -1, "Boil Volume:")
+    #     self.boil_vol_ctrl = wx.TextCtrl(self.main_panel, -1, "")
+    #     self.boil_vol_units_ctrl = wx.Choice(self.main_panel, -1, size=(-1,-1), choices=self._getLiquidVolumeChoices())
+    #     self.batch_vol_txt = wx.StaticText(self.main_panel, -1, "Batch Volume:")
+    #     self.batch_vol_ctrl = wx.TextCtrl(self.main_panel, -1, "")
+    #     self.batch_vol_units_ctrl = wx.Choice(self.main_panel, -1, choices=self._getLiquidVolumeChoices())
+    #     self.equipment_txt = wx.StaticText(self.main_panel, -1, "Equipment:")
+    #     self.equipment_ctrl = wx.Choice(self.main_panel, -1, choices=self._getEquipmentChoices())
+    #     self.base_boil_volume_ctrl = wx.CheckBox(self.main_panel, -1, "Boil set to equipment")
+    #     
+    #     bottom_row_ctrls.Add(self.boil_vol_txt, 0, self.ST_STYLE, 3)
+    #     bottom_row_ctrls.Add(self.boil_vol_ctrl, 0, self.TC_STYLE, 3)
+    #     bottom_row_ctrls.Add(self.boil_vol_units_ctrl, 0, self.TC_STYLE, 3)
+    #     bottom_row_ctrls.Add(self.batch_vol_txt, 0, self.ST_STYLE, 3)
+    #     bottom_row_ctrls.Add(self.batch_vol_ctrl, 0, self.TC_STYLE, 3)
+    #     bottom_row_ctrls.Add(self.batch_vol_units_ctrl, 0, self.TC_STYLE, 3)
+    #     bottom_row_ctrls.Add(self.equipment_txt, 0, self.ST_STYLE, 3)
+    #     bottom_row_ctrls.Add(self.equipment_ctrl, 0, self.TC_STYLE, 3)
+    #     bottom_row_ctrls.Add(self.base_boil_volume_ctrl, 2, self.ST_STYLE|wx.EXPAND|wx.FIXED_MINSIZE, 3)
+    #     
+    #     basic_info = wx.BoxSizer(wx.VERTICAL)
+    #     basic_info.Add(self._createSectionHeader("Recipe Basics"), 0, wx.ALL|wx.EXPAND|wx.FIXED_MINSIZE, 3)
+    #     basic_info.Add(top_row_ctrls, 0, wx.ALL|wx.EXPAND, 3)
+    #     basic_info.Add(bottom_row_ctrls, 0, wx.ALL|wx.EXPAND, 3)
+    #     
+    #     return basic_info
 
 
 
@@ -208,44 +211,4 @@ class RE(wx.App):
 
 if __name__ == "__main__":
     R = RE(0)
-    R.MainLoop()        
-    
-    
-    # def _setLayout(self):
-    #     """
-    #     _setLayout returns a tuple containing multiple dictionaries.  these dictionaries are then used
-    #     to generate the layout for the window
-    #     """
-    # 
-    #     window = ({
-    #     'element': 'sizer',
-    #     'format': wx.HORIZONTAL,
-    #     'type': 'box',
-    #     'elements': (
-    #         {'element': 'txt',
-    #         'type': 'static',
-    #         'value': 'Name:',
-    #         'greed': 0,
-    #         'padding': 3,
-    #         'style': wx.ALL|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL|wx.ADJUST_MINSIZE},
-    #         {'element': 'txt',
-    #         'type': 'ctrl',
-    #         'greed': 1,
-    #         'padding': 3,
-    #         'style': wx.ALL|wx.EXPAND|wx.ADJUST_MINSIZE|wx.ALIGN_CENTER_VERTICAL
-    #         'bind': ((wx.EVT_TEXT, self.textChanged),)},
-    #         )
-    #     },)
-    # 
-    # def _doLayout(self, top_sizer):
-    #     for widget in self._setLayout():
-    #         top_sizer.Add(*self._createLayoutElement(widget))
-    # 
-    # def _createLayoutElement(self, widget_dict):
-    #     for widget in widget_dict:
-    #         if widget['element'] == 'sizer':
-    #             if widget['type'] == 'box':
-    #                 newSizer = wx.BoxSizer(widget['format'])
-    #                 newSizer.Add(*self._createLayoutElement(widget))
-    #         elif widget['element'] == 'txt':
-    #             if widget['type']
+    R.MainLoop()

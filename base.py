@@ -125,7 +125,7 @@ class BaseWindow():
         menu_item = menu.Append(menu_id, name, help, kind)
         self.Bind(wx.EVT_MENU, method, menu_item)
         
-    def buildLayout(self, parent=None):
+    def buildLayout(self, parent):
         """
         buildLayout generates the ui from a list of dictionaries.  
         This method expects a method to be defined called layoutData 
@@ -148,11 +148,11 @@ class BaseWindow():
         
         """
         master_sizer = wx.BoxSizer(wx.VERTICAL)
-
+        
         for row in self.layoutData():
             master_sizer.Add(self._createWidgets(row, parent), 
                 *self._getSizerAddArgs(row))
-
+        
         return master_sizer
 
     def _createWidgets(self, row, parent):
@@ -169,36 +169,14 @@ class BaseWindow():
                 sub_sizer = self._createWidgets(element, parent)
                 sizer.Add(sub_sizer, *self._getSizerAddArgs(sub_sizer))
             else:
-                self._addWidgetToSizer(element, sizer, parent)        
+                # print "before:"
+                # print sizer.GetChildren()
+                sizer = self._addWidgetToSizer(element, sizer, parent)
+                # print "after:"
+                # print sizer.GetChildren()
+        print sizer.GetChildren()
         return sizer
 
-    def _getSizerAddArgs(self, sizer_element):
-        """
-        _getSizerAddArgs returns the proportion, style and border
-        a given element should set when being added to a sizer.
-        
-        if no values are set or present, it will use the default values
-        specified in the args dictionary
-        """
-        args = {'proportion': 0, 'sizer_style': wx.ALL, 'border': 0}
-        for key in args.keys():
-            if sizer_element.has_key(key):
-                args[key] = sizer_element[key]
-
-        return args.values()
-
-    def _createSizer(self, sizer):
-        """
-        if this actually works i'll plotz!
-        _createSizer takes the sizer function passed from the dictionary, 
-        sets it a temp variable and then removes the sizer function from 
-        the dictionary, leaving only the arguments to the sizer functions 
-        as elements. we then call the sizer function, passing the values
-        of the dictionary as *args to the sizer method
-        """
-        method = sizer.pop('widget')
-        return method(*sizer.values())
-                
     def _addWidgetToSizer(self, widget, sizer, parent):
         """
         _addWidgetToSizer pops off the widget's arguement to the
@@ -227,7 +205,33 @@ class BaseWindow():
             sizer.Add(element, *self._getSizerAddArgs(args))
         
         return sizer
-                
+
+    def _getSizerAddArgs(self, sizer_element):
+        """
+        _getSizerAddArgs returns the proportion, style and border
+        a given element should set when being added to a sizer.
+        
+        if no values are set or present, it will use the default values
+        specified in the args dictionary
+        """
+        args = {'proportion': 0, 'sizer_style': wx.ALL|wx.EXPAND, 'border': 0}
+        for key in args.keys():
+            if sizer_element.has_key(key):
+                args[key] = sizer_element[key]
+
+        return args.values()
+
+    def _createSizer(self, sizer):
+        """
+        if this actually works i'll plotz!
+        _createSizer takes the sizer function passed from the dictionary, 
+        sets it a temp variable and then removes the sizer function from 
+        the dictionary, leaving only the arguments to the sizer functions 
+        as elements. we then call the sizer function, passing the values
+        of the dictionary as *args to the sizer method
+        """
+        method = sizer.pop('widget')
+        return method(*sizer.values())
         
     def _createWidget(self, widget, parent):
         """
@@ -249,25 +253,25 @@ class BaseWindow():
         widget is called with the remaining keys as the **kw argument
         to the method
         """
-        if widget.haskey('display'):
+        if widget.has_key('display'):
             display = widget.pop('display')
             if not display:
                 return None
-            else:
-                wxMethod = widget.pop('widget')
+            
+        wxMethod = widget.pop('widget')
 
-                if widget.has_key('event'):
-                    event = widget.pop('event')
-                else:
-                    event = False
+        if widget.has_key('event'):
+            event = widget.pop('event')
+        else:
+            event = False
 
-                gui_element = wxMethod(parent, **widget)
-                
-                if event:
-                    wx.Bind(event['event_type'], event['method'], 
-                        gui_element)
+        gui_element = wxMethod(parent, **widget)
         
-                return gui_element
+        if event:
+            self.Bind(event['event_type'], event['method'], 
+                gui_element)
+
+        return gui_element
                 
     
     def _createSectionHeader(self, title, font=None, scale=-1):
