@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
+# BeerMaker - beer recipe creation and inventory management software
 # Copyright (C) 2010 Todd Kennedy <todd.kennedy@gmail.com>
 # 
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 # 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,14 +14,29 @@
 # GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import wx        
 
 class BaseWindow():
     """
-    BaseWindow() provides some useful utilities for creating and managing application windows
+    BaseWindow provides a rudementary layout engine for building wxpython guis.
+    
+    Included methods:
+    buildToolbar(): expects a method to be defined in the child class named
+        toolbarData which returns a tuple of tuples defining the toolbar
+        
+    buildMenuBar(): expects a method to be definied in the child class named
+        menuData which returns a tuple of dictionaries defining the menu 
+        structure in the application
+    
+    buildLayout(): expects a method to be defined in the child class named
+        layoutData which returns a tuple of dictionaries defining the 
+        application structure and widgets
+        
+    More details about the data structures required are found in the 
+    docstrings for each method
+    
     """
 
     TC_STYLE = wx.ALL|wx.ALIGN_CENTER_VERTICAL
@@ -109,72 +125,161 @@ class BaseWindow():
         menu_item = menu.Append(menu_id, name, help, kind)
         self.Bind(wx.EVT_MENU, method, menu_item)
         
-    def _doLayout(self):
+    def buildLayout(self, parent=None):
         """
-        _doLayout generates the ui from a list of dictionaries.  This method expects a method to be defined
-        called layoutData which returns a list.  this does not handle creating frames or dialogs, just the ui 
-        for a pre-defined window.
+        buildLayout generates the ui from a list of dictionaries.  
+        This method expects a method to be defined called layoutData 
+        which returns a list.  this does not handle creating frames 
+        or dialogs, just the ui for a pre-defined window.
         
-        _doLayout returns a wx.BoxSizer(wx.VERTICAL) containing all the items defined by your dictionary list
+        buildLayout returns a wx.BoxSizer(wx.VERTICAL) containing all 
+        the items defined by your dictionary list.
+        
+        The layout engine is predicated on horizontal rows of sizers (or 
+        single elements), stacked on top of each other to create the 
+        frame.  If a sizer needs to vertically span one or more sizers,
+        the spanned sizers all need to be wrapped in a master sizer that
+        will be layed parallel to the spanning sizer.
+        
+        This method accepts an optional parent parameter. If the frame
+        specifies a top-level panel as it's top level frame element,
+        this should be passed in so that tab-order can be maintained
+        within the widgets
+        
         """
+        master_sizer = wx.BoxSizer(wx.VERTICAL)
 
-        for w in self.layoutData():
-            if w.haskey('sizer'):
-                sizer = w
-                del(sizer['widgets'])
-                s = self._createSizer(self, sizer)
+        for row in self.layoutData():
+            master_sizer.Add(self._createWidgets(row, parent), 
+                *self._getSizerAddArgs(row))
+
+        return master_sizer
+
+    def _createWidgets(self, row, parent):
+        """
+        _createWidgets is bread and butter of the layout engine.  this takes each
+        "row" of elements and generates sizer that can be added to the main sizer
+        for the frame.  if there are no children element, the top level element 
+        can be a single widget which is passed back to be added.
+        """
+        elements = row.pop('widgets')
+        sizer = self._createSizer(row)
+        for element in elements:
+            if element.has_key('sizer'):
+                sub_sizer = self._createWidgets(element, parent)
+                sizer.Add(sub_sizer, *self._getSizerAddArgs(sub_sizer))
             else:
-                raise LayoutEngineError('Expected outer element to be a sizer')
-            
-            if w.haskey('widgets'):
-                for e in w.widgets:
-                    self._addWidgetToSizer(e, s)
-            else:
-                raise LayoutEngineError('Sizer is empty. Expected at least one element')
-    
+                self._addWidgetToSizer(element, sizer, parent)        
+        return sizer
+
+    def _getSizerAddArgs(self, sizer_element):
+        """
+        _getSizerAddArgs returns the proportion, style and border
+        a given element should set when being added to a sizer.
+        
+        if no values are set or present, it will use the default values
+        specified in the args dictionary
+        """
+        args = {'proportion': 0, 'sizer_style': wx.ALL, 'border': 0}
+        for key in args.keys():
+            if sizer_element.has_key(key):
+                args[key] = sizer_element[key]
+
+        return args.values()
+
     def _createSizer(self, sizer):
         """
         if this actually works i'll plotz!
-        _createSizer takes the sizer function passed from the dictionary, sets it a temp variable
-        and then removes the sizer function from the dictionary, leaving only the arguments
-        to the sizer functions as elements. we then call the sizer function, passing the values
+        _createSizer takes the sizer function passed from the dictionary, 
+        sets it a temp variable and then removes the sizer function from 
+        the dictionary, leaving only the arguments to the sizer functions 
+        as elements. we then call the sizer function, passing the values
         of the dictionary as *args to the sizer method
         """
         method = sizer.pop('sizer')
         return method(*sizer.values())
                 
-    def _addWidgetToSizer(self, widget, sizer):
+    def _addWidgetToSizer(self, widget, sizer, parent):
         """
-        required info for adding to sizer
-        proportion
-        sizer_style
-        border
+        _addWidgetToSizer pops off the widget's arguement to the
+        Add() method and adds them to a dictionary.  We still pass
+        this to the _getSizerAddArgs() method so we can ensure
+        there are reasonable defaults present for all items.
+        
+        then _addWidgetToSizer tries to generate the widget using
+        _createWidget.  If a widget is returned, it then adds that
+        element to the sizer passed in and returns the sizer
+        to the calling method
         """
-        args = {'proportion': 0, 'sizer_style': wx.ALL, 'border': 0}
-        for key in args.keys():
-            if widget.haskey(key):
-                args[key] = widget[key]
-        sizer.Add(self._createWidget(), *args.values())
+        args = {}
+        if widget.has_key('sizer_style'):
+            args['style'] = widget.pop('sizer_style')
+        
+        if widget.has_key('proportion'):
+            args['proportion'] = widget.pop('proportion')
+        
+        if widget.has_key('border'):
+            args['border'] = widget.pop('border')
+            
+        element = self._createWidget(widget, parent)
+
+        if element:
+            sizer.Add(element, *self._getSizerAddArgs(args))
+        
+        return sizer
                 
         
-    def _createWidget(self, widget):
+    def _createWidget(self, widget, parent):
         """
-        full definition:
-        widget - this is the widget we'll be making
-        value - any default value the widget should get
-        input -  
-        choices
-        style
-        sizer_style
-        optional - method or parameter to check. if this key is present,
-            item is considered to be optional and will only be displayed if the condition is true
+        the keys for each widget should be the arguments for the 
+        given widget, in addition to the following:
+        
+        widget: this is the widget we'll be making.
+        sizer_style: information to be passed onto the sizer for styling
+        proportion: how greedy it should be when placed into the sizer
+        border: how big the border should be (if the border elements are 
+            specified in the sizer_sizer key)
+        event: a dictionary containing a method that should be called 
+            upon event_type.
+        display: method or parameter to check. if this key is present,
+            item is considered to be optional and will only be displayed 
+            if the condition is true
+        
+        these keys are popped off (and used if necessary) and then the
+        widget is called with the remaining keys as the **kw argument
+        to the method
         """
-        if widget.haskey('optional'):
-            pass
-        eval(widget['widget'])(*widget.values()[1:])
+        if widget.haskey('display'):
+            display = widget.pop('display')
+            if not display:
+                return None
+            else:
+                wxMethod = widget.pop('widget')
+
+                if widget.has_key('event'):
+                    event = widget.pop('event')
+                else:
+                    event = False
+
+                gui_element = wxMethod(parent, **widget)
+                
+                if event:
+                    wx.Bind(event['event_type'], event['method'], 
+                        gui_element)
+        
+                return gui_element
                 
     
     def _createSectionHeader(self, title, font=None, scale=-1):
+        """
+        _createSectionHeader returns a horizontal wx.BoxSizer
+        which contains a header and a horizontal rule.  if no font
+        is specified, the default is that it uses the system font,
+        one point size lower.  the font can either be passed
+        as a formal parameter or it can be found in the ui_font
+        attribute of the class, if present
+        """
+        
         if font == None:
             try:
                 self.ui_font
@@ -188,7 +293,8 @@ class BaseWindow():
                 
         section_head = wx.StaticText(self.main_panel, -1, title)
         section_head.SetFont(f)
-        section_line = wx.StaticLine(self.main_panel, -1, style=wx.LI_HORIZONTAL)
+        section_line = wx.StaticLine(self.main_panel, -1, 
+            style=wx.LI_HORIZONTAL)
         
         tb = wx.BoxSizer(wx.HORIZONTAL)
         tb.Add(section_head, 0, wx.ALL|wx.ALIGN_BOTTOM, 3)
