@@ -153,10 +153,14 @@ class BaseWindow():
         
         """
         self.master_sizer = wx.BoxSizer(wx.VERTICAL)
-        self.master_sizer.Add(self._createSectionHeader("Recipe Basics"), 0, wx.ALL|wx.EXPAND, 3)
+        # self.master_sizer.Add(self._createSectionHeader("Recipe Basics"), 0, wx.ALL|wx.EXPAND, 3)
         for row in self.layoutData():
-            self.master_sizer.Add(self._createWidgets(row, parent), 
-                **self._getSizerAddArgs(row))
+            if row.has_key('title'):
+                    title = row.pop('title')
+                    self.master_sizer.Add(self._createSectionHeader(parent,title), 0, wx.ALL|wx.EXPAND, 3)
+            # we've gotta pop them off now or they won't exist after the recursive call to _createWidgets
+            sizer_add_args = self._getSizerAddArgs(row)
+            self.master_sizer.Add(self._createWidgets(row, parent), **sizer_add_args)
         
         return self.master_sizer
 
@@ -167,8 +171,10 @@ class BaseWindow():
         for the frame.  if there are no children element, the top level element 
         can be a single widget which is passed back to be added.
         """
-        elements = row.pop('widgets')
+        elements = row.pop('widgets')        
+
         sizer = self._createSizer(row)
+        
         for element in elements:
             if element.has_key('widgets'):
                 sub_sizer = self._createWidgets(element, parent)
@@ -202,7 +208,6 @@ class BaseWindow():
         element = self._createWidget(widget, parent)
 
         if element:
-            print self._getSizerAddArgs(args)
             sizer.Add(element, **self._getSizerAddArgs(args))
         
         return sizer
@@ -227,7 +232,7 @@ class BaseWindow():
                 args[key] = sizer_element[key]
             else:
                 args[key] = self.default_sizer_args[key]
-        
+
         return args
         
     def _createSizer(self, sizer):
@@ -248,6 +253,9 @@ class BaseWindow():
         
         if sizer.has_key('border'):
             sizer.pop('border')
+            
+        if sizer.has_key('title'):
+            sizer.pop('title')
         
         return method(*sizer.values())
         
@@ -292,7 +300,7 @@ class BaseWindow():
         return gui_element
                 
     
-    def _createSectionHeader(self, title, font=None, scale=-1):
+    def _createSectionHeader(self, parent, title, font=None, scale=-1):
         """
         _createSectionHeader returns a horizontal wx.BoxSizer
         which contains a header and a horizontal rule.  if no font
@@ -313,9 +321,9 @@ class BaseWindow():
         else:
             f = font
                 
-        section_head = wx.StaticText(self.main_panel, -1, title)
+        section_head = wx.StaticText(parent, -1, title)
         section_head.SetFont(f)
-        section_line = wx.StaticLine(self.main_panel, -1, 
+        section_line = wx.StaticLine(parent, -1, 
             style=wx.LI_HORIZONTAL)
         
         tb = wx.BoxSizer(wx.HORIZONTAL)
