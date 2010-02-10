@@ -125,6 +125,11 @@ class BaseWindow():
         menu_item = menu.Append(menu_id, name, help, kind)
         self.Bind(wx.EVT_MENU, method, menu_item)
         
+        
+    def setDefaultSizerStyle(self, proportion=0, flag=wx.ALL, border=3):
+        self.default_sizer_args = {'proportion': proportion, 'flag': flag, 'border': border}
+        
+        
     def buildLayout(self, parent):
         """
         buildLayout generates the ui from a list of dictionaries.  
@@ -147,13 +152,13 @@ class BaseWindow():
         within the widgets
         
         """
-        master_sizer = wx.BoxSizer(wx.VERTICAL)
-        
+        self.master_sizer = wx.BoxSizer(wx.VERTICAL)
+        self.master_sizer.Add(self._createSectionHeader("Recipe Basics"), 0, wx.ALL|wx.EXPAND, 3)
         for row in self.layoutData():
-            master_sizer.Add(self._createWidgets(row, parent), 
-                *self._getSizerAddArgs(row))
+            self.master_sizer.Add(self._createWidgets(row, parent), 
+                **self._getSizerAddArgs(row))
         
-        return master_sizer
+        return self.master_sizer
 
     def _createWidgets(self, row, parent):
         """
@@ -169,12 +174,7 @@ class BaseWindow():
                 sub_sizer = self._createWidgets(element, parent)
                 sizer.Add(sub_sizer, *self._getSizerAddArgs(sub_sizer))
             else:
-                # print "before:"
-                # print sizer.GetChildren()
                 sizer = self._addWidgetToSizer(element, sizer, parent)
-                # print "after:"
-                # print sizer.GetChildren()
-        print sizer.GetChildren()
         return sizer
 
     def _addWidgetToSizer(self, widget, sizer, parent):
@@ -190,8 +190,8 @@ class BaseWindow():
         to the calling method
         """
         args = {}
-        if widget.has_key('sizer_style'):
-            args['style'] = widget.pop('sizer_style')
+        if widget.has_key('flag'):
+            args['flag'] = widget.pop('flag')
         
         if widget.has_key('proportion'):
             args['proportion'] = widget.pop('proportion')
@@ -202,7 +202,8 @@ class BaseWindow():
         element = self._createWidget(widget, parent)
 
         if element:
-            sizer.Add(element, *self._getSizerAddArgs(args))
+            print self._getSizerAddArgs(args)
+            sizer.Add(element, **self._getSizerAddArgs(args))
         
         return sizer
 
@@ -214,16 +215,23 @@ class BaseWindow():
         if no values are set or present, it will use the default values
         specified in the args dictionary
         """
-        args = {'proportion': 0, 'sizer_style': wx.ALL|wx.EXPAND, 'border': 0}
-        for key in args.keys():
+        args = {}
+    
+        try:
+            self.default_sizer_args
+        except AttributeError:
+            self.setDefaultSizerStyle()
+            
+        for key in self.default_sizer_args.keys():
             if sizer_element.has_key(key):
                 args[key] = sizer_element[key]
-
-        return args.values()
-
+            else:
+                args[key] = self.default_sizer_args[key]
+        
+        return args
+        
     def _createSizer(self, sizer):
         """
-        if this actually works i'll plotz!
         _createSizer takes the sizer function passed from the dictionary, 
         sets it a temp variable and then removes the sizer function from 
         the dictionary, leaving only the arguments to the sizer functions 
@@ -231,6 +239,16 @@ class BaseWindow():
         of the dictionary as *args to the sizer method
         """
         method = sizer.pop('widget')
+        
+        if sizer.has_key('flag'):
+            sizer.pop('flag')
+        
+        if sizer.has_key('proportion'):
+            sizer.pop('proportion')
+        
+        if sizer.has_key('border'):
+            sizer.pop('border')
+        
         return method(*sizer.values())
         
     def _createWidget(self, widget, parent):
@@ -266,7 +284,7 @@ class BaseWindow():
             event = False
 
         gui_element = wxMethod(parent, **widget)
-        
+    
         if event:
             self.Bind(event['event_type'], event['method'], 
                 gui_element)
@@ -302,6 +320,6 @@ class BaseWindow():
         
         tb = wx.BoxSizer(wx.HORIZONTAL)
         tb.Add(section_head, 0, wx.ALL|wx.ALIGN_BOTTOM, 3)
-        tb.Add(section_line, 1, wx.ALIGN_BOTTOM|wx.BOTTOM, 6)
+        tb.Add(section_line, proportion=1, flag=wx.ALIGN_BOTTOM|wx.BOTTOM, border=5)
         
         return tb
