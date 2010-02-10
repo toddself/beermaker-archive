@@ -120,7 +120,9 @@ class BaseWindow():
 
         for w in self.layoutData():
             if w.haskey('sizer'):
-                s = self._createSizer(self, w)
+                sizer = w
+                del(sizer['widgets'])
+                s = self._createSizer(self, sizer)
             else:
                 raise LayoutEngineError('Expected outer element to be a sizer')
             
@@ -131,7 +133,15 @@ class BaseWindow():
                 raise LayoutEngineError('Sizer is empty. Expected at least one element')
     
     def _createSizer(self, sizer):
-        pass
+        """
+        if this actually works i'll plotz!
+        _createSizer takes the sizer function passed from the dictionary, sets it a temp variable
+        and then removes the sizer function from the dictionary, leaving only the arguments
+        to the sizer functions as elements. we then call the sizer function, passing the values
+        of the dictionary as *args to the sizer method
+        """
+        method = sizer.pop('sizer')
+        return method(*sizer.values())
                 
     def _addWidgetToSizer(self, widget, sizer):
         """
@@ -139,9 +149,6 @@ class BaseWindow():
         proportion
         sizer_style
         border
-        
-        optional information:
-        TODO: add info about other sizers
         """
         args = {'proportion': 0, 'sizer_style': wx.ALL, 'border': 0}
         for key in args.keys():
@@ -155,14 +162,16 @@ class BaseWindow():
         full definition:
         widget - this is the widget we'll be making
         value - any default value the widget should get
-        input - 
+        input -  
         choices
         style
         sizer_style
         optional - method or parameter to check. if this key is present,
             item is considered to be optional and will only be displayed if the condition is true
         """
-        
+        if widget.haskey('optional'):
+            pass
+        eval(widget['widget'])(*widget.values()[1:])
                 
     
     def _createSectionHeader(self, title, font=None, scale=-1):
