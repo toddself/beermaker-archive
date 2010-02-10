@@ -165,7 +165,7 @@ class BaseWindow():
         elements = row.pop('widgets')
         sizer = self._createSizer(row)
         for element in elements:
-            if element.has_key('sizer'):
+            if element.has_key('widgets'):
                 sub_sizer = self._createWidgets(element, parent)
                 sizer.Add(sub_sizer, *self._getSizerAddArgs(sub_sizer))
             else:
@@ -196,7 +196,7 @@ class BaseWindow():
         as elements. we then call the sizer function, passing the values
         of the dictionary as *args to the sizer method
         """
-        method = sizer.pop('sizer')
+        method = sizer.pop('widget')
         return method(*sizer.values())
                 
     def _addWidgetToSizer(self, widget, sizer, parent):

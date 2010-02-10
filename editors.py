@@ -49,7 +49,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
 
 
     def layoutData(self):
-        return ({'sizer': wx.BoxSizer, 'style': wx.HORIZONTAL, 'widgets':
+        return ({'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'widgets':
                     ({'widget': wx.StaticText, 'value': 'Name:'},
                     {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
                     {'widget': wx.StaticText, 'value': 'Style:'},
