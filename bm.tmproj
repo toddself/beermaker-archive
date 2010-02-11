@@ -64,7 +64,7 @@
 			<key>filename</key>
 			<string>editors.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-11T17:30:02Z</date>
+			<date>2010-02-11T18:07:06Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -213,6 +213,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{164, 85}, {1192, 874}}</string>
+	<string>{{182, 91}, {1192, 874}}</string>
 </dict>
 </plist>
