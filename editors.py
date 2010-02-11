@@ -77,9 +77,9 @@ class RecipeEditor(wx.Frame, BaseWindow):
                     {'widget': wx.CheckBox, 'proportion': 1, 'label': 'Boil set to equipment'},
                     )
                 }, # end second row
-                {'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
-                    ({'widget': wx.BoxSizer, 'title': 'Ingredients', 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
-                        ({'widget': wx.ListCtrl, 'style': wx.LC_REPORT},)},
+                {'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'proportion': 1, 'style': wx.HORIZONTAL, 'widgets':
+                    ({'widget': wx.BoxSizer, 'title': 'Ingredients', 'proportion': 1, 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
+                        ({'widget': wx.ListCtrl, 'style': wx.LC_REPORT, 'border': 60, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},)},
                     {'widget': wx.BoxSizer, 'title': 'Details', 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
                         ({'widget': wx.ListCtrl, 'style': wx.LC_REPORT},)},                        
                     )
