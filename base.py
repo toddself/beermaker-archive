@@ -153,7 +153,7 @@ class BaseWindow():
         
         """
         self.master_sizer = wx.BoxSizer(wx.VERTICAL)
-        # self.master_sizer.Add(self._createSectionHeader("Recipe Basics"), 0, wx.ALL|wx.EXPAND, 3)
+
         for row in self.layoutData():
             if row.has_key('title'):
                     title = row.pop('title')
@@ -171,17 +171,30 @@ class BaseWindow():
         for the frame.  if there are no children element, the top level element 
         can be a single widget which is passed back to be added.
         """
-        elements = row.pop('widgets')        
 
-        sizer = self._createSizer(row)
-        
-        for element in elements:
-            if element.has_key('widgets'):
-                sub_sizer = self._createWidgets(element, parent)
-                sizer.Add(sub_sizer, *self._getSizerAddArgs(sub_sizer))
-            else:
-                sizer = self._addWidgetToSizer(element, sizer, parent)
+        if row.has_key('widgets'):
+            # this row can contain either widgets or sizers
+            # there will always be a 'widgets' key here though
+            # thanks to the 'if' statement
+            
+            # we'll take off the child elements and then create our sizer
+            widgets = row.pop('widgets')
+            sizer = self._createSizer(row)
+            
+            # now lets see if there are more sizers or just elements
+            # if there are more sizers, we're gonna call this function again
+            for widget in widgets:
+                # this will be true if we're working with a sizer
+                if widget.has_key('widgets'):                    
+                    print sizer
+                    sizer.Add(self._createWidgets(widget, parent))
+                else:
+                    sizer = self._addWidgetToSizer(widget, sizer, parent)
+        else:
+            print 'how the fuck did you get called?'
+            
         return sizer
+
 
     def _addWidgetToSizer(self, widget, sizer, parent):
         """
@@ -290,8 +303,16 @@ class BaseWindow():
             event = widget.pop('event')
         else:
             event = False
+                    
+        try:
+            var = widget.pop('var')
+        except:
+            var = False
 
         gui_element = wxMethod(parent, **widget)
+    
+        if var:
+            setattr(self, var, gui_element)
     
         if event:
             self.Bind(event['event_type'], event['method'], 

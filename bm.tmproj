@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>editors.py</string>
+	<string>base.py</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -14,25 +14,23 @@
 			<key>filename</key>
 			<string>bjcp_import.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-10T03:31:13Z</date>
+			<date>2010-02-02T18:55:35Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>data_import.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-10T03:31:13Z</date>
+			<date>2010-02-06T15:41:43Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>algorithms.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-10T03:31:13Z</date>
+			<date>2010-01-31T19:16:37Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>LICENSE</string>
-			<key>lastUsed</key>
-			<date>2010-02-10T03:29:41Z</date>
 		</dict>
 		<dict>
 			<key>expanded</key>
@@ -47,8 +45,6 @@
 		<dict>
 			<key>filename</key>
 			<string>README</string>
-			<key>lastUsed</key>
-			<date>2010-02-10T03:31:47Z</date>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -62,39 +58,39 @@
 			<key>filename</key>
 			<string>base.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-10T22:21:57Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>editors.py</string>
-			<key>lastUsed</key>
-			<date>2010-02-10T22:21:57Z</date>
+			<date>2010-02-11T15:54:40Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
+			<string>editors.py</string>
+			<key>lastUsed</key>
+			<date>2010-02-09T20:36:36Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
 			<string>beermaker.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-10T03:31:11Z</date>
+			<date>2010-02-08T21:55:31Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>guid.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-10T03:31:14Z</date>
+			<date>2010-02-08T15:30:07Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>iconsrc.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-10T03:31:11Z</date>
+			<date>2010-02-08T15:30:06Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>db.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-10T03:31:10Z</date>
+			<date>2010-02-08T21:38:42Z</date>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -108,7 +104,7 @@
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-10T03:31:10Z</date>
+			<date>2010-02-08T21:47:05Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -126,32 +122,93 @@
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>234</integer>
+				<integer>0</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>202</integer>
+			<integer>0</integer>
+		</dict>
+		<key>db.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>71</integer>
+				<key>line</key>
+				<integer>57</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>18</integer>
 		</dict>
 		<key>editors.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>66</integer>
+				<integer>93</integer>
 				<key>line</key>
-				<integer>59</integer>
+				<integer>56</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>48</integer>
+			<integer>67</integer>
+		</dict>
+		<key>models.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>11</integer>
+				<key>line</key>
+				<integer>357</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>334</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>6</integer>
+				<key>line</key>
+				<integer>357</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>11</integer>
+				<key>line</key>
+				<integer>357</integer>
+			</dict>
+		</dict>
+		<key>old/RecipeEditor.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>46</integer>
+				<key>line</key>
+				<integer>40</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>20</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>base.py</string>
+		<string>old/RecipeEditor.py</string>
 		<string>editors.py</string>
+		<string>base.py</string>
+		<string>db.py</string>
+		<string>models.py</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
