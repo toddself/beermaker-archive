@@ -86,6 +86,9 @@ class RecipeEditor(wx.Frame, BaseWindow):
                     )
                 }, # end third row
                 )
+
+    def _setupIngredients(self):
+        pass
                     
     def onTextEvent(self, event):
         pass
