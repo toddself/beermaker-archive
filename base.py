@@ -186,7 +186,6 @@ class BaseWindow():
             for widget in widgets:
                 # this will be true if we're working with a sizer
                 if widget.has_key('widgets'):                    
-                    print sizer
                     sizer.Add(self._createWidgets(widget, parent))
                 else:
                     sizer = self._addWidgetToSizer(widget, sizer, parent)
