@@ -45,7 +45,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.main_panel = wx.Panel(self, -1)
         self.main_panel.SetSizer(self.buildLayout(self.main_panel))
         
-        self._setupIngredients(self)
+        # self._setupIngredients(self)
                                           
     def layoutData(self):
         return ({'widget': wx.BoxSizer, 'title': 'Recipe Basics', 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
