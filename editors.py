@@ -25,13 +25,13 @@ import guid
 import iconsrc
 
 from db import DataStore
-from models import Recipe, Batch, BJCPStyle, BJCPCategory, Measures, EquipmentSet
+from models import Recipe, Batch, BJCPStyle, BJCPCategory, Measures, EquipmentSet, MashProfile
 
 from base import BaseWindow
 
 class Ingredient():
     """
-    Class for the ObjectListView data
+    Convience class for the ingredients_ctrl ObjectListView.  These are genered by RecipeEditor._gatherIngredients from models.RecipeIngredient
     """
 
     def __init__(self, name, ingredient_type, amount, use_in, time_used, percentage, amount_units, use_in_units):
@@ -43,6 +43,7 @@ class Ingredient():
         self.time_used = time_used
         self.percentage = percentage
         self.amount_units = amount_units
+
 
 class RecipeEditor(wx.Frame, BaseWindow):
     def __init__(self, parent, fid, title, pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.DEFAULT_FRAME_STYLE):
@@ -60,11 +61,11 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.main_panel = wx.Panel(self, -1)
         self.main_panel.SetSizer(self.buildLayout(self.main_panel))
         
-        self._gatherIngredients()
         self._setupIngredients()
-        
-        
-                                          
+
+        if self.is_batch:
+            self._gatherIngredients()
+     
     def layoutData(self):
         return ({'widget': wx.BoxSizer, 'title': 'Recipe Basics', 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
                     (
@@ -84,13 +85,13 @@ class RecipeEditor(wx.Frame, BaseWindow):
                     (
                     {'widget': wx.StaticText, 'label': 'Boil Volume:', 'flag': self.ST_STYLE},
                     {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
-                    {'widget': wx.Choice, 'choices': self._getLiquidVolumeChoices(), 'size': (-1,-1)},
+                    # {'widget': wx.Choice, 'choices': self._getLiquidVolumeChoices(), 'size': (-1,-1)},
                     {'widget': wx.StaticText, 'label': 'Batch Volume:', 'flag': self.ST_STYLE},
                     {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
-                    {'widget': wx.Choice, 'choices': self._getLiquidVolumeChoices(), 'size': (-1,-1)},
+                    # {'widget': wx.Choice, 'choices': self._getLiquidVolumeChoices(), 'size': (-1,-1)},
                     {'widget': wx.StaticText, 'label': 'Equipment:', 'flag': self.ST_STYLE},
                     {'widget': wx.Choice, 'choices': self._getEquipmentChoices()},
-                    {'widget': wx.CheckBox, 'proportion': 1, 'label': 'Boil set to equipment'},
+                    {'widget': wx.CheckBox, 'proportion': 1, 'label': 'Boil volume set to equipment'},
                     )
                 }, # end second row
                 {'widget': wx.BoxSizer, 'title': 'Ingredients', 'flag': wx.ALL|wx.EXPAND, 'proportion': 1, 'style': wx.HORIZONTAL, 'widgets':
@@ -103,14 +104,69 @@ class RecipeEditor(wx.Frame, BaseWindow):
                         )},                        
                     )
                 }, # end third row
+                {'widget': wx.BoxSizer, 'title': 'Recipe Statistics', 'flag': wx.ALL|wx.EXPAND, 'proportion': 0, 'style': wx.HORIZONTAL, 'widgets':
+                    ({'widget': wx.FlexGridSizer, 'rows': 11, 'cols': 2, 'vgap': 3, 'hgap': 3, 'widgets':
+                        ({'widget': wx.StaticText, 'label': 'STYLE', 'style': wx.ALL, 'border': 3, 'proportion': 0},
+                        {'widget': wx.StaticText, 'label': 'OG:' , 'style': self.ST_STYLE},
+                        {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                        {'widget': wx.StaticText, 'label': 'FG:' , 'style': self.ST_STYLE},
+                        {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                        {'widget': wx.StaticText, 'label': 'Color:' , 'style': self.ST_STYLE},
+                        {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                        {'widget': wx.StaticText, 'label': 'ABV:' , 'style': self.ST_STYLE},
+                        {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                        {'widget': wx.StaticText, 'label': 'Bitterness Ratio:' , 'style': self.ST_STYLE},
+                        {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                        {'widget': wx.StaticText, 'label': 'RECIPE', 'style': wx.ALL, 'border': 3, 'proportion': 0},
+                        {'widget': wx.StaticText, 'label': 'OG:' , 'style': self.ST_STYLE},
+                        {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                        {'widget': wx.StaticText, 'label': 'FG:' , 'style': self.ST_STYLE},
+                        {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                        {'widget': wx.StaticText, 'label': 'Color:' , 'style': self.ST_STYLE},
+                        {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                        {'widget': wx.StaticText, 'label': 'ABV:' , 'style': self.ST_STYLE},
+                        {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                        {'widget': wx.StaticText, 'label': 'Bitterness Ratio:' , 'style': self.ST_STYLE},
+                        {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                        )},
+                    )
+                }, # end fourth row  
+                {'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'proportion': 0, 'flag': wx.ALL|wx.EXPAND, 'widgets':
+                    ({'widget': wx.BoxSizer, 'title': 'Mash', 'proportion': 1, 'flag': wx.ALL|wx.EXPAND, 'style': wx.VERTICAL, 'widgets':
+                        ({'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'widgets':
+                            ({'widget': wx.StaticText, 'label': 'Mash Type:', 'style': self.ST_STYLE},
+                            {'widget': wx.Choice, 'choices': self._getMashChoices()},)
+                        },
+                        {'widget': ObjectListView, 'var': 'mash_ctrl', 'style': wx.LC_REPORT|wx.EXPAND, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
+                        {'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'widgets':
+                            ({'widget': wx.Button, 'id': wx.ID_ADD},
+                            {'widget': wx.Button, 'id': wx.ID_DELETE},
+                            {'widget': wx.Button, 'id': wx.ID_UP},
+                            {'widget': wx.Button, 'id': wx.ID_DOWN})
+                        },
+                        )
+                    },
+                    {'widget': wx.FlexGridSizer, 'title': 'Fermentation', 'proportion': 0, 'border': 3, 'flag': wx.ALL|wx.EXPAND, 'rows': 2, 'cols': 4, 'widgets':
+                        (
+                        )},
+                    )                
+                }, # end fifth row              
                 )
+
+
+    def _getMashChoices(self):
+        if MashProfile.select().count() == 0:
+            return ['No Mashes Defined',]
+        else:
+            return ['%s' % m.name for m in list(MashProfile.select())]
                 
     def _gatherIngredients(self):
         ing1 = Ingredient("Test", "Hop", 10, "Boil", 60, 0, 'oz', 'min')
         self.ingredient_list = [ing1, ]
+        self.ingredients_ctrl.SetObjects(self.ingredient_list)
 
     def _setupIngredients(self):
-        namec = ColumnDefn('Ingredient', 'left', 120, 'name')
+        namec = ColumnDefn('Ingredient', 'left', -1, 'name', isSpaceFilling=True)
         typec= ColumnDefn('Type', 'left', 120, 'ingredient_type')
         use_inc = ColumnDefn('Use', 'left', 120, 'use_in')
         percentc = ColumnDefn('%', 'left', 120, 'percentage', stringConverter="%.2f")
@@ -118,7 +174,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
         amountc = ColumnDefn('Amount', 'left', 120, 'amount')
         
         self.ingredients_ctrl.SetColumns([namec, typec, amountc, use_inc, percentc, timec])
-        self.ingredients_ctrl.SetObjects(self.ingredient_list)
+
                     
     def onTextEvent(self, event):
         pass

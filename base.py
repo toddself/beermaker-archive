@@ -157,7 +157,7 @@ class BaseWindow():
         for row in self.layoutData():
             if row.has_key('title'):
                     title = row.pop('title')
-                    self.master_sizer.Add(self._createSectionHeader(parent,title), 0, wx.ALL|wx.EXPAND, 3)
+                    self.master_sizer.Add(self._createSectionHeader(parent, title), 0, wx.ALL|wx.EXPAND, 3)
             # we've gotta pop them off now or they won't exist after the recursive call to _createWidgets
             sizer_add_args = self._getSizerAddArgs(row)
             self.master_sizer.Add(self._createWidgets(row, parent), **sizer_add_args)
@@ -179,7 +179,15 @@ class BaseWindow():
             
             # we'll take off the child elements and then create our sizer
             widgets = row.pop('widgets')
+            if row.has_key('title'):
+                title = self._createSectionHeader(parent, row.pop('title'))
+
             sizer = self._createSizer(row)
+            
+            try:
+                sizer.Add(title, 0, wx.ALL|wx.EXPAND, 3)
+            except:
+                pass                
             
             # now lets see if there are more sizers or just elements
             # if there are more sizers, we're gonna call this function again
