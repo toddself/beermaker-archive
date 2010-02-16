@@ -29,6 +29,21 @@ from models import Recipe, Batch, BJCPStyle, BJCPCategory, Measures, EquipmentSe
 
 from base import BaseWindow
 
+class Ingredient():
+    """
+    Class for the ObjectListView data
+    """
+
+    def __init__(self, name, ingredient_type, amount, use_in, time_used, percentage, amount_units, use_in_units):
+        self.name = name
+        self.ingredient_type = ingredient_type
+        self.amount = amount
+        self.use_in = use_in
+        self.use_in_units = use_in_units
+        self.time_used = time_used
+        self.percentage = percentage
+        self.amount_units = amount_units
+
 class RecipeEditor(wx.Frame, BaseWindow):
     def __init__(self, parent, fid, title, pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.DEFAULT_FRAME_STYLE):
         wx.Frame.__init__(self, parent, fid, title, pos, size, style)
@@ -45,7 +60,10 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.main_panel = wx.Panel(self, -1)
         self.main_panel.SetSizer(self.buildLayout(self.main_panel))
         
+        self._gatherIngredients()
         self._setupIngredients()
+        
+        
                                           
     def layoutData(self):
         return ({'widget': wx.BoxSizer, 'title': 'Recipe Basics', 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
@@ -76,7 +94,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
                     )
                 }, # end second row
                 {'widget': wx.BoxSizer, 'title': 'Ingredients', 'flag': wx.ALL|wx.EXPAND, 'proportion': 1, 'style': wx.HORIZONTAL, 'widgets':
-                    ({'widget': ObjectListView, 'var': 'ingredients_ctrl', 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
+                    ({'widget': ObjectListView, 'var': 'ingredients_ctrl', 'style': wx.LC_REPORT, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
                     {'widget': wx.BoxSizer, 'title': 'Details', 'flag': wx.ALL|wx.EXPAND, 'style': wx.VERTICAL, 'widgets':
                         ({'widget': wx.Button, 'id': wx.ID_ADD},
                         {'widget': wx.Button, 'id': wx.ID_DELETE},
@@ -86,11 +104,21 @@ class RecipeEditor(wx.Frame, BaseWindow):
                     )
                 }, # end third row
                 )
+                
+    def _gatherIngredients(self):
+        ing1 = Ingredient("Test", "Hop", 10, "Boil", 60, 0, 'oz', 'min')
+        self.ingredient_list = [ing1, ]
 
     def _setupIngredients(self):
-        ingredient_name_column = ColumnDefn('Ingredient', 'left', 120, 'name')
+        namec = ColumnDefn('Ingredient', 'left', 120, 'name')
+        typec= ColumnDefn('Type', 'left', 120, 'ingredient_type')
+        use_inc = ColumnDefn('Use', 'left', 120, 'use_in')
+        percentc = ColumnDefn('%', 'left', 120, 'percentage', stringConverter="%.2f")
+        timec = ColumnDefn('Time', 'left', 120, 'time_used')
+        amountc = ColumnDefn('Amount', 'left', 120, 'amount')
         
-        pass
+        self.ingredients_ctrl.SetColumns([namec, typec, amountc, use_inc, percentc, timec])
+        self.ingredients_ctrl.SetObjects(self.ingredient_list)
                     
     def onTextEvent(self, event):
         pass
