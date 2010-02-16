@@ -19,7 +19,7 @@
 import wx
 import wx.calendar as cal
 
-from ObjectListView import ObjectListView
+from ObjectListView import ObjectListView, ColumnDefn
 
 import guid
 import iconsrc
@@ -45,7 +45,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.main_panel = wx.Panel(self, -1)
         self.main_panel.SetSizer(self.buildLayout(self.main_panel))
         
-        # self._setupIngredients(self)
+        self._setupIngredients()
                                           
     def layoutData(self):
         return ({'widget': wx.BoxSizer, 'title': 'Recipe Basics', 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
@@ -76,7 +76,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
                     )
                 }, # end second row
                 {'widget': wx.BoxSizer, 'title': 'Ingredients', 'flag': wx.ALL|wx.EXPAND, 'proportion': 1, 'style': wx.HORIZONTAL, 'widgets':
-                    ({'widget': ObjectListView, 'var': 'listcontrol', 'style': wx.LC_REPORT, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
+                    ({'widget': ObjectListView, 'var': 'ingredients_ctrl', 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
                     {'widget': wx.BoxSizer, 'title': 'Details', 'flag': wx.ALL|wx.EXPAND, 'style': wx.VERTICAL, 'widgets':
                         ({'widget': wx.Button, 'id': wx.ID_ADD},
                         {'widget': wx.Button, 'id': wx.ID_DELETE},
@@ -88,6 +88,8 @@ class RecipeEditor(wx.Frame, BaseWindow):
                 )
 
     def _setupIngredients(self):
+        ingredient_name_column = ColumnDefn('Ingredient', 'left', 120, 'name')
+        
         pass
                     
     def onTextEvent(self, event):
