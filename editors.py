@@ -44,6 +44,15 @@ class Ingredient():
         self.percentage = percentage
         self.amount_units = amount_units
 
+class Mash():
+    
+    def __init__(self, name, start_temp, end_temp, time, temp_units):
+        self.name = name
+        self.start_temp = start_temp
+        self.end_temp = end_temp
+        self.time = time
+        self.temp_units = temp_units
+
 
 class RecipeEditor(wx.Frame, BaseWindow):
     def __init__(self, parent, fid, title, pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.DEFAULT_FRAME_STYLE):
@@ -62,6 +71,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.main_panel.SetSizer(self.buildLayout(self.main_panel))
         
         self._setupIngredients()
+        self._setupMashes()
 
         if self.is_batch:
             self._gatherIngredients()
@@ -96,7 +106,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
                 }, # end second row
                 {'widget': wx.BoxSizer, 'title': 'Ingredients', 'flag': wx.ALL|wx.EXPAND, 'proportion': 1, 'style': wx.HORIZONTAL, 'widgets':
                     ({'widget': ObjectListView, 'var': 'ingredients_ctrl', 'style': wx.LC_REPORT, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
-                    {'widget': wx.BoxSizer, 'title': 'Details', 'flag': wx.ALL|wx.EXPAND, 'style': wx.VERTICAL, 'widgets':
+                    {'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'style': wx.VERTICAL, 'widgets':
                         ({'widget': wx.Button, 'id': wx.ID_ADD},
                         {'widget': wx.Button, 'id': wx.ID_DELETE},
                         {'widget': wx.Button, 'id': wx.ID_UP},
@@ -133,26 +143,35 @@ class RecipeEditor(wx.Frame, BaseWindow):
                 }, # end fourth row  
                 {'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'proportion': 0, 'flag': wx.ALL|wx.EXPAND, 'widgets':
                     ({'widget': wx.BoxSizer, 'title': 'Mash', 'proportion': 1, 'flag': wx.ALL|wx.EXPAND, 'style': wx.VERTICAL, 'widgets':
-                        ({'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'widgets':
+                        ({'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'flag': wx.ALL|wx.EXPAND, 'widgets':
                             ({'widget': wx.StaticText, 'label': 'Mash Type:', 'style': self.ST_STYLE},
-                            {'widget': wx.Choice, 'choices': self._getMashChoices()},)
-                        },
+                            {'widget': wx.Choice, 'choices': self._getMashChoices()},)},
                         {'widget': ObjectListView, 'var': 'mash_ctrl', 'style': wx.LC_REPORT|wx.EXPAND, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
                         {'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'widgets':
                             ({'widget': wx.Button, 'id': wx.ID_ADD},
                             {'widget': wx.Button, 'id': wx.ID_DELETE},
                             {'widget': wx.Button, 'id': wx.ID_UP},
-                            {'widget': wx.Button, 'id': wx.ID_DOWN})
-                        },
-                        )
-                    },
-                    {'widget': wx.FlexGridSizer, 'title': 'Fermentation', 'proportion': 0, 'border': 3, 'flag': wx.ALL|wx.EXPAND, 'rows': 2, 'cols': 4, 'widgets':
-                        (
-                        )},
+                            {'widget': wx.Button, 'id': wx.ID_DOWN})},)},
+                    {'widget': wx.BoxSizer, 'style': wx.VERTICAL, 'title': 'Fermentation', 'border': 3, 'flag': wx.ALL|wx.EXPAND, 'widgets':
+                        ({'widget': wx.FlexGridSizer, 'vgap': 3, 'hgap': 3, 'rows': 2, 'cols': 4, 'widgets':
+                            ({'widget': wx.StaticText, 'label': 'Stages:', 'style': self.ST_STYLE},
+                            {'widget': wx.Choice, 'choices': self._getFermentationStageChoices()},
+                            {'widget': wx.StaticText, 'label': 'Primary:', 'style': self.ST_STYLE},
+                            {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                            {'widget': wx.StaticText, 'label': 'Secondary:', 'style': self.ST_STYLE},
+                            {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                            {'widget': wx.StaticText, 'label': 'Teritary:', 'style': self.ST_STYLE},
+                            {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},)},)},
+                    {'widget': wx.BoxSizer, 'style': wx.VERTICAL, 'title': 'Carbonation', 'border': 3, 'flag': wx.ALL|wx.EXPAND, 'widgets':
+                        ()
+                    }
+                            
                     )                
                 }, # end fifth row              
                 )
 
+    def _getFermentationStageChoices(self):
+        return Recipe.fermentation_types
 
     def _getMashChoices(self):
         if MashProfile.select().count() == 0:
@@ -174,6 +193,14 @@ class RecipeEditor(wx.Frame, BaseWindow):
         amountc = ColumnDefn('Amount', 'left', 120, 'amount')
         
         self.ingredients_ctrl.SetColumns([namec, typec, amountc, use_inc, percentc, timec])
+
+    def _setupMashes(self):
+        namec = ColumnDefn('Name', 'left', -1, 'name', isSpaceFilling=True)
+        startc = ColumnDefn('Start Temp', 'left', 80, 'start_temp')
+        endc = ColumnDefn('End Temp', 'left', 80, 'end_temp')
+        timec = ColumnDefn('Time', 'left', 80, 'time')
+        
+        self.mash_ctrl.SetColumns([namec, startc, endc, timec])
 
                     
     def onTextEvent(self, event):
