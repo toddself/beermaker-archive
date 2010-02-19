@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>editors.py</string>
+	<string>beermaker.py</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -33,8 +33,6 @@
 			<string>LICENSE</string>
 		</dict>
 		<dict>
-			<key>expanded</key>
-			<true/>
 			<key>name</key>
 			<string>old</string>
 			<key>regexFolderFilter</key>
@@ -58,21 +56,21 @@
 			<key>filename</key>
 			<string>base.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-17T00:43:29Z</date>
+			<date>2010-02-19T16:52:20Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>editors.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-17T00:51:55Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2010-02-19T16:56:52Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>beermaker.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-08T21:55:31Z</date>
+			<date>2010-02-19T16:56:52Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -90,7 +88,7 @@
 			<key>filename</key>
 			<string>db.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-17T00:50:51Z</date>
+			<date>2010-02-19T16:45:28Z</date>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -104,7 +102,7 @@
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-17T00:51:54Z</date>
+			<date>2010-02-19T16:45:29Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -129,74 +127,44 @@
 			<key>firstVisibleLine</key>
 			<integer>153</integer>
 		</dict>
-		<key>db.py</key>
+		<key>beermaker.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>71</integer>
+				<integer>52</integer>
 				<key>line</key>
-				<integer>57</integer>
+				<integer>74</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>18</integer>
+			<integer>62</integer>
 		</dict>
 		<key>editors.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>43</integer>
+				<integer>16</integer>
 				<key>line</key>
-				<integer>108</integer>
+				<integer>303</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>85</integer>
-		</dict>
-		<key>models.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>55</integer>
-				<key>line</key>
-				<integer>456</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>359</integer>
-		</dict>
-		<key>old/RecipeEditor.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>46</integer>
-				<key>line</key>
-				<integer>40</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>17</integer>
+			<integer>251</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>editors.py</string>
-		<string>old/RecipeEditor.py</string>
 		<string>base.py</string>
-		<string>db.py</string>
-		<string>models.py</string>
+		<string>beermaker.py</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{10, 4}, {1192, 874}}</string>
+	<string>{{37, 48}, {1388, 980}}</string>
 </dict>
 </plist>

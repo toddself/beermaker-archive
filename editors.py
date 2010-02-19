@@ -116,7 +116,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
                 }, # end third row
                 {'widget': wx.BoxSizer, 'title': 'Recipe Statistics', 'flag': wx.ALL|wx.EXPAND, 'proportion': 0, 'style': wx.HORIZONTAL, 'widgets':
                     ({'widget': wx.FlexGridSizer, 'rows': 11, 'cols': 2, 'vgap': 3, 'hgap': 3, 'widgets':
-                        ({'widget': wx.StaticText, 'label': 'STYLE', 'style': wx.ALL, 'border': 3, 'proportion': 0},
+                        ({'widget': wx.StaticText, 'label': 'Style', 'style': wx.ALL, 'border': 3, 'proportion': 0},
                         {'widget': wx.StaticText, 'label': 'OG:' , 'style': self.ST_STYLE},
                         {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
                         {'widget': wx.StaticText, 'label': 'FG:' , 'style': self.ST_STYLE},
@@ -127,7 +127,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
                         {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
                         {'widget': wx.StaticText, 'label': 'Bitterness Ratio:' , 'style': self.ST_STYLE},
                         {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
-                        {'widget': wx.StaticText, 'label': 'RECIPE', 'style': wx.ALL, 'border': 3, 'proportion': 0},
+                        {'widget': wx.StaticText, 'label': 'Recipe', 'style': wx.ALL, 'border': 3, 'proportion': 0},
                         {'widget': wx.StaticText, 'label': 'OG:' , 'style': self.ST_STYLE},
                         {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
                         {'widget': wx.StaticText, 'label': 'FG:' , 'style': self.ST_STYLE},
@@ -143,10 +143,10 @@ class RecipeEditor(wx.Frame, BaseWindow):
                 }, # end fourth row  
                 {'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'proportion': 0, 'flag': wx.ALL|wx.EXPAND, 'widgets':
                     ({'widget': wx.BoxSizer, 'title': 'Mash', 'proportion': 1, 'flag': wx.ALL|wx.EXPAND, 'style': wx.VERTICAL, 'widgets':
-                        ({'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'flag': wx.ALL|wx.EXPAND, 'widgets':
+                        ({'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'proportion': 0, 'flag': wx.ALL|wx.EXPAND, 'widgets':
                             ({'widget': wx.StaticText, 'label': 'Mash Type:', 'style': self.ST_STYLE},
                             {'widget': wx.Choice, 'choices': self._getMashChoices()},)},
-                        {'widget': ObjectListView, 'var': 'mash_ctrl', 'style': wx.LC_REPORT|wx.EXPAND, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
+                        {'widget': ObjectListView, 'size': (500, -1), 'var': 'mash_ctrl', 'style': wx.LC_REPORT|wx.EXPAND, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
                         {'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'widgets':
                             ({'widget': wx.Button, 'id': wx.ID_ADD},
                             {'widget': wx.Button, 'id': wx.ID_DELETE},
@@ -163,12 +163,25 @@ class RecipeEditor(wx.Frame, BaseWindow):
                             {'widget': wx.StaticText, 'label': 'Teritary:', 'style': self.ST_STYLE},
                             {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},)},)},
                     {'widget': wx.BoxSizer, 'style': wx.VERTICAL, 'title': 'Carbonation', 'border': 3, 'flag': wx.ALL|wx.EXPAND, 'widgets':
-                        ()
+                        ({'widget': wx.FlexGridSizer, 'vgap': 3, 'hgap': 3, 'rows': 2, 'cols': 4, 'widgets':
+                            ({'widget': wx.StaticText, 'label': 'Type:', 'style': self.ST_STYLE},
+                            {'widget': wx.Choice, 'choices': self._getCarbonationTypeChoices()},
+                            {'widget': wx.StaticText, 'label': 'Volumes:', 'style': self.ST_STYLE},
+                            {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                            {'widget': wx.StaticText, 'label': 'Style:', 'style': self.ST_STYLE},
+                            {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                            {'widget': wx.StaticText, 'label': 'Amount:', 'style': self.ST_STYLE},
+                            {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                            
+                            )},
+                        )
                     }
                             
                     )                
                 }, # end fifth row              
                 )
+    def _getCarbonationTypeChoices(self):
+        return Recipe.carbonation_types
 
     def _getFermentationStageChoices(self):
         return Recipe.fermentation_types

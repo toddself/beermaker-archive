@@ -17,6 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import wx
+from ObjectListView import ObjectListView, ColumnDefn
 
 # we're importing these for now so we have better separation of data and ui elements
 # these will eventually move into a skinning system
@@ -30,84 +31,57 @@ from models import Recipe, Batch
 # import gui elements
 from base import BaseWindow
 from editors import RecipeEditor
-        
+
+class RecipeData():
+    def __init__(self, name, category, number, ibu, srm, abv, og, fg, brewed_on):
+        self.name = name
+        self.category = category
+        self.number = number
+        self.ibu = ibu
+        self.srm = srm
+        self.abv = abv
+        self.og = og
+        self.fg = fg
+        self.brewed_on = brewed_on
         
 class MainFrame(wx.Frame, BaseWindow):
     def __init__(self, *args, **kw):
         kw['style'] = wx.DEFAULT_FRAME_STYLE
         wx.Frame.__init__(self, *args, **kw)
-        self.list_columns_set = False
         
-        # make a status bar
+        # ui basics...
         self.status_bar = self.CreateStatusBar(1,0)
-        
-        # make some menus
         self.menus = self.buildMenuBar()
-        
-        # make some toolbars
         self.tools = self.buildToolbar()
         
-        # start the layout
-        self.SetTitle("BeerMaker")
-        self.SetSize((1024, 768))       
-        self.panel = wx.Panel(self, -1)
-
-        # generate the list control
-        self.recipe_list = wx.ListCtrl(self.panel, -1, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
-
-        # set the sizers
-        self.main_sizer = wx.BoxSizer(wx.VERTICAL)
-        self.main_sizer.Add(self.recipe_list, 1, wx.ALL|wx.EXPAND, 3)
-        self.panel.SetSizer(self.main_sizer)
+        # new layout engine
+        self.main_panel = wx.Panel(self, -1)
+        self.main_panel.SetSizer(self.buildLayout(self.main_panel))
         
-        # set up our resize event
-        #self.Bind(wx.EVT_SIZE, self.resizeColumns)
-        
-        # load data
-        self.populateList()
+        self._setupRecipeList()
 
-    def createListColumns(self):
-        self.list_columns_set = True
-        self.recipe_list.InsertColumn(guid.RL_NAME, 'Name')
-        self.recipe_list.InsertColumn(guid.RL_CATEGORY, 'Category')
-        self.recipe_list.InsertColumn(guid.RL_NUMBER, 'Number')
-        self.recipe_list.InsertColumn(guid.RL_IBU, 'IBU')
-        self.recipe_list.InsertColumn(guid.RL_SRM, 'SRM')
-        self.recipe_list.InsertColumn(guid.RL_ABV, 'ABV')
-        self.recipe_list.InsertColumn(guid.RL_OG, 'OG')
-        self.recipe_list.InsertColumn(guid.RL_FG, 'FG')
-        self.recipe_list.InsertColumn(guid.RL_BREWED_ON, 'Brewed On')        
-            
-    def populateList(self):
-        if not self.list_columns_set:
-            self.createListColumns()
-            
-        # we need a list that'll hold the index -> recipe id matching
-        self.recipe_index_id = []
 
-        for batch in list(Batch.select(distinct=True)):
-            recipe = Recipe.get(batch.master_id)            
-            index = self.recipe_list.InsertStringItem(wx.NewId(), recipe.name)
-            # we're gonna store this for later
-            self.recipe_index_id[index] = batch.master_id
-            self.recipe_list.SetStringItem(index, guid.RL_CATEGORY, recipe.style.name)
-            self.recipe_list.SetStringItem(index, guid.RL_NUMBER, recipe.style.combined_category_id)
-            self.recipe_list.SetStringItem(index, guid.RL_IBU, recipe.ibu)
-            self.recipe_list.SetStringItem(index, guid.RL.SRM, recipe.srm)
-            self.recipe_list.SetStringItem(index, guid.RL_ABV, recipe.abv)
-            self.recipe_list.SetStringItem(index, guid.RL_OG, recipe.og)
-            self.recipe_list.SetStringItem(index, guid.RL_FG, recipe.fg)
-            self.recipe_list.SetStringItem(index, guid.RL_BREWED_ON, recipe.brewed_on)        
-        
-        # self.resizeColumns()
-            
-    def resizeColumns(self):
-        for column in range(0, self.recipe_list.GetColumnCount()):
-            self.recipe_list.SetColumnWidth(column, wx.LIST_AUTOSIZE)
-        
+    def layoutData(self):
+        return ({'widget': wx.BoxSizer, 'style:': wx.VERTICAL, 'proportion': 1, 'flag': wx.EXPAND|wx.ALL, 'border': 3, 'widgets':
+            ({'widget': ObjectListView, 'var': 'recipes_ctrl', 'style': wx.LC_REPORT, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},)
+        },)
+
+    def _setupRecipeList(self):
+        namec = ColumnDefn('Name', 'left', -1, 'name', isSpaceFilling=True)
+        catc = ColumnDefn('Category', 'left', 80, 'start_temp')
+        numberc = ColumnDefn('Number', 'left', 80, 'end_temp')
+        ibuc = ColumnDefn('IBU', 'left', 80, 'time')
+        srmc = ColumnDefn('SRM', 'left', 80, 'time')
+        abvc = ColumnDefn('ABV', 'left', 80, 'time')
+        ogc = ColumnDefn('OG', 'left', 80, 'time')
+        fgc = ColumnDefn('FG', 'left', 80, 'time')
+        boc = ColumnDefn('Brewed On', 'left', 80, 'time')
+
+
+        self.recipes_ctrl.SetColumns([namec, catc, numberc, ibuc, srmc, abvc, ogc, fgc, boc])
         
     def newRecipe(self, event):
-        recipe_editor = RecipeEditor(self, -1, "")
+        recipe_editor = RecipeEditor(self, -1, "", size=(1024,768), pos=(10,50))
         recipe_editor.Show()
     
     def newBatch(self):
@@ -309,7 +283,7 @@ class BeerMaker(wx.App):
     def OnInit(self):
         wx.InitAllImageHandlers()
         ds = DataStore()
-        BeerMaker = MainFrame(None, -1, "")
+        BeerMaker = MainFrame(None, -1, "BeerMaker", size=(800,600))
         self.SetTopWindow(BeerMaker)
         BeerMaker.Show()
         return 1
