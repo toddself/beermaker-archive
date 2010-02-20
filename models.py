@@ -66,19 +66,18 @@ class Measures():
     OZ = 2
     LB = 3
     KG = 4
-    LB = 5
-    ML = 6
-    TSP = 7
-    TBLS = 8
-    CUP = 9
-    PT = 10
-    QT = 11
-    L = 12
-    GAL = 13
-    ITEMS = 14
-    FAHRENHEIT = 15
-    CELSIUS = 16
-    measures = ['mg','gm','oz','lb','kg','ml','tsp','tbls',
+    ML = 5
+    TSP = 6
+    TBLS = 7
+    CUP = 8
+    PT = 9
+    QT = 10
+    L = 11
+    GAL = 12
+    ITEMS = 13
+    FAHRENHEIT = 14
+    CELSIUS = 15
+    measures = ['mg','gm','oz','lbs','kg','ml','tsp','tbls',
         'cup','pt','qt','l','gal','items', 'f', 'c']
         
     liquid_measures = [ML,L,PT,QT,CUP,GAL]
@@ -110,6 +109,14 @@ class Hop(SQLObject):
     description = UnicodeCol(default=None)
     substitutes = UnicodeCol(default=None)
     
+    def _get_inventory(self):
+        try:
+            inv = list(Inventory.select(Inventory.q.hop == self.id))[0]
+        except:
+            return 0
+        
+        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])
+    
 class Grain(SQLObject):
     name = UnicodeCol(length=64, default=None)
     origin = UnicodeCol(length=128, default=None)
@@ -125,6 +132,14 @@ class Grain(SQLObject):
     add_after_boil = BoolCol(default=False)
     notes = UnicodeCol(default=None)
     maltster = UnicodeCol(default=None, length=128)
+            
+    def _get_inventory(self):
+        try:
+            inv = list(Inventory.select(Inventory.q.grain == self.id))[0]
+        except:
+            return 0
+        
+        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])
     
 class Extract(SQLObject):
     name = UnicodeCol(length=64, default=None)
@@ -135,6 +150,14 @@ class Extract(SQLObject):
     add_after_boil = BoolCol(default=False)
     notes = UnicodeCol(default=None)
     supplier = UnicodeCol(default=None, length=128)
+    
+    def _get_inventory(self):
+        try:
+            inv = list(Inventory.select(Inventory.q.extract == self.id))[0]
+        except:
+            return 0
+        
+        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])
 
 class HoppedExtract(Extract, Measures):
     alpha = PercentCol(default=0.0)
@@ -142,6 +165,14 @@ class HoppedExtract(Extract, Measures):
     hop_usage_unit = IntCol(default=Measures.MIN)
     hop_by_weight = DecimalCol(size=4, precision=2, default=0.0)
     hop_by_weight_unit = IntCol(default=Measures.LB)
+    
+    def _get_inventory(self):
+        try:
+            inv = list(Inventory.select(Inventory.q.hopped_extract == self.id))[0]
+        except:
+            return 0
+        
+        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])
 
 class Yeast(SQLObject, Measures):
     LAGER = 0
@@ -184,6 +215,14 @@ class Yeast(SQLObject, Measures):
     notes = UnicodeCol(default=None)
     use_starter = BoolCol(default=False)
     secondary = BoolCol(default=False)
+    
+    def _get_inventory(self):
+        try:
+            inv = list(Inventory.select(Inventory.q.yeast == self.id))[0]
+        except:
+            return 0
+        
+        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])
 
 class Water(SQLObject):
     molecule_types = {'ca': 'Calcium', 'mg': 'Magnesium', 'na': 'Sodium',
@@ -199,6 +238,13 @@ class Water(SQLObject):
     hco3 = DecimalCol(size=8, precision=8, default=0.0)
     notes = UnicodeCol(default=None)
         
+    def _get_inventory(self):
+        try:
+            inv = list(Inventory.select(Inventory.q.water == self.id))[0]
+        except:
+            return 0
+        
+        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])        
     
 class Misc(SQLObject, Measures):
     SPICE = 0
@@ -231,26 +277,66 @@ class Mineral(Misc):
     def __init__(self, *args, **kw):
         misc_type = Misc.WATER_AGENT
         Misc.__init__(self, *args, **kw)
+        
+    def _get_inventory(self):
+        try:
+            inv = list(Inventory.select(Inventory.q.mineral == self.id))[0]
+        except:
+            return 0
+        
+        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])    
     
 class Fining(Misc):
     def __init__(self, *args, **kw):
         misc_type = Misc.FINING
         Misc.__init__(self, *args, **kw)
 
+    def _get_inventory(self):
+        try:
+            inv = list(Inventory.select(Inventory.q.fining == self.id))[0]
+        except:
+            return 0
+        
+        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])        
+
 class Flavor(Misc):
     def __init__(self, *args, **kw):
         misc_type = Misc.FLAVOR
-        Misc.__init__(self, *args, **kw)        
+        Misc.__init__(self, *args, **kw)   
+
+    def _get_inventory(self):
+        try:
+            inv = list(Inventory.select(Inventory.q.flavor == self.id))[0]
+        except:
+            return 0
+        
+        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])             
     
 class Spice(Misc):
     def __init__(self, *args, **kw):
         misc_type = Misc.SPICE
         Misc.__init__(self, *args, **kw)
 
+    def _get_inventory(self):
+        try:
+            inv = list(Inventory.select(Inventory.q.spice == self.id))[0]
+        except:
+            return 0
+        
+        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])
+
 class Herb(Misc):
     def __init__(self, *args, **kw):
         misc_type = Misc.HERB
         Misc.__init__(self, *args, **kw)
+
+    def _get_inventory(self):
+        try:
+            inv = list(Inventory.select(Inventory.q.herb == self.id))[0]
+        except:
+            return 0
+        
+        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])        
 
 
 class BJCPStyle(SQLObject):

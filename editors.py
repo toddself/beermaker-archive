@@ -25,33 +25,50 @@ import guid
 import iconsrc
 
 from db import DataStore
-from models import Recipe, Batch, BJCPStyle, BJCPCategory, Measures, EquipmentSet, MashProfile
+from models import Grain, Recipe, Batch, BJCPStyle, BJCPCategory, Measures, EquipmentSet, MashProfile
 
-from base import BaseWindow
+from base import BaseWindow 
 
-class Ingredient():
-    """
-    Convience class for the ingredients_ctrl ObjectListView.  These are genered by RecipeEditor._gatherIngredients from models.RecipeIngredient
-    """
+class IngredientBrowser(wx.Dialog, BaseWindow):
+    def __init__(self, *args, **kw):
+        wx.Dialog.__init__(self, *args, **kw)
+        
+        self.main_panel = wx.Panel(self, -1)
+        sizer = self.buildLayout(self.main_panel)
+        self.main_panel.SetSizer(sizer)
+        
+        
+        
+        self._setupIngredientsCtrl()
+        self._populateIngredients()
 
-    def __init__(self, name, ingredient_type, amount, use_in, time_used, percentage, amount_units, use_in_units):
-        self.name = name
-        self.ingredient_type = ingredient_type
-        self.amount = amount
-        self.use_in = use_in
-        self.use_in_units = use_in_units
-        self.time_used = time_used
-        self.percentage = percentage
-        self.amount_units = amount_units
-
-class Mash():
+    def layoutData(self):
+        return ({'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'proportion': 1, 'style': wx.VERTICAL, 'widgets':
+                    ({'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
+                        ({'widget': wx.StaticText, 'style': self.ST_STYLE, 'label': 'Type:'},
+                        {'widget': wx.Choice, 'choices': self._getIngredientTypeChoices()})
+                    },
+                    {'widget': ObjectListView, 'style': wx.LC_REPORT, 'var': 'ingredients_ctrl', 'useAlternateBackColors': True, 'oddRowsBackColor': wx.WHITE, 'cellEditMode': ObjectListView.CELLEDIT_NONE, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},)
+                },)
+        
+    def _getIngredientTypeChoices(self):
+        return ['Grains', 'Adjuncts', 'Extracts/Sugars', 'Hops','Yeast', 'Miscellaneous']
     
-    def __init__(self, name, start_temp, end_temp, time, temp_units):
-        self.name = name
-        self.start_temp = start_temp
-        self.end_temp = end_temp
-        self.time = time
-        self.temp_units = temp_units
+    def _setupIngredientsCtrl(self, ing_type='Grains'):
+        columns = []
+        if ing_type == 'Grains':
+            columns.append(ColumnDefn('Name', 'left', -1, 'name', isSpaceFilling=True))
+            columns.append(ColumnDefn('Origin', 'left', 120, 'origin'))
+            columns.append(ColumnDefn('Potential', 'left', 120, 'potential', stringConverter='%.3f'))
+            columns.append(ColumnDefn('Inventory', 'left', 120, 'inventory_amt'))
+        
+        self.ingredients_ctrl.SetColumns(columns)
+        
+    def _populateIngredients(self, ing_type='Grains'):
+        if ing_type == 'Grains':
+            inventory = list(Grain.select())
+
+        self.ingredients_ctrl.SetObjects(inventory)
 
 
 class RecipeEditor(wx.Frame, BaseWindow):
@@ -148,7 +165,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
                             {'widget': wx.Choice, 'choices': self._getMashChoices()},)},
                         {'widget': ObjectListView, 'size': (500, -1), 'var': 'mash_ctrl', 'style': wx.LC_REPORT|wx.EXPAND, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
                         {'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'widgets':
-                            ({'widget': wx.Button, 'id': wx.ID_ADD},
+                            ({'widget': wx.Button, 'id': wx.ID_ADD, 'event': {'event_type': wx.EVT_BUTTON, 'method': self.onInventoryAdd}},
                             {'widget': wx.Button, 'id': wx.ID_DELETE},
                             {'widget': wx.Button, 'id': wx.ID_UP},
                             {'widget': wx.Button, 'id': wx.ID_DOWN})},)},
@@ -180,6 +197,12 @@ class RecipeEditor(wx.Frame, BaseWindow):
                     )                
                 }, # end fifth row              
                 )
+                
+    def onInventoryAdd(self, event):
+        inventory = IngredientBrowser(self, -1, "Ingredient Browser", pos=(50,50), size=(800,600))
+        inventory.ShowModal()
+        
+        
     def _getCarbonationTypeChoices(self):
         return Recipe.carbonation_types
 
