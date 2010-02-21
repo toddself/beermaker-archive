@@ -41,7 +41,8 @@ class BaseWindow():
 
     TC_STYLE = wx.ALL|wx.ALIGN_CENTER_VERTICAL
     ST_STYLE = wx.ALL|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL
-
+    ui_font = None
+    
     def __init__(self):
         pass
         
@@ -96,6 +97,47 @@ class BaseWindow():
             menu_bar.Append(self._createMenu(items), label)
         self.SetMenuBar(menu_bar)
     
+    def GetNewFont(self, pointSize=None, family=None, style=None, weight=None, underline=None, face=None, encoding=None):
+        """
+        getFont allows the user to override specific attributes of the default interface font 
+        without having to mess around with generating a new wx.Font object or talking to
+        wx.SystemSettings, etc.
+    
+        getFont returns a wx.Font object
+    
+        (self, pointSize, family, style, weight, underline, face, encoding) 
+        """
+        f = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+    
+        if pointSize:
+            f.SetPointSize(pointSize)
+        
+        if family:
+            f.SetFamily(family)
+    
+        if style:
+            f.SetStyle(style)
+        
+        if weight:
+            f.SetWeight(weight)
+        
+        if underline:
+            f.SetUnderline(underline)
+    
+        if face:
+            f.SetFace(face)
+        
+        if encoding:
+            f.SetEncoding(encoding)
+        
+        return f
+        
+    def SetDefaultFont(self, font):
+        if type(font) == type(wx.Font):
+            self.ui_font = font
+        else:
+            print 'fuck off'
+    
     def _createMenu(self, items):
         """ 
         _createMenu is a helper method for buildMenuBar and should never be called directly.
@@ -130,7 +172,7 @@ class BaseWindow():
         self.default_sizer_args = {'proportion': proportion, 'flag': flag, 'border': border}
         
         
-    def buildLayout(self, parent):
+    def buildLayout(self, parent, layoutData=None):
         """
         buildLayout generates the ui from a list of dictionaries.  
         This method expects a method to be defined called layoutData 
@@ -153,8 +195,11 @@ class BaseWindow():
         
         """
         self.master_sizer = wx.BoxSizer(wx.VERTICAL)
+        
+        if not layoutData:
+            layoutData = self.layoutData()
 
-        for row in self.layoutData():
+        for row in layoutData:
             if row.has_key('title'):
                     title = row.pop('title')
                     self.master_sizer.Add(self._createSectionHeader(parent, title), 0, wx.ALL|wx.EXPAND, 3)
@@ -306,9 +351,9 @@ class BaseWindow():
             
         wxMethod = widget.pop('widget')
 
-        if widget.has_key('event'):
+        try:
             event = widget.pop('event')
-        else:
+        except:
             event = False
                     
         try:
@@ -316,7 +361,18 @@ class BaseWindow():
         except:
             var = False
 
+        try:
+            font = widget.pop('font')
+        except:
+            font = False
+
         gui_element = wxMethod(parent, **widget)
+    
+        if self.ui_font and not font:
+            gui_element.SetFont(self.ui_font)
+        elif font:
+            gui_element.SetFont(font)
+            
     
         if var:
             setattr(self, var, gui_element)
@@ -339,13 +395,11 @@ class BaseWindow():
         """
         
         if font == None:
-            try:
-                self.ui_font
-            except AttributeError:
+            if self.ui_font:
+                f = self.ui_font
+            else:
                 f = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
                 f.SetPointSize(f.GetPointSize() + scale)
-            else:
-                f = self.ui_font
         else:
             f = font
                 

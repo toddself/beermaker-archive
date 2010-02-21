@@ -46,10 +46,15 @@ class IngredientBrowser(wx.Dialog, BaseWindow):
         return ({'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'proportion': 1, 'style': wx.VERTICAL, 'widgets':
                     ({'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
                         ({'widget': wx.StaticText, 'style': self.ST_STYLE, 'label': 'Type:'},
-                        {'widget': wx.Choice, 'choices': self._getIngredientTypeChoices()})
+                        {'widget': wx.Choice, 'choices': self._getIngredientTypeChoices(), 'event': {'event_type': wx.EVT_CHOICE, 'method': self.OnIngredientSelect}})
                     },
-                    {'widget': ObjectListView, 'style': wx.LC_REPORT, 'var': 'ingredients_ctrl', 'useAlternateBackColors': True, 'oddRowsBackColor': wx.WHITE, 'cellEditMode': ObjectListView.CELLEDIT_NONE, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},)
+                    {'widget': ObjectListView, 'style': wx.LC_REPORT, 'var': 'ingredients_ctrl', 'useAlternateBackColors': True, 'oddRowsBackColor': wx.WHITE, 'cellEditMode': ObjectListView.CELLEDIT_NONE, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
+                    {'widget': wx.Panel, 'var': 'details_panel'}
+                    )
                 },)
+
+    def OnIngredientSelect():
+        pass
         
     def _getIngredientTypeChoices(self):
         return ['Grains', 'Adjuncts', 'Extracts/Sugars', 'Hops','Yeast', 'Miscellaneous']
@@ -133,7 +138,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
                 }, # end third row
                 {'widget': wx.BoxSizer, 'title': 'Recipe Statistics', 'flag': wx.ALL|wx.EXPAND, 'proportion': 0, 'style': wx.HORIZONTAL, 'widgets':
                     ({'widget': wx.FlexGridSizer, 'rows': 11, 'cols': 2, 'vgap': 3, 'hgap': 3, 'widgets':
-                        ({'widget': wx.StaticText, 'label': 'Style', 'style': wx.ALL, 'border': 3, 'proportion': 0},
+                        ({'widget': wx.StaticText, 'label': 'Style', 'font': self.GetNewFont(pointSize=13, style=wx.ITALIC), 'style': wx.ALL, 'border': 3, 'proportion': 0},
                         {'widget': wx.StaticText, 'label': 'OG:' , 'style': self.ST_STYLE},
                         {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
                         {'widget': wx.StaticText, 'label': 'FG:' , 'style': self.ST_STYLE},
@@ -144,7 +149,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
                         {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
                         {'widget': wx.StaticText, 'label': 'Bitterness Ratio:' , 'style': self.ST_STYLE},
                         {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
-                        {'widget': wx.StaticText, 'label': 'Recipe', 'style': wx.ALL, 'border': 3, 'proportion': 0},
+                        {'widget': wx.StaticText, 'label': 'Recipe', 'font': self.GetNewFont(pointSize=13, style=wx.ITALIC), 'style': wx.ALL, 'border': 3, 'proportion': 0},
                         {'widget': wx.StaticText, 'label': 'OG:' , 'style': self.ST_STYLE},
                         {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
                         {'widget': wx.StaticText, 'label': 'FG:' , 'style': self.ST_STYLE},
