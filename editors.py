@@ -134,10 +134,10 @@ class RecipeEditor(wx.Frame, BaseWindow):
                 {'widget': wx.BoxSizer, 'title': 'Ingredients', 'flag': wx.ALL|wx.EXPAND, 'proportion': 1, 'style': wx.HORIZONTAL, 'widgets':
                     ({'widget': ObjectListView, 'var': 'ingredients_ctrl', 'style': wx.LC_REPORT, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
                     {'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'style': wx.VERTICAL, 'widgets':
-                        ({'widget': wx.Button, 'id': wx.ID_ADD},
-                        {'widget': wx.Button, 'id': wx.ID_DELETE},
-                        {'widget': wx.Button, 'id': wx.ID_UP},
-                        {'widget': wx.Button, 'id': wx.ID_DOWN},
+                        ({'widget': wx.Button, 'label': '+', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.InventoryAdd}},
+                        {'widget': wx.Button, 'label': '-', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.InventoryDelete}},
+                        {'widget': wx.Button, 'label': '^', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.InventoryUp}},
+                        {'widget': wx.Button, 'label': 'v', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.InventoryDown}},
                         )},                        
                     )
                 }, # end third row
@@ -175,10 +175,10 @@ class RecipeEditor(wx.Frame, BaseWindow):
                             {'widget': wx.Choice, 'choices': self._getMashChoices()},)},
                         {'widget': ObjectListView, 'size': (500, -1), 'var': 'mash_ctrl', 'style': wx.LC_REPORT|wx.EXPAND, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
                         {'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'widgets':
-                            ({'widget': wx.Button, 'id': wx.ID_ADD, 'event': {'event_type': wx.EVT_BUTTON, 'method': self.onInventoryAdd}},
-                            {'widget': wx.Button, 'id': wx.ID_DELETE},
-                            {'widget': wx.Button, 'id': wx.ID_UP},
-                            {'widget': wx.Button, 'id': wx.ID_DOWN})},)},
+                            ({'widget': wx.Button, 'id': wx.ID_ADD, 'event': {'event_type': wx.EVT_BUTTON, 'method': self.MashAdd}},
+                            {'widget': wx.Button, 'id': wx.ID_DELETE, 'event': {'event_type': wx.EVT_BUTTON, 'method': self.MashDelete}},
+                            {'widget': wx.Button, 'id': wx.ID_UP, 'event': {'event_type': wx.EVT_BUTTON, 'method': self.MashUp}},
+                            {'widget': wx.Button, 'id': wx.ID_DOWN, 'event': {'event_type': wx.EVT_BUTTON, 'method': self.MashDown}})},)},
                     {'widget': wx.BoxSizer, 'style': wx.VERTICAL, 'title': 'Fermentation', 'border': 3, 'flag': wx.ALL|wx.EXPAND, 'widgets':
                         ({'widget': wx.FlexGridSizer, 'vgap': 3, 'hgap': 3, 'rows': 2, 'cols': 4, 'widgets':
                             ({'widget': wx.StaticText, 'label': 'Stages:', 'style': self.ST_STYLE},
@@ -208,11 +208,35 @@ class RecipeEditor(wx.Frame, BaseWindow):
                 }, # end fifth row              
                 )
                 
-    def onInventoryAdd(self, event):
+    def InventoryAdd(self, event):
         inventory = IngredientBrowser(self, -1, "Ingredient Browser", pos=(50,50), size=(800,600))
         inventory.ShowModal()
+    
+    def InventoryDelete(self, event):
+        pass
         
+    def InventoryDown(self, event):
+        pass
         
+    def InventoryUp(self, event):
+        """docstring for InventoryUp"""
+        pass    
+
+    def MashAdd(self, event):
+        """docstring for MashAdd"""
+        pass
+    
+    def MashDelete(self, event):
+        """docstring for MashDelete"""
+        pass
+        
+    def MashUp(self, event):
+        """docstring for MashUp"""
+        pass
+        
+    def MashDown(self, event):
+        pass
+    
     def _getCarbonationTypeChoices(self):
         return Recipe.carbonation_types
 
