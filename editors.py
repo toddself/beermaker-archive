@@ -54,7 +54,7 @@ class IngredientBrowser(wx.Dialog, BaseWindow):
                         ({'widget': wx.StaticText, 'style': self.ST_STYLE, 'label': 'Type:'},
                         {'widget': wx.Choice, 'choices': self._getIngredientTypeChoices(), 'event': {'event_type': wx.EVT_CHOICE, 'method': self.OnIngredientSelect}})
                     },
-                    {'widget': ObjectListView, 'style': wx.LC_REPORT, 'var': 'ingredients_ctrl', 'useAlternateBackColors': True, 'oddRowsBackColor': wx.WHITE, 'cellEditMode': ObjectListView.CELLEDIT_NONE, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
+                    {'widget': ObjectListView, 'style': wx.LC_REPORT, 'var': 'ingredients_ctrl', 'useAlternateBackColors': True, 'cellEditMode': ObjectListView.CELLEDIT_NONE, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
                     {'widget': wx.Panel, 'var': 'details_panel'}
                     )
                 },)
@@ -73,6 +73,7 @@ class IngredientBrowser(wx.Dialog, BaseWindow):
             columns.append(ColumnDefn('Potential', 'left', 120, 'potential', stringConverter='%.3f'))
             columns.append(ColumnDefn('Inventory', 'left', 120, 'inventory_amt'))
         
+        self.ingredients_ctrl.oddRowsBackColor = wx.WHITE
         self.ingredients_ctrl.SetColumns(columns)
         
     def _populateIngredients(self, ing_type='Grains'):
