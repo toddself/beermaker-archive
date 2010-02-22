@@ -42,6 +42,7 @@ class BaseWindow():
     TC_STYLE = wx.ALL|wx.ALIGN_CENTER_VERTICAL
     ST_STYLE = wx.ALL|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL
     ui_font = None
+    _not_editable_color = wx.Colour(224, 224, 224)
     
     def __init__(self):
         pass
@@ -86,6 +87,8 @@ class BaseWindow():
         method: method to be called upon selection
         id: guid for this menu option
         help: a help string
+        font:
+        editable:
         
         to create a submenu, do not add the method, id and help keys, but rather an items key
         which contains a tuple of dictionaries as defined above
@@ -365,6 +368,11 @@ class BaseWindow():
             font = widget.pop('font')
         except:
             font = False
+            
+        try:
+            editable = widget.pop('editable')
+        except:
+            editable = True
 
         gui_element = wxMethod(parent, **widget)
     
@@ -373,6 +381,9 @@ class BaseWindow():
         elif font:
             gui_element.SetFont(font)
             
+        if not editable:
+            gui_element.SetEditable(False)
+            gui_element.SetBackgroundColour(self._not_editable_color)
     
         if var:
             setattr(self, var, gui_element)
