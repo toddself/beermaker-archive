@@ -56,7 +56,7 @@
 			<key>filename</key>
 			<string>base.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-21T18:42:38Z</date>
+			<date>2010-02-23T19:20:11Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -68,7 +68,7 @@
 			<key>filename</key>
 			<string>editors.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-22T21:38:50Z</date>
+			<date>2010-02-23T19:44:39Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -76,7 +76,7 @@
 			<key>filename</key>
 			<string>beermaker.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-21T15:29:46Z</date>
+			<date>2010-02-23T19:20:11Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -108,7 +108,7 @@
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-22T04:14:27Z</date>
+			<date>2010-02-23T19:43:21Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -119,69 +119,55 @@
 	<integer>200</integer>
 	<key>metaData</key>
 	<dict>
-		<key>base.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>13</integer>
-				<key>line</key>
-				<integer>89</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>63</integer>
-		</dict>
-		<key>beermaker.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>8</integer>
-				<key>line</key>
-				<integer>108</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>51</integer>
-		</dict>
 		<key>editors.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>46</integer>
+				<integer>77</integer>
 				<key>line</key>
-				<integer>137</integer>
+				<integer>116</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>120</integer>
+			<integer>94</integer>
 		</dict>
 		<key>models.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>28</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>32</integer>
+				<integer>209</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>11</integer>
+			<integer>171</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>208</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>209</integer>
+			</dict>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>editors.py</string>
 		<string>models.py</string>
-		<string>base.py</string>
-		<string>beermaker.py</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>

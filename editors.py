@@ -31,19 +31,54 @@ import guid
 import iconsrc
 
 from db import DataStore
-from models import Grain, Recipe, Batch, BJCPStyle, BJCPCategory, Measures, EquipmentSet, MashProfile
+from models import Grain, Extract, Hop, Yeast, Misc, Recipe, Batch, BJCPStyle, BJCPCategory, Measures, EquipmentSet, MashProfile
 
 from base import BaseWindow 
 
+def getHopType(hop_idx):
+    try:
+        hop_type = Hop.hop_types[hop_idx]
+    except:
+        hop_type = ''
+    return hop_type
+
+def getYeastType(yeast_idx):
+    try:
+        yeast_type = Yeast.yeast_types[yeast_idx]
+    except:
+        yeast_type = ''
+    return yeast_type
+
+def getYeastFlocc(yeast_idx):
+    try:
+        yeast_flocc = Yeast.yeast_flocculations[yeast_idx]
+    except:
+        yeast_flocc = ''
+    return yeast_flocc
+
+def getYeastForm(yeast_idx):
+    try:
+        yeast_form = Yeast.yeast_forms[yeast_idx]
+    except:
+        yeast_form = ''
+    return yeast_form
+
+def getYeastAtten(yeast_att):
+    if yeast_att:
+        yeast_att = '%.0f%%' % yeast_att
+    else:
+        yeast_att = ''
+    return yeast_att
+
 class IngredientBrowser(wx.Dialog, BaseWindow):
+    inventory_types = ['Grain', 'Extract', 'Hop', 'Yeast', 'Misc']
+    
     def __init__(self, *args, **kw):
         wx.Dialog.__init__(self, *args, **kw)
         
         self.main_panel = wx.Panel(self, -1)
         sizer = self.buildLayout(self.main_panel)
         self.main_panel.SetSizer(sizer)
-        
-        
         
         self._setupIngredientsCtrl()
         self._populateIngredients()
@@ -55,31 +90,60 @@ class IngredientBrowser(wx.Dialog, BaseWindow):
                         {'widget': wx.Choice, 'choices': self._getIngredientTypeChoices(), 'event': {'event_type': wx.EVT_CHOICE, 'method': self.OnIngredientSelect}})
                     },
                     {'widget': ObjectListView, 'style': wx.LC_REPORT, 'var': 'ingredients_ctrl', 'useAlternateBackColors': True, 'cellEditMode': ObjectListView.CELLEDIT_NONE, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
-                    {'widget': wx.Panel, 'var': 'details_panel'}
+                    {'widget': wx.Button, 'id': wx.ID_OK}
                     )
                 },)
 
-    def OnIngredientSelect():
-        pass
+    def OnIngredientSelect(self, event):
+        self._populateIngredients(self.inventory_types[event.GetSelection()])
+        event.Skip()
         
     def _getIngredientTypeChoices(self):
-        return ['Grains', 'Adjuncts', 'Extracts/Sugars', 'Hops','Yeast', 'Miscellaneous']
+        return self.inventory_types
     
-    def _setupIngredientsCtrl(self, ing_type='Grains'):
+    def _setupIngredientsCtrl(self, ing_type='Grain'):
         columns = []
-        if ing_type == 'Grains':
+        if ing_type == 'Grain':
             columns.append(ColumnDefn('Name', 'left', -1, 'name', isSpaceFilling=True))
             columns.append(ColumnDefn('Origin', 'left', 120, 'origin'))
+            columns.append(ColumnDefn('SRM', 'left', 120, 'srm'))
             columns.append(ColumnDefn('Potential', 'left', 120, 'potential', stringConverter='%.3f'))
-            columns.append(ColumnDefn('Inventory', 'left', 120, 'inventory_amt'))
+            columns.append(ColumnDefn('Inventory', 'left', 120, 'inventory'))
+        elif ing_type == 'Hop':
+            columns.append(ColumnDefn('Name', 'left', -1, 'name', isSpaceFilling=True))
+            columns.append(ColumnDefn('Origin', 'left', 120, 'origin'))
+            columns.append(ColumnDefn('Type', 'left', 120, 'hop_type', stringConverter=getHopType))
+            columns.append(ColumnDefn('Alpha', 'left', 120, 'alpha'))
+            columns.append(ColumnDefn('Inventory', 'left', 120, 'inventory'))
+        elif ing_type == 'Extract':
+            columns.append(ColumnDefn('Name', 'left', -1, 'name', isSpaceFilling=True))
+            columns.append(ColumnDefn('Origin', 'left', 120, 'origin'))
+            columns.append(ColumnDefn('SRM', 'left', 120, 'srm'))
+            columns.append(ColumnDefn('Potential', 'left', 120, 'potential', stringConverter='%.3f'))
+            columns.append(ColumnDefn('Inventory', 'left', 120, 'inventory'))
+        elif ing_type == 'Yeast':
+            columns.append(ColumnDefn('Name', 'left', -1, 'name', isSpaceFilling=True))
+            columns.append(ColumnDefn('Lab', 'left', 120, 'lab'))
+            columns.append(ColumnDefn('ID', 'left', 80, 'yeast_id'))
+            columns.append(ColumnDefn('Type', 'left', 80, 'yeast_type', stringConverter=getYeastType))
+            columns.append(ColumnDefn('Form', 'left', 80, 'yeast_form', stringConverter=getYeastForm))
+            columns.append(ColumnDefn('Flocc.', 'left', 80, 'flocc', stringConverter=getYeastFlocc))
+            columns.append(ColumnDefn('Atten.', 'left', 80, 'avg_attenuation', stringConverter=getYeastAtten))
+        elif ing_type == 'Misc':
+            pass
+            
         
         self.ingredients_ctrl.oddRowsBackColor = wx.WHITE
         self.ingredients_ctrl.SetColumns(columns)
         
-    def _populateIngredients(self, ing_type='Grains'):
-        if ing_type == 'Grains':
-            inventory = list(Grain.select())
+    def _populateIngredients(self, ing_type='Grain'):
+        try:
+            inventory = list(eval(ing_type).select())
+        except:
+            self.ingredients_ctrl.SetEmptyListMsg("No ingredients match your selection")
+            
 
+        self._setupIngredientsCtrl(ing_type)
         self.ingredients_ctrl.SetObjects(inventory)
 
 
@@ -131,13 +195,12 @@ class RecipeEditor(wx.Frame, BaseWindow):
                     {'widget': wx.CheckBox, 'var': 'recipe_boil_set_to_equipment', 'proportion': 1, 'label': 'Boil volume set to equipment', 'event': {'event_type': wx.EVT_CHECKBOX, 'method': self.BoilSetToEquipment}},
                     )
                 }, # end second row
-                {'widget': wx.BoxSizer, 'title': 'Ingredients', 'flag': wx.ALL|wx.EXPAND, 'proportion': 1, 'style': wx.HORIZONTAL, 'widgets':
+                {'widget': wx.BoxSizer, 'title': 'Ingredients', 'flag': wx.ALL|wx.EXPAND, 'proportion': 1, 'style': wx.VERTICAL, 'widgets':
                     ({'widget': ObjectListView, 'var': 'ingredients_ctrl', 'style': wx.LC_REPORT, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
-                    {'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'style': wx.VERTICAL, 'widgets':
-                        ({'widget': wx.Button, 'label': '+', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.InventoryAdd}},
+                    {'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
+                        (
+                        {'widget': wx.Button, 'label': '+', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.InventoryAdd}},
                         {'widget': wx.Button, 'label': '-', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.InventoryDelete}},
-                        {'widget': wx.Button, 'label': '^', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.InventoryUp}},
-                        {'widget': wx.Button, 'label': 'v', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.InventoryDown}},
                         )},                        
                     )
                 }, # end third row
@@ -156,15 +219,15 @@ class RecipeEditor(wx.Frame, BaseWindow):
                         {'widget': wx.TextCtrl, 'editable': False, 'var': 'style_br', 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
                         {'widget': wx.StaticText, 'label': 'Recipe', 'font': self.GetNewFont(pointSize=13, style=wx.ITALIC), 'style': wx.ALL, 'border': 3, 'proportion': 0},
                         {'widget': wx.StaticText, 'label': 'OG:' , 'style': self.ST_STYLE},
-                        {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                        {'widget': wx.TextCtrl, 'var': 'recipe_og', 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
                         {'widget': wx.StaticText, 'label': 'FG:' , 'style': self.ST_STYLE},
-                        {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                        {'widget': wx.TextCtrl, 'var': 'recipe_fg', 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
                         {'widget': wx.StaticText, 'label': 'Color:' , 'style': self.ST_STYLE},
-                        {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                        {'widget': wx.TextCtrl, 'var': 'recipe_srm', 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
                         {'widget': wx.StaticText, 'label': 'ABV:' , 'style': self.ST_STYLE},
-                        {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                        {'widget': wx.TextCtrl, 'var': 'recipe_abv', 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
                         {'widget': wx.StaticText, 'label': 'Bitterness Ratio:' , 'style': self.ST_STYLE},
-                        {'widget': wx.TextCtrl, 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
+                        {'widget': wx.TextCtrl, 'var': 'recipe_br', 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
                         )},
                     )
                 }, # end fourth row  
@@ -210,18 +273,12 @@ class RecipeEditor(wx.Frame, BaseWindow):
                 
     def InventoryAdd(self, event):
         inventory = IngredientBrowser(self, -1, "Ingredient Browser", pos=(50,50), size=(800,600))
-        inventory.ShowModal()
+        results = inventory.ShowModal()
+        print results
     
     def InventoryDelete(self, event):
         pass
         
-    def InventoryDown(self, event):
-        pass
-        
-    def InventoryUp(self, event):
-        """docstring for InventoryUp"""
-        pass    
-
     def MashAdd(self, event):
         """docstring for MashAdd"""
         pass
