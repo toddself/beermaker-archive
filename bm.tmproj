@@ -56,7 +56,7 @@
 			<key>filename</key>
 			<string>base.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-23T19:20:11Z</date>
+			<date>2010-02-23T20:34:37Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -68,7 +68,7 @@
 			<key>filename</key>
 			<string>editors.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-23T19:44:39Z</date>
+			<date>2010-02-23T20:43:25Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -108,7 +108,7 @@
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-23T19:43:21Z</date>
+			<date>2010-02-23T20:43:25Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -124,14 +124,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>77</integer>
+				<integer>65</integer>
 				<key>line</key>
-				<integer>116</integer>
+				<integer>64</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>94</integer>
+			<integer>48</integer>
 		</dict>
 		<key>models.py</key>
 		<dict>
@@ -140,28 +140,12 @@
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>209</integer>
+				<integer>0</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>171</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>208</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>209</integer>
-			</dict>
+			<integer>0</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
@@ -172,6 +156,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{6, 33}, {1388, 980}}</string>
+	<string>{{9, 45}, {1388, 980}}</string>
 </dict>
 </plist>

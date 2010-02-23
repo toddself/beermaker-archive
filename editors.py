@@ -31,44 +31,9 @@ import guid
 import iconsrc
 
 from db import DataStore
-from models import Grain, Extract, Hop, Yeast, Misc, Recipe, Batch, BJCPStyle, BJCPCategory, Measures, EquipmentSet, MashProfile
+from models import *
 
 from base import BaseWindow 
-
-def getHopType(hop_idx):
-    try:
-        hop_type = Hop.hop_types[hop_idx]
-    except:
-        hop_type = ''
-    return hop_type
-
-def getYeastType(yeast_idx):
-    try:
-        yeast_type = Yeast.yeast_types[yeast_idx]
-    except:
-        yeast_type = ''
-    return yeast_type
-
-def getYeastFlocc(yeast_idx):
-    try:
-        yeast_flocc = Yeast.yeast_flocculations[yeast_idx]
-    except:
-        yeast_flocc = ''
-    return yeast_flocc
-
-def getYeastForm(yeast_idx):
-    try:
-        yeast_form = Yeast.yeast_forms[yeast_idx]
-    except:
-        yeast_form = ''
-    return yeast_form
-
-def getYeastAtten(yeast_att):
-    if yeast_att:
-        yeast_att = '%.0f%%' % yeast_att
-    else:
-        yeast_att = ''
-    return yeast_att
 
 class IngredientBrowser(wx.Dialog, BaseWindow):
     inventory_types = ['Grain', 'Extract', 'Hop', 'Yeast', 'Misc']
@@ -85,13 +50,15 @@ class IngredientBrowser(wx.Dialog, BaseWindow):
 
     def layoutData(self):
         return ({'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'proportion': 1, 'style': wx.VERTICAL, 'widgets':
-                    ({'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
+                    ({'widget': wx.BoxSizer, 'flag': wx.ALIGN_CENTER|wx.ALL, 'style': wx.HORIZONTAL, 'widgets':
                         ({'widget': wx.StaticText, 'style': self.ST_STYLE, 'label': 'Type:'},
                         {'widget': wx.Choice, 'choices': self._getIngredientTypeChoices(), 'event': {'event_type': wx.EVT_CHOICE, 'method': self.OnIngredientSelect}})
                     },
                     {'widget': ObjectListView, 'style': wx.LC_REPORT, 'var': 'ingredients_ctrl', 'useAlternateBackColors': True, 'cellEditMode': ObjectListView.CELLEDIT_NONE, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
-                    {'widget': wx.Button, 'id': wx.ID_OK}
-                    )
+                    {'widget': wx.BoxSizer, 'flag': wx.ALL|wx.ALIGN_RIGHT, 'style': wx.HORIZONTAL, 'widgets':
+                        ({'widget': wx.Button, 'id': wx.ID_CANCEL, 'flag': wx.ALL|wx.ALIGN_RIGHT},
+                        {'widget': wx.Button, 'id': wx.ID_OK, 'flag': wx.ALL|wx.ALIGN_RIGHT},)
+                    },)
                 },)
 
     def OnIngredientSelect(self, event):

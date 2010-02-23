@@ -687,3 +687,38 @@ class BatchIsNotMaster(Exception):
         self.value = value
     def __unicode__(self,value):
         return repr(self.value)
+        
+def getHopType(hop_idx):
+    try:
+        hop_type = Hop.hop_types[hop_idx]
+    except:
+        hop_type = ''
+    return hop_type
+
+def getYeastType(yeast_idx):
+    try:
+        yeast_type = Yeast.yeast_types[yeast_idx]
+    except:
+        yeast_type = ''
+    return yeast_type
+
+def getYeastFlocc(yeast_idx):
+    try:
+        yeast_flocc = Yeast.yeast_flocculations[yeast_idx]
+    except:
+        yeast_flocc = ''
+    return yeast_flocc
+
+def getYeastForm(yeast_idx):
+    try:
+        yeast_form = Yeast.yeast_forms[yeast_idx]
+    except:
+        yeast_form = ''
+    return yeast_form
+
+def getYeastAtten(yeast_att):
+    if yeast_att:
+        yeast_att = '%.0f%%' % yeast_att
+    else:
+        yeast_att = ''
+    return yeast_att
