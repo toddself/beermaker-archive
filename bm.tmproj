@@ -26,7 +26,7 @@
 			<key>filename</key>
 			<string>algorithms.py</string>
 			<key>lastUsed</key>
-			<date>2010-01-31T19:16:37Z</date>
+			<date>2010-02-24T18:58:00Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -62,13 +62,13 @@
 			<key>filename</key>
 			<string>olv_proxy_models.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-20T21:53:53Z</date>
+			<date>2010-02-24T17:37:12Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>editors.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-23T20:43:25Z</date>
+			<date>2010-02-24T18:58:12Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -106,9 +106,15 @@
 		</dict>
 		<dict>
 			<key>filename</key>
+			<string>beersql.py</string>
+			<key>lastUsed</key>
+			<date>2010-02-24T18:46:38Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-23T20:43:25Z</date>
+			<date>2010-02-24T18:58:12Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -119,43 +125,89 @@
 	<integer>200</integer>
 	<key>metaData</key>
 	<dict>
+		<key>algorithms.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>8</integer>
+				<key>line</key>
+				<integer>56</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>4</integer>
+		</dict>
+		<key>beersql.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>39</integer>
+				<key>line</key>
+				<integer>71</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>19</integer>
+		</dict>
 		<key>editors.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>65</integer>
+				<integer>67</integer>
 				<key>line</key>
-				<integer>64</integer>
+				<integer>63</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>48</integer>
+			<integer>24</integer>
 		</dict>
 		<key>models.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>10</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>212</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>186</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>6</integer>
+				<key>line</key>
+				<integer>212</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>10</integer>
+				<key>line</key>
+				<integer>212</integer>
+			</dict>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>editors.py</string>
 		<string>models.py</string>
+		<string>algorithms.py</string>
+		<string>beersql.py</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{9, 45}, {1388, 980}}</string>
+	<string>{{9, 27}, {1388, 980}}</string>
 </dict>
 </plist>

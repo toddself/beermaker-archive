@@ -17,48 +17,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from datetime import datetime
+from decimal import Decimal
 
 from sqlobject import *
-from sqlobject.col import pushKey
 
-class SGCol(DecimalCol):
-    """ Stores Specific Gravity in a decimal column
-    Size is fixed at 4, and the precision is set to 3
-    
-    ex: 1.045    
-    
-    """
-    
-    def __init__(self, **kw):
-        pushKey(kw, 'size', 4)
-        pushKey(kw, 'precision', 3)
-        super(DecimalCol, self).__init__(**kw)
+from beersql import *
 
-class PercentCol(DecimalCol):
-    """Stores percentages in a decimal column
-    Size is fixed at 5, and the precision is set to 2.  
-    
-    *nb* size is fixed at 5 to allow for 100.00%
-    
-    """
-    
-    def __init__(self, **kw):
-        pushKey(kw, 'size', 5)
-        pushKey(kw, 'precision', 2)
-        super(DecimalCol, self).__init__(**kw)
-
-class SRMCol(DecimalCol):
-    """ Stores the Standard Reference Method color value in a decimal column
-    Size is fixed at 5, precision is set to 1
-    
-    ex: 2.0, 300.5
-    
-    """
-
-    def __init__(self, **kw):
-        pushKey(kw, 'size', 5)
-        pushKey(kw, 'precision', 1)
-        super(DecimalCol, self).__init__(**kw)
 
 class Measures():
     MG = 0
@@ -77,17 +41,17 @@ class Measures():
     ITEMS = 13
     FAHRENHEIT = 14
     CELSIUS = 15
-    measures = ['mg','gm','oz','lbs','kg','ml','tsp','tbls',
+    
+    measures = ['mg','gm','oz','lb','kg','ml','tsp','tbls',
         'cup','pt','qt','l','gal','items', 'f', 'c']
         
-    liquid_measures = [ML,L,PT,QT,CUP,GAL]
-
+    weights = [OZ, MG, GM, LB, KG]
+        
     MIN = 0
     HRS = 1
     DAYS = 2
     WEEKS = 3
-    timing_parts = ['min', 'hrs', 'days', 'weeks']
-
+    timing_parts = ['min', 'hrs', 'days', 'weeks']        
 
 class Hop(SQLObject):
     BITTERING = 0 
@@ -526,167 +490,100 @@ class Recipe(SQLObject, Measures):
     carbonation_volume = DecimalCol(size=3, precision=1, default=0)
     carbonation_amount = DecimalCol(size=4, precision=2, default=0)
     brewed_on = DateCol(default=datetime.now())
+    is_batch = BoolCol(default=False)
+    master_recipe = IntCol(default=0)
+    
+    def _set_master_recipe(self, value):
+        valid_master_id = False
+        for item in list(self.select()):
+            if item.id == value and item.is_batch == False:
+                valid_master_id = True
+                
+        if valid_master_id:
+            self.is_batch = True
+            self._SO_set_master_recipe(value)
+        else:
+            raise BatchIsNotMaster('The master recipe cannot be a batch and it must exist')
 
 class RecipeIngredient(SQLObject, Measures):
     recipe = ForeignKey('Recipe')
-    grain = MultipleJoin('Grain')
-    hop = MultipleJoin('Hop')
-    extract = MultipleJoin('Extract')
-    fining = MultipleJoin('Fining')
-    flavor = MultipleJoin('Flavor')
-    herb = MultipleJoin('Herb')
-    hoppedextract = MultipleJoin('HoppedExtract')
-    mineral = MultipleJoin('Mineral')
-    spice = MultipleJoin('Spice')
-    water = MultipleJoin('Water')
-    yeast = MultipleJoin('Yeast')
+    ingredient_id = IntCol(default=0)
+    ingredient_type = UnicodeCol(default=None)
     amount = DecimalCol(size=5, precision=2, default=0)
     amount_units = IntCol(default=Measures.LB)
-
-class Batch(SQLObject):
-    master_id = ForeignKey('Recipe')
-    batch_id = ForeignKey('Recipe')
+    percentage  = PercentCol(default=0)
+    use_in = IntCol(default=Misc.BOIL)
+    time_used = IntCol(default=0)
+    time_used_units = IntCol(default=Measures.MIN)
+    
+    def _get_name(self):
+        return eval(self.ingredient_type).get(self.ingredient_id).name
+    
+    def _set_ingredient_id(self, value):
+        self.ingredient_type = value.sqlmeta.table.title()
+        self._SO_set_ingredient_id(value.id)
+    
+    def _set_time_used(self, value):
+        try:
+            (time, time_unit) = value.split(' ')
+        except ValueError:
+            raise AmountSetError('You must specify the amount of time as well as the unit of time.  I.E.: 1 min, 2 sec, 3 hrs')
+        else:
+            if time_unit.lower() not in Measures.timing_parts:
+                self.time_used_units = Measures.MIN
+            else:
+                self.time_used_units = Measures.timing_parts.index(time_unit)
+            
+            try:
+                self._SO_set_time_used(int(value))
+            except ValueError:
+                raise ('The amount of time must be a positive integer and it must preceed the unit. IE: 1 min, 2 sec, 3 hrs')
+                
+    def _get_time_used(self):
+        return "%s %s" % (self.time_used, Measures.timing_parts[self.time_used_units])
+    
+    def _get_amount(self):
+        if self.amount % 10:
+            formatter = "%.2f %s"
+        else:
+            formatter = "%.0f %s"
+            
+        return formatter % (self.amount, Measures.measures[self.amount_units])
+    
+    def _set_amount(self, value):
+        try:
+            (amount, amount_unit) = value.split(' ')
+        except ValueError:
+            raise AmountSetError('You must specify the unit of measurement as well as the amount.  I.E.: 12 OZ, 3 GAL')
+        else:            
+            if amount_unit.lower() not in Measures.measures:
+                self.amount_unit = Measures.OZ
+            else:
+                self.amount_unit = Measures.measures.index(amount_unit)
+            
+            try:
+                
+                self._SO_set_amount(Decimal(value))
+            except ValueError:
+                raise AmountSetError('The amount of the ingredient must preceed the unit. IE: 12 OZ, 3 GAL')
 
 class Inventory(SQLObject):
-    hop = ForeignKey('Hop', default=None)
-    grain = ForeignKey('Grain', default=None)
-    extract = ForeignKey('Extract', default=None)
-    hopped_extract = ForeignKey('HoppedExtract', default=None)
-    yeast = ForeignKey('Yeast', default=None)
-    fining = ForeignKey('Fining', default=None)
-    mineral = ForeignKey('Mineral', default=None)
-    flavor = ForeignKey('Flavor', default=None)
-    spice = ForeignKey('Spice', default=None)
-    herb = ForeignKey('Herb', default=None)
-    misc = ForeignKey('Misc', default=None)
+    inventory_item_id = IntCol(default=0)
     amount = DecimalCol(size=6, precision=2, default=0)
     amount_units = IntCol(default=Measures.GM)
     purchased_on = DateCol(default=datetime.now())
     purchased_from = UnicodeCol(default=None, length=256)
     price = CurrencyCol(default=0)
     notes = UnicodeCol(default=None)
+    inventory_type = UnicodeCol(default=None)
+
+    def _get_name(self):
+        return eval(self.inventory_type).get(self.inventory_item_id).name
     
-    def _set_hop(self, value):
-        if self.grain != None or self.extract != None or \
-          self.hopped_extract != None or self.yeast != None or \
-          self.fining != None or self.mineral != None or \
-          self.flavor != None or self.spice != None or \
-          self.herb != None or self.misc != None:
-            raise InventorySingle('Inventory objects can only track one item')
-        else:
-            self._SO_set_hop(value)
+    def _set_inventory_item_id(self, value):
+        self.inventory_type = value.sqlmeta.table.title()
+        self._SO_set_inventory_item_id(value.id)
 
-    def _set_grain(self, value):
-        if self.hop != None or self.extract != None or \
-          self.hopped_extract != None or self.yeast != None or \
-          self.fining != None or self.mineral != None or \
-          self.flavor != None or self.spice != None or \
-          self.herb != None or self.misc != None:
-            raise InventorySingle('Inventory objects can only track one item')    
-        else:
-            self._SO_set_grain(value)
-            
-    def _set_extract(self, value):
-        if self.grain != None or self.hop != None or \
-          self.hopped_extract != None or self.yeast != None or \
-          self.fining != None or self.mineral != None or \
-          self.flavor != None or self.spice != None or \
-          self.herb != None or self.misc != None:
-            raise InventorySingle('Inventory objects can only track one item')        
-        else:
-            self._SO_set_extract(value)
-
-    def _set_hopped_extract(self, value):
-        if self.grain != None or self.extract != None or \
-          self.hop != None or self.yeast != None or \
-          self.fining != None or self.mineral != None or \
-          self.flavor != None or self.spice != None or \
-          self.herb != None or self.misc != None:
-            raise InventorySingle('Inventory objects can only track one item')
-        else:
-            self._SO_set_hopped_extract(value)
-
-    def _set_yeast(self, value):
-        if self.grain != None or self.extract != None or \
-          self.hopped_extract != None or self.hop != None or \
-          self.fining != None or self.mineral != None or \
-          self.flavor != None or self.spice != None or \
-          self.herb != None or self.misc != None:
-            raise InventorySingle('Inventory objects can only track one item')            
-        else:
-            self._SO_set_yeast(value)
-
-    def _set_fining(self, value):
-        if self.grain != None or self.extract != None or \
-          self.hopped_extract != None or self.yeast != None or \
-          self.hop != None or self.mineral != None or \
-          self.flavor != None or self.spice != None or \
-          self.herb != None or self.misc != None:
-            raise InventorySingle('Inventory objects can only track one item')
-        else:
-            self._SO_set_fining(value)
-
-    def _set_mineral(self, value):
-        if self.grain != None or self.extract != None or \
-          self.hopped_extract != None or self.yeast != None or \
-          self.fining != None or self.hop != None or \
-          self.flavor != None or self.spice != None or \
-          self.herb != None or self.misc != None:
-            raise InventorySingle('Inventory objects can only track one item')    
-        else:
-            self._SO_set_mineral(value)
-
-    def _set_flavor(self, value):
-        if self.grain != None or self.extract != None or \
-          self.hopped_extract != None or self.yeast != None or \
-          self.fining != None or self.mineral != None or \
-          self.hop != None or self.spice != None or \
-          self.herb != None or self.misc != None:
-            raise InventorySingle('Inventory objects can only track one item')        
-        else:
-            self._SO_set_flavor(value)
-
-    def _set_spice(self, value):
-        if self.grain != None or self.extract != None or \
-          self.hopped_extract != None or self.yeast != None or \
-          self.fining != None or self.mineral != None or \
-          self.flavor != None or self.hop != None or \
-          self.herb != None or self.misc != None:
-            raise InventorySingle('Inventory objects can only track one item')
-        else:
-            self._SO_set_spice(value)
-
-    def _set_herb(self, value):
-        if self.grain != None or self.extract != None or \
-          self.hopped_extract != None or self.yeast != None or \
-          self.fining != None or self.mineral != None or \
-          self.flavor != None or self.spice != None or \
-          self.hop != None or self.misc != None:
-            raise InventorySingle('Inventory objects can only track one item')
-        else:
-            self._SO_set_herb(value)
-        
-    def _set_misc(self, value):
-        if self.grain != None or self.extract != None or \
-          self.hopped_extract != None or self.yeast != None or \
-          self.fining != None or self.mineral != None or \
-          self.flavor != None or self.spice != None or \
-          self.herb != None or self.hop != None:
-            raise InventorySingle('Inventory objects can only track one item')
-        else:
-            self._SO_set_misc(value)
-    
-class InventorySingle(Exception):
-    def __init__(self, value):
-        self.value = value
-    def __unicode__(self, value):
-        return repr(self.value)
-        
-class BatchIsNotMaster(Exception):
-    def __init__(self,value):
-        self.value = value
-    def __unicode__(self,value):
-        return repr(self.value)
         
 def getHopType(hop_idx):
     try:
@@ -722,3 +619,10 @@ def getYeastAtten(yeast_att):
     else:
         yeast_att = ''
     return yeast_att
+
+def getUseIn(use_in):
+    if use_in:
+        use_in_name = Misc.misc_use_ins[use_in]
+    else:
+        use_in_name = ''
+    return use_in

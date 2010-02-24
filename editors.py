@@ -32,6 +32,7 @@ import iconsrc
 
 from db import DataStore
 from models import *
+from algorithms import convertToOz
 
 from base import BaseWindow 
 
@@ -52,10 +53,19 @@ class IngredientBrowser(wx.Dialog, BaseWindow):
         return ({'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'proportion': 1, 'style': wx.VERTICAL, 'widgets':
                     ({'widget': wx.BoxSizer, 'flag': wx.ALIGN_CENTER|wx.ALL, 'style': wx.HORIZONTAL, 'widgets':
                         ({'widget': wx.StaticText, 'style': self.ST_STYLE, 'label': 'Type:'},
-                        {'widget': wx.Choice, 'choices': self._getIngredientTypeChoices(), 'event': {'event_type': wx.EVT_CHOICE, 'method': self.OnIngredientSelect}})
+                        {'widget': wx.Choice, 'var': 'ing_choices', 'choices': self._getIngredientTypeChoices(), 'event': {'event_type': wx.EVT_CHOICE, 'method': self.OnIngredientSelect}})
                     },
                     {'widget': ObjectListView, 'style': wx.LC_REPORT, 'var': 'ingredients_ctrl', 'useAlternateBackColors': True, 'cellEditMode': ObjectListView.CELLEDIT_NONE, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
-                    {'widget': wx.BoxSizer, 'flag': wx.ALL|wx.ALIGN_RIGHT, 'style': wx.HORIZONTAL, 'widgets':
+                    {'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
+                        ({'widget': wx.StaticText, 'label': 'Amount:', 'flag': self.ST_STYLE},
+                        {'widget': wx.TextCtrl, 'var': 'amount_ctrl'},
+                        {'widget': wx.StaticText, 'label': 'Use in:', 'flag': self.ST_STYLE},
+                        {'widget': wx.Choice, 'var': 'use_choices', 'choices': Misc.misc_use_ins},
+                        {'widget': wx.StaticText, 'label': 'Time:', 'flag': self.ST_STYLE},
+                        {'widget': wx.TextCtrl, 'var': 'time_used_ctrl'}
+                        )
+                    },
+                    {'widget': wx.BoxSizer, 'flag': wx.ALIGN_CENTER|wx.TOP|wx.BOTTOM, 'style': wx.HORIZONTAL, 'widgets':
                         ({'widget': wx.Button, 'id': wx.ID_CANCEL, 'flag': wx.ALL|wx.ALIGN_RIGHT},
                         {'widget': wx.Button, 'id': wx.ID_OK, 'flag': wx.ALL|wx.ALIGN_RIGHT},)
                     },)
@@ -112,10 +122,11 @@ class IngredientBrowser(wx.Dialog, BaseWindow):
 
         self._setupIngredientsCtrl(ing_type)
         self.ingredients_ctrl.SetObjects(inventory)
+        self.ingredients_ctrl.AutoSizeColumns()
 
 
 class RecipeEditor(wx.Frame, BaseWindow):
-    def __init__(self, parent, fid, title, pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.DEFAULT_FRAME_STYLE):
+    def __init__(self, parent, fid, title, pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.DEFAULT_FRAME_STYLE, recipe_id=0):
         wx.Frame.__init__(self, parent, fid, title, pos, size, style)
         
         # set up the ui basics
@@ -124,7 +135,9 @@ class RecipeEditor(wx.Frame, BaseWindow):
         
         # set up if this is a batch or a master recipe
         # by default we're never editing a batch
-        self.is_batch = False   
+        if recipe_id == 0:
+            self.is_batch = False
+            self.recipe_id = 0
         
         # set up the main view
         self.main_panel = wx.Panel(self, -1)
@@ -240,8 +253,39 @@ class RecipeEditor(wx.Frame, BaseWindow):
                 
     def InventoryAdd(self, event):
         inventory = IngredientBrowser(self, -1, "Ingredient Browser", pos=(50,50), size=(800,600))
-        results = inventory.ShowModal()
-        print results
+        if inventory.ShowModal() == wx.ID_OK:
+            ingredient = inventory.ingredients_ctrl(GetSelectedObject())
+            ingredient_type = inventory.inventory_types[inventory.ing_choices.GetCurrentSelection()]
+            amount = inventory.amount_ctrl.GetValue()
+            use_in = Misc.misc_use_ins[inventory.use_choices.GetCurrentSelection()]
+            time_used = inventory.time_used_ctrl.GetValue()    
+            if ingredient_type == 'Hop' or ingredient_type == 'Grain':
+                percentage = self._getPercentOfTotalBill(amount, ingredient_type)
+            else:
+                percentage = ''
+
+            ing = RecipeIngredient(recipe=self.recipe_id, ingredient_id=ingredient, amount=amount, use_in=use_in, time_used=time_used, percentage=percentage)
+
+            self.ingredients_ctrl.AddObject(ing)
+            self.ingredients_ctrl.AutoSizeColumns()
+            
+        inventory.Destroy()
+
+    def _getPercentOfTotalBill(amount, ingredient_type):
+        """
+        computes in ounces!
+        """
+        total_ingredient = 0
+        for ingredient in self.ingredients_ctrl.GetObjects():
+            if ingredient.ingredient_type == ingredient_type:
+                (ing_amount, unit) = ingredient.amount.split(' ')
+                
+                if unit != "oz":
+                    ing_amount = convertToOz(ing_amount, unit)
+                    
+                total_ingredient = total_ingredient + ing_amount
+        
+        return total_ingredient / amount
     
     def InventoryDelete(self, event):
         pass
@@ -260,7 +304,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
         
     def MashDown(self, event):
         pass
-    
+        
     def _getCarbonationTypeChoices(self):
         return Recipe.carbonation_types
 
@@ -279,12 +323,14 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.ingredients_ctrl.SetObjects(self.ingredient_list)
 
     def _setupIngredients(self):
-        namec = ColumnDefn('Ingredient', 'left', -1, 'name', isSpaceFilling=True)
-        typec= ColumnDefn('Type', 'left', 120, 'ingredient_type')
-        use_inc = ColumnDefn('Use', 'left', 120, 'use_in')
-        percentc = ColumnDefn('%', 'left', 120, 'percentage', stringConverter="%.2f")
-        timec = ColumnDefn('Time', 'left', 120, 'time_used')
-        amountc = ColumnDefn('Amount', 'left', 120, 'amount')
+        namec = ColumnDefn('Ingredient', 'left', 200, 'name', minimumWidth=200, isSpaceFilling=True)
+        typec= ColumnDefn('Type', 'left', 100, 'ingredient_type')
+        use_inc = ColumnDefn('Use', 'left', 100, 'use_in', stringConverter=getUseIn)
+        percentc = ColumnDefn('%', 'left', 100, 'percentage', stringConverter="%.2f")
+        timec = ColumnDefn('Time', 'left', 100, 'time_used')
+        amountc = ColumnDefn('Amount', 'left', 100, 'amount')
+        
+        namec.freeSpaceProportion = 2
         
         self.ingredients_ctrl.SetColumns([namec, typec, amountc, use_inc, percentc, timec])
 
