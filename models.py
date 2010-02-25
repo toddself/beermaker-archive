@@ -524,48 +524,29 @@ class RecipeIngredient(SQLObject, Measures):
         self._SO_set_ingredient_id(value.id)
     
     def _set_time_used(self, value):
-        try:
-            (time, time_unit) = value.split(' ')
-        except ValueError:
-            raise AmountSetError('You must specify the amount of time as well as the unit of time.  I.E.: 1 min, 2 sec, 3 hrs')
-        else:
-            if time_unit.lower() not in Measures.timing_parts:
-                self.time_used_units = Measures.MIN
-            else:
-                self.time_used_units = Measures.timing_parts.index(time_unit)
-            
-            try:
-                self._SO_set_time_used(int(value))
-            except ValueError:
-                raise ('The amount of time must be a positive integer and it must preceed the unit. IE: 1 min, 2 sec, 3 hrs')
+        (time, unit) = getTimeFromString(value)
+        if time and unit:
+            self.time_used_units = unit
+            self._SO_set_time_used(time)
                 
     def _get_time_used(self):
-        return "%s %s" % (self.time_used, Measures.timing_parts[self.time_used_units])
+        return "%s %s" % (self._SO_get_time_used(), Measures.timing_parts[self.time_used_units])
     
-    def _get_amount(self):
-        if self.amount % 10:
+    def _get_amount_string(self):
+        amt = self._SO_get_amount()
+        if amt % 10:
             formatter = "%.2f %s"
         else:
             formatter = "%.0f %s"
             
-        return formatter % (self.amount, Measures.measures[self.amount_units])
+        return formatter % (amt, Measures.measures[self.amount_units])
     
     def _set_amount(self, value):
-        try:
-            (amount, amount_unit) = value.split(' ')
-        except ValueError:
-            raise AmountSetError('You must specify the unit of measurement as well as the amount.  I.E.: 12 OZ, 3 GAL')
-        else:            
-            if amount_unit.lower() not in Measures.measures:
-                self.amount_unit = Measures.OZ
-            else:
-                self.amount_unit = Measures.measures.index(amount_unit)
+        (amount, unit) = getAmountFromString(value)
+        if unit and amount:
+            self.amount_units = unit
+            self._SO_set_amount(amount)
             
-            try:
-                
-                self._SO_set_amount(Decimal(value))
-            except ValueError:
-                raise AmountSetError('The amount of the ingredient must preceed the unit. IE: 12 OZ, 3 GAL')
 
 class Inventory(SQLObject):
     inventory_item_id = IntCol(default=0)
@@ -621,8 +602,48 @@ def getYeastAtten(yeast_att):
     return yeast_att
 
 def getUseIn(use_in):
-    if use_in:
+    if use_in != None:
         use_in_name = Misc.misc_use_ins[use_in]
     else:
         use_in_name = ''
-    return use_in
+    return use_in_name
+    
+def getTimeFromString(time_str):
+    try:
+        (time, time_unit_str) = time_str.split(' ')
+    except ValueError:
+        raise AmountSetError('You must specify the amount of time as well as the unit of time.  I.E.: 1 min, 2 sec, 3 hrs')
+        return (None, None)
+    else:
+        if time_unit_str.lower() not in Measures.timing_parts:
+            time_units = Measures.MIN
+        else:
+            time_units = Measures.timing_parts.index(time_unit_str)
+
+        try:
+            time = int(time)
+        except ValueError:
+            raise ('The amount of time must be a positive integer and it must preceed the unit. IE: 1 min, 2 sec, 3 hrs')    
+            return (None, None)
+
+    return (time, time_units)
+
+def getAmountFromString(amount_str):
+    try:
+        (amount, amount_unit_str) = amount_str.split(' ')
+    except ValueError:
+        raise AmountSetError('You must specify the unit of measurement as well as the amount.  I.E.: 12 OZ, 3 GAL')
+        return (None, None)
+    else:            
+        if amount_unit_str.lower() not in Measures.measures:
+            amount_unit = Measures.OZ
+        else:
+            amount_unit = Measures.measures.index(amount_unit_str)
+
+        try:
+            amount = Decimal(amount)
+        except ValueError:
+            raise AmountSetError('The amount of the ingredient must preceed the unit. IE: 12 OZ, 3 GAL')
+            return (None, None)
+
+    return (amount, amount_unit)

@@ -254,39 +254,46 @@ class RecipeEditor(wx.Frame, BaseWindow):
     def InventoryAdd(self, event):
         inventory = IngredientBrowser(self, -1, "Ingredient Browser", pos=(50,50), size=(800,600))
         if inventory.ShowModal() == wx.ID_OK:
-            ingredient = inventory.ingredients_ctrl(GetSelectedObject())
+            ingredient = inventory.ingredients_ctrl.GetSelectedObject()
             ingredient_type = inventory.inventory_types[inventory.ing_choices.GetCurrentSelection()]
             amount = inventory.amount_ctrl.GetValue()
-            use_in = Misc.misc_use_ins[inventory.use_choices.GetCurrentSelection()]
-            time_used = inventory.time_used_ctrl.GetValue()    
+            use_in = inventory.use_choices.GetCurrentSelection()
+            time_used = inventory.time_used_ctrl.GetValue()
             if ingredient_type == 'Hop' or ingredient_type == 'Grain':
                 percentage = self._getPercentOfTotalBill(amount, ingredient_type)
             else:
                 percentage = ''
-
+            
             ing = RecipeIngredient(recipe=self.recipe_id, ingredient_id=ingredient, amount=amount, use_in=use_in, time_used=time_used, percentage=percentage)
-
+            
+            for ingredient in self.ingredients_ctrl.GetObjects():
+                ingredient.percentage = self._getPercentOfTotalBill(amount, ingredient_type)
+                self.ingredients_ctrl.RefreshObject(ingredient)
+                
             self.ingredients_ctrl.AddObject(ing)
             self.ingredients_ctrl.AutoSizeColumns()
             
         inventory.Destroy()
 
-    def _getPercentOfTotalBill(amount, ingredient_type):
-        """
-        computes in ounces!
-        """
-        total_ingredient = 0
+    def _getPercentOfTotalBill(self, amount, ingredient_type):
+        (new_ing_amount, unit) = getAmountFromString(amount)
+        new_ing_amount = convertToOz(new_ing_amount, unit)
+        
+        # we haven't actually added the new ingredient to the list, so we'll seed with the new ingredient amount
+        total_ingredient = new_ing_amount
+                
         for ingredient in self.ingredients_ctrl.GetObjects():
             if ingredient.ingredient_type == ingredient_type:
-                (ing_amount, unit) = ingredient.amount.split(' ')
+                if ingredient.amount_units != Measures.OZ:
+                     amt = convertToOz(ingredient.amount, unit)
+                total_ingredient = total_ingredient + amt
                 
-                if unit != "oz":
-                    ing_amount = convertToOz(ing_amount, unit)
-                    
-                total_ingredient = total_ingredient + ing_amount
+        if new_ing_amount > total_ingredient:
+            return ((float(total_ingredient) / float(new_ing_amount)) * 100.0)
+        else:
+            return ((float(new_ing_amount) / float(total_ingredient)) * 100.0)
+                
         
-        return total_ingredient / amount
-    
     def InventoryDelete(self, event):
         pass
         
@@ -328,10 +335,11 @@ class RecipeEditor(wx.Frame, BaseWindow):
         use_inc = ColumnDefn('Use', 'left', 100, 'use_in', stringConverter=getUseIn)
         percentc = ColumnDefn('%', 'left', 100, 'percentage', stringConverter="%.2f")
         timec = ColumnDefn('Time', 'left', 100, 'time_used')
-        amountc = ColumnDefn('Amount', 'left', 100, 'amount')
+        amountc = ColumnDefn('Amount', 'left', 100, 'amount_string')
         
         namec.freeSpaceProportion = 2
         
+        self.ingredients_ctrl.oddRowsBackColor = wx.WHITE        
         self.ingredients_ctrl.SetColumns([namec, typec, amountc, use_inc, percentc, timec])
 
     def _setupMashes(self):
@@ -340,6 +348,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
         endc = ColumnDefn('End Temp', 'left', 80, 'end_temp')
         timec = ColumnDefn('Time', 'left', 80, 'time')
         
+        self.mash_ctrl.oddRowsBackColor = wx.WHITE
         self.mash_ctrl.SetColumns([namec, startc, endc, timec])
                     
     def _getStyleChoices(self):
