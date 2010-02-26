@@ -23,35 +23,142 @@ from sqlobject import *
 
 from beersql import *
 
-
 class Measures():
     MG = 0
-    GM = 1
-    OZ = 2
-    LB = 3
-    KG = 4
-    ML = 5
-    TSP = 6
-    TBLS = 7
-    CUP = 8
-    PT = 9
-    QT = 10
-    L = 11
-    GAL = 12
-    ITEMS = 13
-    FAHRENHEIT = 14
-    CELSIUS = 15
+    MILLIGRAM = 1
+    MILLIGRAMS = 2
+    GM = 3
+    GRAMS = 4
+    GRAM = 5
+    G = 6
+    OZ = 7
+    OUNCES = 8 
+    OUNCE = 9
+    LB = 10
+    LBS = 11
+    POUNDS = 12
+    POUND = 13
+    KG = 14
+    KILOS = 15
+    KILOGRAMS = 16
+    KILOGRAM = 17
+    ML = 18
+    MILLILITERS = 19
+    MILLILITER = 20
+    MILS = 21
+    TSP = 22
+    TEASPOON = 23
+    TEASPOONS = 24
+    TBLS = 25
+    TBSP = 26
+    TABLESPOON = 27
+    TABLESPOONS = 28
+    CUP = 29
+    CUPS = 30
+    PT = 31
+    PINT = 32
+    PINTS = 33
+    QT = 34
+    QUART = 35
+    QUARTS = 36
+    L = 37
+    LITER = 38
+    LITERS = 39
+    GAL = 40
+    GALLON = 41
+    GALLONS = 42
+    ITEMS = 43
+    ITEM = 44
+    FAHRENHEIT = 45
+    CELSIUS = 46
+    F = 47
+    C = 48
     
-    measures = ['mg','gm','oz','lb','kg','ml','tsp','tbls',
-        'cup','pt','qt','l','gal','items', 'f', 'c']
+    mg = [MG, MILLIGRAM, MILLIGRAMS]
+    gm = [GM, GRAMS, GRAM, G]
+    oz = [OZ, OUNCES, OUNCE]
+    lb = [LB, LBS, POUNDS, POUND]
+    kg = [KG, KILOS, KILOGRAMS, KILOGRAM]
+    ml = [ML, MILLILITER, MILLILITERS]
+    tsp = [TSP, TEASPOON, TEASPOONS]
+    tbls = [TBLS, TBSP, TABLESPOON, TABLESPOONS]
+    cup = [CUP, CUPS]
+    pt = [PT, PINT, PINTS]
+    qt = [QT, QUART, QUARTS]
+    l = [L, LITER, LITERS]
+    gal = [GAL, GALLON, GALLONS]
+    item = [ITEM, ITEMS]
+    f = [FAHRENHEIT, F]
+    c = [CELSIUS, C]
+
+    measures = ['mg', 'milligram', 'milligrams', 'gm', 'grams', 'gram', 'g', 
+        'oz', 'ounces', 'ounce', 'lb', 'lbs', 'pounds', 'pound', 'kg', 
+        'kilo', 'kilograms', 'kilogram', 'ml','milliliters', 'milliliter', 
+        'mils', 'tsp', 'teaspoon', 'teaspoons', 'tbls', 'tbsp', 'tablespoon',
+        'tablespoons', 'cup', 'cups', 'pt', 'pint', 'pints', 'qt', 
+        'quart','quarts', 'l', 'liter', 'gal', 'gallon', 'gallons', 'items', 
+        'item', 'fahrenheit', 'celsius', 'f','c']
+            
+    weights = [MG, MILLIGRAM, MILLIGRAMS, GM, GRAMS, GRAM, G, OZ, OUNCES,
+        OUNCE, LB, LBS, POUNDS, POUND, KG, KILOS, KILOGRAMS, KILOGRAM]
+
+    volumes = [OZ, OUNCES, OUNCE, ML, MILLILITERS, MILLILITER, MILS, TSP,
+        TEASPOON, TEASPOONS, CUP, CUPS, PT, PINT, PINTS, QT, QUART,
+        QUARTS, L, LITER, LITERS, GAL, GALLON, GALLONS]
         
-    weights = [OZ, MG, GM, LB, KG]
+    temperatures = [FAHRENHEIT, CELSIUS, F, C]
         
     MIN = 0
+    MINUTE = 0
+    MINUTES = 0
     HRS = 1
+    HOUR = 1
+    HOURS = 1
     DAYS = 2
+    DAY = 2
     WEEKS = 3
-    timing_parts = ['min', 'hrs', 'days', 'weeks']        
+    WEEK = 3
+    timing_parts = ['min', 'minute', 'minutes', 'hrs', 'hour', 'hours',
+        'days', 'day', 'weeks', 'week']
+        
+    TIME = 0
+    MATTER = 1
+        
+    def __init__(self, amount_str, default_unit=0):
+        self.amount_str = amount_str
+        self.default_unit = default_unit
+        
+        self._parseAmount()
+        
+    def _parseAmount(self):
+        if ' ' in self.amount_str:
+            (val, unit) = self.amount_str.split(' ')
+        else:
+            matched = False
+            for x, c in enumerate(self.amount_str):
+                if matched:
+                    break
+                if type(self.amount_str[x]) == type(''):
+                    start_pos = x
+                    matched = True
+                
+            val = self. amount_str[:start_pos-1]
+            unit = self.amount_str[start_pos:]
+            
+        # we gotta do something if we can't figure out what the unit is
+        if unit not in zip(self.measures, self.timing_parts):
+            self.unit = self.default_unit
+        else:
+            if unit in measures:
+                self.unit = self.measures.index(unit)    
+                self.unit_type = self.MATTER
+            el
+        
+            
+
+class ConditionMet(Exception):
+    pass
+        
 
 class Hop(SQLObject):
     BITTERING = 0 

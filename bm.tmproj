@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>beermaker.py</string>
+	<string>models.py</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -26,7 +26,7 @@
 			<key>filename</key>
 			<string>algorithms.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-25T22:15:43Z</date>
+			<date>2010-02-26T16:36:13Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -62,15 +62,13 @@
 			<key>filename</key>
 			<string>editors.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-26T03:38:12Z</date>
+			<date>2010-02-26T16:28:21Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>beermaker.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-26T03:38:12Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2010-02-26T16:28:23Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -102,13 +100,15 @@
 			<key>filename</key>
 			<string>beersql.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-25T22:15:36Z</date>
+			<date>2010-02-26T16:36:04Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-25T21:22:22Z</date>
+			<date>2010-02-26T16:36:13Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -124,7 +124,7 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>18</integer>
 				<key>line</key>
 				<integer>41</integer>
 			</dict>
@@ -173,21 +173,21 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>250</integer>
+			<integer>255</integer>
 		</dict>
 		<key>models.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>26</integer>
+				<integer>59</integer>
 				<key>line</key>
-				<integer>534</integer>
+				<integer>148</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>536</integer>
+			<integer>113</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
@@ -201,6 +201,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{23, 19}, {1388, 980}}</string>
+	<string>{{16, 33}, {1388, 980}}</string>
 </dict>
 </plist>
