@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>editors.py</string>
+	<string>beermaker.py</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -62,15 +62,15 @@
 			<key>filename</key>
 			<string>editors.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-25T22:15:43Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2010-02-26T03:38:12Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>beermaker.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-23T19:20:11Z</date>
+			<date>2010-02-26T03:38:12Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -133,6 +133,20 @@
 			<key>firstVisibleLine</key>
 			<integer>7</integer>
 		</dict>
+		<key>beermaker.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>25</integer>
+				<key>line</key>
+				<integer>28</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>beersql.py</key>
 		<dict>
 			<key>caret</key>
@@ -179,6 +193,7 @@
 	<key>openDocuments</key>
 	<array>
 		<string>editors.py</string>
+		<string>beermaker.py</string>
 		<string>models.py</string>
 		<string>beersql.py</string>
 		<string>algorithms.py</string>

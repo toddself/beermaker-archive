@@ -26,7 +26,7 @@ import iconsrc
 
 # import data objects
 from db import DataStore
-from models import Recipe, Batch
+from models import Recipe
 
 # import gui elements
 from base import BaseWindow
