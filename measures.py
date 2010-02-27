@@ -18,7 +18,7 @@
 
 from decimal import Decimal
 
-class Measures():
+class Measure():
     MG = 0
     MILLIGRAM = 1
     MILLIGRAMS = 2
@@ -64,11 +64,7 @@ class Measures():
     GALLONS = 42
     ITEMS = 43
     ITEM = 44
-    FAHRENHEIT = 45
-    CELSIUS = 46
-    F = 47
-    C = 48
-    
+        
     mg = [MG, MILLIGRAM, MILLIGRAMS]
     gm = [GM, GRAMS, GRAM, G]
     oz = [OZ, OUNCES, OUNCE]
@@ -83,16 +79,9 @@ class Measures():
     l = [L, LITER, LITERS]
     gal = [GAL, GALLON, GALLONS]
     item = [ITEM, ITEMS]
-    f = [FAHRENHEIT, F]
-    c = [CELSIUS, C]
+    
 
-    measures = ['mg', 'milligram', 'milligrams', 'gm', 'grams', 'gram', 'g', 
-        'oz', 'ounces', 'ounce', 'lb', 'lbs', 'pounds', 'pound', 'kg', 
-        'kilo', 'kilograms', 'kilogram', 'ml','milliliters', 'milliliter', 
-        'mils', 'tsp', 'teaspoon', 'teaspoons', 'tbls', 'tbsp', 'tablespoon',
-        'tablespoons', 'cup', 'cups', 'pt', 'pint', 'pints', 'qt', 
-        'quart','quarts', 'l', 'liter', 'gal', 'gallon', 'gallons', 'items', 
-        'item', 'fahrenheit', 'celsius', 'f','c']
+    measures = ['mg', 'milligram', 'milligrams', 'gm', 'grams', 'gram', 'g', 'oz', 'ounces', 'ounce', 'lb', 'lbs', 'pounds', 'pound', 'kg', 'kilos', 'kilograms', 'kilogram', 'ml', 'milliliters', 'milliliter', 'mils', 'tsp', 'teaspoon', 'teaspoons', 'tbls', 'tbsp', 'tablespoon', 'tablespoons', 'cup', 'cups', 'pt', 'pint', 'pints', 'qt', 'quart', 'quarts', 'l', 'liter', 'liters', 'gal', 'gallon', 'gallons', 'items', 'item']            
             
     weights = [MG, MILLIGRAM, MILLIGRAMS, GM, GRAMS, GRAM, G, OZ, OUNCES,
         OUNCE, LB, LBS, POUNDS, POUND, KG, KILOS, KILOGRAMS, KILOGRAM]
@@ -101,9 +90,19 @@ class Measures():
         TEASPOON, TEASPOONS, CUP, CUPS, PT, PINT, PINTS, QT, QUART,
         QUARTS, L, LITER, LITERS, GAL, GALLON, GALLONS]
         
-    temperatures = [FAHRENHEIT, CELSIUS, F, C]
+
+
+    FAHRENHEIT = 0
+    CELSIUS = 1
+    F = 2
+    C = 3
+    temperatures = ['fahrenheit', 'celsius', 'f', 'c'] 
     
-    matters =  weights + volumes + temperatures
+    f = [FAHRENHEIT, F]
+    c = [CELSIUS, C]
+    temp = [FAHRENHEIT, CELSIUS, F, C]
+    
+    matters =  weights + volumes
         
     MIN = 0
     MINUTE = 1
@@ -115,41 +114,45 @@ class Measures():
     DAY = 7
     WEEKS = 8
     WEEK = 9
+    HR = 10
     timing_parts = ['min', 'minute', 'minutes', 'hrs', 'hour', 'hours',
-        'days', 'day', 'weeks', 'week']
+        'days', 'day', 'weeks', 'week', 'hr']
     
     minute = [MIN, MINUTE, MINUTES]
-    hr = [HRS, HOUR, HOURS]
-    day = [DAY, DAY]
+    hr = [HRS, HOUR, HOURS, HR]
+    day = [DAYS, DAY]
     week = [WEEK, WEEKS]
     
     times = minute + hr + day + week
         
     TIME = 0
     MATTER = 1
+    TEMPERATURE = 2 
     
-    convert_values = {
-        KG: {OZ: Decimal("35.27"), LB: Decimal("2.21"), MG: Decimal("1000000"), GM: Decimal("1000"))},
-        OZ: {KG: Decimal('0.03'), LB: Decimal('0.06'), MG: Decimal("28349.52"), GM: Decimal("28.35"))},
-        LB: {OZ: Decimal('16'), KG: Decimal('0.45'), MG: Decimal('453592.37'), GM: Decimal('45.36'))},
-        GM: {OZ: Decimal('0.03'), LB: Decimal('0.002'), MG: Decimal('1000'), KG: Decimal('0.001'))},
-        MG: {OZ: Decimal('0.00004'), LB: Decimal('0.000002'), KG: Decimal('0.000001', GM: Decimal('0.001'))},
-        ML: {TSP: Decimal('0.203'), TBSP: Decimal('0.068'), CUP: Decimal('0.004'), PT: Decimal('0.002'), QT: Decimal('0.001'), L: Decimal('0.001'), GAL: Decimal('0.0003')},
-        TSP: {ML, TBSP, CUP, PT, QT, L, GAL},
-        TBSP: {ML, TSP, CUP, PT, QT, L, GAL},
-        CUP: {ML, TSP, TBSP, PT, QT, L, GAL},
-        PT: {ML, TSP, TBSP, CUP, QT, L, GAL},
-        QT: {ML, TSP, TBSP, PT, CUP, L, GAL},
-        L: {ML, TSP, TBSP, PT, QT, CUP, GAL},
-        GAL: {ML, TSP, TBSP, PT, QT, CUP, L}
-        
+    all_strings = timing_parts + measures
     
+    convert_dict = {
+        KG: {OZ: Decimal("35.27"), LB: Decimal("2.21"), MG: Decimal("1000000"), GM: Decimal("1000")},
+        OZ: {KG: Decimal('0.03'), LB: Decimal('0.06'), MG: Decimal("28349.52"), GM: Decimal("28.35"), ML: Decimal('29.57'), TSP: Decimal('6'), TBSP: Decimal('2'), PT: Decimal('0.0625'), QT: Decimal('.0313'), CUP: Decimal('0.125'), GAL: Decimal('0.008')},
+        LB: {OZ: Decimal('16'), KG: Decimal('0.45'), MG: Decimal('453592.37'), GM: Decimal('45.36')},
+        GM: {OZ: Decimal('0.03'), LB: Decimal('0.002'), MG: Decimal('1000'), KG: Decimal('0.001')},
+        MG: {OZ: Decimal('0.00004'), LB: Decimal('0.000002'), KG: Decimal('0.000001'), GM: Decimal('0.001')},
+        ML: {OZ: Decimal('0.034'), TSP: Decimal('0.20'), TBSP: Decimal('0.068'), CUP: Decimal('0.004'), PT: Decimal('0.002'), QT: Decimal('0.001'), L: Decimal('0.001'), GAL: Decimal('0.0003')},
+        TSP: {OZ: Decimal('0.167'), ML: Decimal('4.93'), TBSP: Decimal('0.333'), CUP: Decimal('0.021'), PT: Decimal('0.01'), QT: Decimal('0.005'), L: Decimal('0.005'), GAL: Decimal('0.001')},
+        TBSP: {OZ: Decimal('0.333'), ML: Decimal('14.78'), TSP: Decimal('3'), CUP: Decimal('0.063'), PT: Decimal('0.031'), QT: Decimal('0.016'), L: Decimal('0.015'), GAL: Decimal('0.004')},
+        CUP: {OZ: Decimal('8'), ML: Decimal('236.59'), TSP: Decimal('48'), TBSP: Decimal('16'), PT: Decimal('0.5'), QT: Decimal('0.25'), L: Decimal('0.247'), GAL: Decimal('0.063')},
+        PT: {OZ: Decimal('16'), ML: Decimal('473.18'), TSP: Decimal('96'), TBSP: Decimal('32'), CUP: Decimal('2'), QT: Decimal('0.5'), L: Decimal('0.47'), GAL: Decimal('0.125')},
+        QT: {OZ: Decimal('32'), ML: Decimal('946.35'), TSP: Decimal('192'), TBSP: Decimal('64'), PT: Decimal('2'), CUP: Decimal('4'), L: Decimal('0.95'), GAL: Decimal('0.25')},
+        L: {OZ: Decimal('33.81'), ML: Decimal('1000'), TSP: Decimal('202.88'), TBSP: Decimal('67.63'), PT: Decimal('2.11'), QT: Decimal('1.06'), CUP: Decimal('4.23'), GAL: Decimal('0.26')},
+        GAL: {OZ: Decimal('128'), ML: Decimal('3785.41'), TSP: Decimal('768'), TBSP: Decimal('256'), PT: Decimal('8'), QT: Decimal('4'), CUP: Decimal('16'), L: Decimal('3.79')}
     }
     
         
-    def __init__(self, amount_str, default_unit=0):
+    def __init__(self, amount_str):
         self.amount_str = amount_str
-        self.default_unit = default_unit
+        self.converted = 0
+        self.convert_type = None
+
         self._parseAmount()
         
     def _parseAmount(self):
@@ -165,30 +168,91 @@ class Measures():
                     matched = True
                 
             val = self. amount_str[:start_pos-1]
-            unit = self.amount_str[start_pos:]
+            unit = self.amount_str[start_pos:].lower()
             
-        # we gotta do something if we can't figure out what the unit is
-        if unit not in self.measures and unit not in self.timing_parts:
-            unit = self.default_unit
-
         if unit in self.measures:
-            self.unit = self.measures.index(unit)    
+            self.unit = self._getStandardUnit(self.measures.index(unit), self.MATTER)
             self.unit_type = self.MATTER
         elif unit in self.timing_parts:
-            self.unit = self.timing_parts.index(unit)
+            self.unit = self._getStandardUnit(self.timing_parts.index(unit), self.TIME)
             self.unit_type = self.TIME
+        elif unit in self.temperatures:
+            self.unit = self._getStandardUnit(self.temperatures.index(unit), self.TEMPERATURE)
+            self.unit_type = self.TEMPERATURE
+        else:
+            raise ValueError('%s is not a known type of measurement' % unit)
             
         try:
-            self.count = Decimal(val)
+            self.count = Decimal("%s" % val)
         except ValueError:
+            raise ValueError('%s is not a valid number' % val)
             self.count = 0.0
             
+    def _getStandardUnit(self, unit, unit_type):
+        if unit_type == self.TEMPERATURE:
+            if unit in self.c:
+                return self.C
+            elif unit in self.f:
+                return self.F
+            else:
+                raise ValueError('I thought %s was a measure of temperature.'% self.temperatures[unit])
+        elif unit_type == self.TIME:
+            if unit in self.day:
+                return self.DAY
+            elif unit in self.hr:
+                return self.HRS
+            elif unit in self.week:
+                return self.WEEK
+            elif unit in self.minute:
+                return self.MIN
+            else:
+                raise ValueError('I thought %s was a measure of time' % self.timing_parts[unit])            
+        elif unit_type == self.MATTER:
+            if unit in self.mg:
+                return self.MG
+            elif unit in self.gm:
+                return self.GM
+            elif unit in self.oz:
+                return self.OZ
+            elif unit in self.lb:
+                return self.LB
+            elif unit in self.kg:
+                return self.KG
+            elif unit in self.ml:
+                return self.ML
+            elif unit in self.tsp:
+                return self.TSP
+            elif unit in self.tbls:
+                return self.TBSP
+            elif unit in self.cup:
+                return self.CUP
+            elif unit in self.pt:
+                return self.PT
+            elif unit in self.qt:
+                return self.QT
+            elif unit in self.l:
+                return self.L
+            elif unit in self.gal:
+                return self.GAL
+            elif unit in self.item:
+                return self.ITEM
+            else:
+                raise ValueError('I thought %s was a measure of physical items' % self.measures[unit])
+        else:
+            raise ValueError("I'm not sure what type of matter you're trying to measure")
+            
+            
+            
     def convert(self, convert_to):
+        # have we done this yet?
+        if self.converted and self.convert_type == convert_to:
+            return self.converted
+            
         if convert_to in self.timing_parts:
-            self.convert_to = self.timing_parts[convert_to]
+            self.convert_to = self.timing_parts.index(convert_to)
             self.convert_type = self.TIME
         elif convert_to in self.measures:
-            self.convert_to = self.measures[convert_to]
+            self.convert_to = self.measures.index(convert_to)
             self.convert_type = self.MATTER
         elif int(convert_to):
             if convert_to in self.matters:
@@ -198,18 +262,18 @@ class Measures():
                 self.convert_to = convert_to
                 self.convert_type - self.TIME
             else:
-                raise ConvertError("I'm not sure how to convert this measurement into that unit.")
+                raise ValueError("I'm not sure how to convert this measurement into that unit.")
                 return 0
         else:
-            raise ConvertError("%s is not a valid unit that I know how to convert into." % convert_to)
+            raise ValueError("%s is not a valid unit that I know how to convert into." % convert_to)
             return 0
-        
+    
         if self.convert_type == self.unit_type:
-            convert_value = self.converters[self.unit_type][self.convert_type]
-            converted = convert_value * self.amount
-            return converted
+            convert_value = self.convert_dict[self.unit][self.convert_to]
+            self.converted = convert_value * self.count
+            return self.converted
         else:
-            raise ConvertError("You can't convert a measure of physical matter to a measure of time or vice versa")
+            raise ValueError("%s and %s are in compatible types" % (self.all_strings[self.convert_type], self.all_strings[self.unit_type]))
             return 0
             
     def __unicode__(self):

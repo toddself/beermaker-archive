@@ -284,7 +284,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
                 
         for ingredient in self.ingredients_ctrl.GetObjects():
             if ingredient.ingredient_type == ingredient_type:
-                if ingredient.amount_units != Measures.OZ:
+                if ingredient.amount_units != Measure.OZ:
                      amt = convertToOz(ingredient.amount, unit)
                 total_ingredient = total_ingredient + amt
                 

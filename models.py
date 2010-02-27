@@ -50,7 +50,7 @@ class Hop(SQLObject):
         except:
             return 0
         
-        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])
+        return "%s %s" % (inv.amount, Measure.Measure[inv.amount_units])
     
 class Grain(SQLObject):
     name = UnicodeCol(length=64, default=None)
@@ -74,7 +74,7 @@ class Grain(SQLObject):
         except:
             return 0
         
-        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])
+        return "%s %s" % (inv.amount, Measure.Measure[inv.amount_units])
     
 class Extract(SQLObject):
     name = UnicodeCol(length=64, default=None)
@@ -92,14 +92,14 @@ class Extract(SQLObject):
         except:
             return 0
         
-        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])
+        return "%s %s" % (inv.amount, Measure.Measure[inv.amount_units])
 
-class HoppedExtract(Extract, Measures):
+class HoppedExtract(Extract, Measure):
     alpha = PercentCol(default=0.0)
     hop_usage = IntCol(default=0)
-    hop_usage_unit = IntCol(default=Measures.MIN)
+    hop_usage_unit = IntCol(default=Measure.MIN)
     hop_by_weight = DecimalCol(size=4, precision=2, default=0.0)
-    hop_by_weight_unit = IntCol(default=Measures.LB)
+    hop_by_weight_unit = IntCol(default=Measure.LB)
     
     def _get_inventory(self):
         try:
@@ -107,9 +107,9 @@ class HoppedExtract(Extract, Measures):
         except:
             return 0
         
-        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])
+        return "%s %s" % (inv.amount, Measure.Measure[inv.amount_units])
 
-class Yeast(SQLObject, Measures):
+class Yeast(SQLObject, Measure):
     LAGER = 0
     ALE = 1
     HYBRID = 2
@@ -138,13 +138,13 @@ class Yeast(SQLObject, Measures):
     yeast_form = IntCol(default=LIQUID)
     flocc = IntCol(default=LOW)
     amount = DecimalCol(size=5, precision=2, default=0)
-    amount_units = IntCol(default=Measures.ML)
+    amount_units = IntCol(default=Measure.ML)
     starter_size = DecimalCol(size=10, precision=10, default=0.0)
-    starter_units = IntCol(default=Measures.ML)
+    starter_units = IntCol(default=Measure.ML)
     avg_attenuation = PercentCol(default=0.0)
     min_temp = DecimalCol(size=5, precision=5, default=0.0)
     max_temp = DecimalCol(size=5, precision=5, default=0.0)
-    temp_units = IntCol(default=Measures.FAHRENHEIT)
+    temp_units = IntCol(default=Measure.FAHRENHEIT)
     max_reuse = IntCol(default=0)
     best_for = UnicodeCol(default=None)
     notes = UnicodeCol(default=None)
@@ -157,7 +157,7 @@ class Yeast(SQLObject, Measures):
         except:
             return 0
         
-        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])
+        return "%s %s" % (inv.amount, Measure.Measure[inv.amount_units])
 
 class Water(SQLObject):
     molecule_types = {'ca': 'Calcium', 'mg': 'Magnesium', 'na': 'Sodium',
@@ -179,9 +179,9 @@ class Water(SQLObject):
         except:
             return 0
         
-        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])        
+        return "%s %s" % (inv.amount, Measure.Measure[inv.amount_units])        
     
-class Misc(SQLObject, Measures):
+class Misc(SQLObject, Measure):
     SPICE = 0
     FINING = 1
     HERB = 2
@@ -199,12 +199,12 @@ class Misc(SQLObject, Measures):
     name = UnicodeCol(length=64, default=None)
     use_for = UnicodeCol(default=None)
     rec_amount = DecimalCol(size=5, precision=5, default=0.0)
-    rec_units = IntCol(default=Measures.OZ)
+    rec_units = IntCol(default=Measure.OZ)
     batch_size = DecimalCol(size=5, precision=5, default=0.0)
-    batch_size_units = IntCol(default=Measures.GAL)
+    batch_size_units = IntCol(default=Measure.GAL)
     use_in = IntCol(default=BOIL)
     use_time = IntCol(default=0)
-    use_time_units = IntCol(default=Measures.MIN)
+    use_time_units = IntCol(default=Measure.MIN)
     misc_type = IntCol(default=SPICE)
     notes = UnicodeCol(default=None)
 
@@ -219,7 +219,7 @@ class Mineral(Misc):
         except:
             return 0
         
-        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])    
+        return "%s %s" % (inv.amount, Measure.Measure[inv.amount_units])    
     
 class Fining(Misc):
     def __init__(self, *args, **kw):
@@ -232,7 +232,7 @@ class Fining(Misc):
         except:
             return 0
         
-        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])        
+        return "%s %s" % (inv.amount, Measure.Measure[inv.amount_units])        
 
 class Flavor(Misc):
     def __init__(self, *args, **kw):
@@ -245,7 +245,7 @@ class Flavor(Misc):
         except:
             return 0
         
-        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])             
+        return "%s %s" % (inv.amount, Measure.Measure[inv.amount_units])             
     
 class Spice(Misc):
     def __init__(self, *args, **kw):
@@ -258,7 +258,7 @@ class Spice(Misc):
         except:
             return 0
         
-        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])
+        return "%s %s" % (inv.amount, Measure.Measure[inv.amount_units])
 
 class Herb(Misc):
     def __init__(self, *args, **kw):
@@ -271,7 +271,7 @@ class Herb(Misc):
         except:
             return 0
         
-        return "%s %s" % (inv.amount, Measures.measures[inv.amount_units])        
+        return "%s %s" % (inv.amount, Measure.Measure[inv.amount_units])        
 
 
 class BJCPStyle(SQLObject):
@@ -351,32 +351,32 @@ class BJCPCategory(SQLObject):
     category_id = IntCol(default=None)  
     notes = UnicodeCol()
 
-class MashTun(SQLObject, Measures):
+class MashTun(SQLObject, Measure):
     volume = DecimalCol(size=5, precision=2, default=0.0)
-    volume_unit = IntCol(default=Measures.GAL)
+    volume_unit = IntCol(default=Measure.GAL)
     temp_loss_30 = DecimalCol(size=5, precision=2, default=0.0)
     dead_space = DecimalCol(size=5, precision=2, default=0.0)
-    dead_space_unit = IntCol(default=Measures.GAL)
+    dead_space_unit = IntCol(default=Measure.GAL)
     top_up_water = DecimalCol(size=5, precision=2, default=0.0)
-    top_up_water_unit = IntCol(default=Measures.GAL)
+    top_up_water_unit = IntCol(default=Measure.GAL)
     
-class BoilKettle(SQLObject, Measures):
+class BoilKettle(SQLObject, Measure):
     boil_volume = DecimalCol(size=5, precision=2, default=0.0)
-    boil_volume_unit = IntCol(default=Measures.GAL)
+    boil_volume_unit = IntCol(default=Measure.GAL)
     evaporation_rate = PercentCol(default=0.0)
     dead_space = DecimalCol(size=5, precision=2, default=0.0)
-    dead_space_unit = IntCol(default=Measures.GAL)
+    dead_space_unit = IntCol(default=Measure.GAL)
     top_up_water = DecimalCol(size=5, precision=2, default=0.0)
-    top_up_water_unit = IntCol(default=Measures.GAL)
+    top_up_water_unit = IntCol(default=Measure.GAL)
     final_volume = DecimalCol(size=5, precision=2, default=0.0)
-    final_water_unit = IntCol(default=Measures.GAL)
+    final_water_unit = IntCol(default=Measure.GAL)
     boil_time = IntCol(default=0)
-    boil_time_unit = IntCol(default=Measures.MIN)
+    boil_time_unit = IntCol(default=Measure.MIN)
     boil_off = DecimalCol(size=3, precision=2, default=0.0)
-    boil_off_unit = IntCol(default=Measures.GAL)
+    boil_off_unit = IntCol(default=Measure.GAL)
     cooling_loss = PercentCol(default=0.0)
     cooling_loss_vol = DecimalCol(size=3, precision=2, default=0.0)
-    cooling_loss_unit = IntCol(default=Measures.GAL)
+    cooling_loss_unit = IntCol(default=Measure.GAL)
     
 class EquipmentSet(SQLObject):
     name = UnicodeCol(length=64, default=None)
@@ -396,7 +396,7 @@ class MashProfile(SQLObject):
     num_sparges = IntCol(default=1)
     notes = UnicodeCol(default=None)
     
-class MashStep(SQLObject, Measures):
+class MashStep(SQLObject, Measure):
     INFUSION = 0
     DECOCTION = 1
     TEMPERATURE = 2
@@ -405,12 +405,12 @@ class MashStep(SQLObject, Measures):
     name = UnicodeCol(length=64, default=None)
     mash_type = IntCol(default=INFUSION)
     fixed_water_addition = DecimalCol(size=5, precision=2, default=0.0)
-    fixed_water_addition_unit = IntCol(default=Measures.QT)
+    fixed_water_addition_unit = IntCol(default=Measure.QT)
     water_grain_ratio = DecimalCol(size=5, precision=2, default=0.0)
-    water_ratio_unit = IntCol(default=Measures.QT)
-    grain_ratio_unit = IntCol(default=Measures.LB)
+    water_ratio_unit = IntCol(default=Measure.QT)
+    grain_ratio_unit = IntCol(default=Measure.LB)
     step_temp = DecimalCol(size=4, precision=1, default=0.0)
-    step_temp_unit = IntCol(default=Measures.FAHRENHEIT)
+    step_temp_unit = IntCol(default=Measure.FAHRENHEIT)
     step_time = DecimalCol(size=3, precision=1, default=0.0)
     rise_time = DecimalCol(size=3, precision=1, default=0.0)
     mash_steps = ForeignKey('MashStepOrder')
@@ -419,7 +419,7 @@ class MashStepOrder(SQLObject):
     position = IntCol(default=1)
     step = ForeignKey('MashStep')
 
-class Recipe(SQLObject, Measures):
+class Recipe(SQLObject, Measure):
     EXTRACT = 0
     PARTIAL_MASH = 1
     ALL_GRAIN = 2
@@ -442,9 +442,9 @@ class Recipe(SQLObject, Measures):
     brewer = UnicodeCol(length=255, default=None)
     recipe_type = IntCol(default=EXTRACT)
     boil_volume = DecimalCol(size=5, precision=2, default=0)
-    boil_volume_units = IntCol(default=Measures.GAL)
+    boil_volume_units = IntCol(default=Measure.GAL)
     batch_volume = DecimalCol(size=5, precision=2, default=0)
-    batch_volume_units = IntCol(default=Measures.GAL)
+    batch_volume_units = IntCol(default=Measure.GAL)
     equipment = ForeignKey('EquipmentSet')
     base_boil_on_equipment = BoolCol(default=True)
     og = SGCol(default=0)
@@ -476,16 +476,16 @@ class Recipe(SQLObject, Measures):
         else:
             raise BatchIsNotMaster('The master recipe cannot be a batch and it must exist')
 
-class RecipeIngredient(SQLObject, Measures):
+class RecipeIngredient(SQLObject, Measure):
     recipe = ForeignKey('Recipe')
     ingredient_id = IntCol(default=0)
     ingredient_type = UnicodeCol(default=None)
     amount = DecimalCol(size=5, precision=2, default=0)
-    amount_units = IntCol(default=Measures.LB)
+    amount_units = IntCol(default=Measure.LB)
     percentage  = PercentCol(default=0)
     use_in = IntCol(default=Misc.BOIL)
     time_used = IntCol(default=0)
-    time_used_units = IntCol(default=Measures.MIN)
+    time_used_units = IntCol(default=Measure.MIN)
     
     def _get_name(self):
         return eval(self.ingredient_type).get(self.ingredient_id).name
@@ -501,7 +501,7 @@ class RecipeIngredient(SQLObject, Measures):
             self._SO_set_time_used(time)
                 
     def _get_time_used(self):
-        return "%s %s" % (self._SO_get_time_used(), Measures.timing_parts[self.time_used_units])
+        return "%s %s" % (self._SO_get_time_used(), Measure.timing_parts[self.time_used_units])
     
     def _get_amount_string(self):
         amt = self._SO_get_amount()
@@ -510,7 +510,7 @@ class RecipeIngredient(SQLObject, Measures):
         else:
             formatter = "%.0f %s"
             
-        return formatter % (amt, Measures.measures[self.amount_units])
+        return formatter % (amt, Measure.Measure[self.amount_units])
     
     def _set_amount(self, value):
         (amount, unit) = getAmountFromString(value)
@@ -522,7 +522,7 @@ class RecipeIngredient(SQLObject, Measures):
 class Inventory(SQLObject):
     inventory_item_id = IntCol(default=0)
     amount = DecimalCol(size=6, precision=2, default=0)
-    amount_units = IntCol(default=Measures.GM)
+    amount_units = IntCol(default=Measure.GM)
     purchased_on = DateCol(default=datetime.now())
     purchased_from = UnicodeCol(default=None, length=256)
     price = CurrencyCol(default=0)
@@ -586,10 +586,10 @@ def getTimeFromString(time_str):
         raise AmountSetError('You must specify the amount of time as well as the unit of time.  I.E.: 1 min, 2 sec, 3 hrs')
         return (None, None)
     else:
-        if time_unit_str.lower() not in Measures.timing_parts:
-            time_units = Measures.MIN
+        if time_unit_str.lower() not in Measure.timing_parts:
+            time_units = Measure.MIN
         else:
-            time_units = Measures.timing_parts.index(time_unit_str)
+            time_units = Measure.timing_parts.index(time_unit_str)
 
         try:
             time = int(time)
@@ -606,10 +606,10 @@ def getAmountFromString(amount_str):
         raise AmountSetError('You must specify the unit of measurement as well as the amount.  I.E.: 12 OZ, 3 GAL')
         return (None, None)
     else:            
-        if amount_unit_str.lower() not in Measures.measures:
-            amount_unit = Measures.OZ
+        if amount_unit_str.lower() not in Measure.Measure:
+            amount_unit = Measure.OZ
         else:
-            amount_unit = Measures.measures.index(amount_unit_str)
+            amount_unit = Measure.Measure.index(amount_unit_str)
 
         try:
             amount = Decimal(amount)
