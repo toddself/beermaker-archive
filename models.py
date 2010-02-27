@@ -495,29 +495,24 @@ class RecipeIngredient(SQLObject, Measure):
         self._SO_set_ingredient_id(value.id)
     
     def _set_time_used(self, value):
-        (time, unit) = getTimeFromString(value)
-        if time and unit:
-            self.time_used_units = unit
-            self._SO_set_time_used(time)
+        if type(value) == type(''):
+            value = Measure(value)
+            
+        self.time_used_units = value.unit
+        self._SO_set_time_used(value.count)
                 
     def _get_time_used(self):
-        return "%s %s" % (self._SO_get_time_used(), Measure.timing_parts[self.time_used_units])
+        return Measure("%s %s", self._SO_get_time_used(), self.time_used_units)
     
-    def _get_amount_string(self):
-        amt = self._SO_get_amount()
-        if amt % 10:
-            formatter = "%.2f %s"
-        else:
-            formatter = "%.0f %s"
-            
-        return formatter % (amt, Measure.Measure[self.amount_units])
+    def _get_amount(self):
+        return Measure("%s %s", self._SO_get_amount, self.amount_units)
     
     def _set_amount(self, value):
-        (amount, unit) = getAmountFromString(value)
-        if unit and amount:
-            self.amount_units = unit
-            self._SO_set_amount(amount)
-            
+        if type(value) == type(''):
+            value = Measure(value)
+
+        self.amount_units = value.unit
+        self._SO_set_amount(value.count)
 
 class Inventory(SQLObject):
     inventory_item_id = IntCol(default=0)

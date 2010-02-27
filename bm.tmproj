@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>measures.py</string>
+	<string>models.py</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -26,7 +26,7 @@
 			<key>filename</key>
 			<string>algorithms.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-26T23:33:01Z</date>
+			<date>2010-02-27T21:37:40Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -68,7 +68,7 @@
 			<key>filename</key>
 			<string>beermaker.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-27T13:56:29Z</date>
+			<date>2010-02-27T22:08:13Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -100,21 +100,21 @@
 			<key>filename</key>
 			<string>beersql.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-26T23:32:53Z</date>
+			<date>2010-02-27T21:37:37Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>measures.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-27T13:56:39Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2010-02-27T22:10:39Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-27T13:56:39Z</date>
+			<date>2010-02-27T22:10:39Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -130,14 +130,30 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>4</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>29</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>23</integer>
+				<key>line</key>
+				<integer>29</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>4</integer>
+				<key>line</key>
+				<integer>29</integer>
+			</dict>
 		</dict>
 		<key>beermaker.py</key>
 		<dict>
@@ -186,28 +202,44 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>25</integer>
+				<integer>20</integer>
 				<key>line</key>
-				<integer>236</integer>
+				<integer>20</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>196</integer>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>19</integer>
+				<key>line</key>
+				<integer>20</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>20</integer>
+				<key>line</key>
+				<integer>20</integer>
+			</dict>
 		</dict>
 		<key>models.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>13</integer>
+				<integer>19</integer>
 				<key>line</key>
-				<integer>24</integer>
+				<integer>506</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>453</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>

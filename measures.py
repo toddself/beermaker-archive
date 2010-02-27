@@ -18,7 +18,7 @@
 
 from decimal import Decimal
 
-class Measure():
+class Measure(object):
     MG = 0
     MILLIGRAM = 1
     MILLIGRAMS = 2
@@ -100,7 +100,7 @@ class Measure():
     
     f = [FAHRENHEIT, F]
     c = [CELSIUS, C]
-    temp = [FAHRENHEIT, CELSIUS, F, C]
+    temps = [FAHRENHEIT, CELSIUS, F, C]
     
     matters =  weights + volumes
         
@@ -129,7 +129,7 @@ class Measure():
     MATTER = 1
     TEMPERATURE = 2 
     
-    all_strings = timing_parts + measures
+    all_strings = timing_parts + measures + temperatures
     
     convert_dict = {
         KG: {OZ: Decimal("35.27"), LB: Decimal("2.21"), MG: Decimal("1000000"), GM: Decimal("1000")},
@@ -144,7 +144,14 @@ class Measure():
         PT: {OZ: Decimal('16'), ML: Decimal('473.18'), TSP: Decimal('96'), TBSP: Decimal('32'), CUP: Decimal('2'), QT: Decimal('0.5'), L: Decimal('0.47'), GAL: Decimal('0.125')},
         QT: {OZ: Decimal('32'), ML: Decimal('946.35'), TSP: Decimal('192'), TBSP: Decimal('64'), PT: Decimal('2'), CUP: Decimal('4'), L: Decimal('0.95'), GAL: Decimal('0.25')},
         L: {OZ: Decimal('33.81'), ML: Decimal('1000'), TSP: Decimal('202.88'), TBSP: Decimal('67.63'), PT: Decimal('2.11'), QT: Decimal('1.06'), CUP: Decimal('4.23'), GAL: Decimal('0.26')},
-        GAL: {OZ: Decimal('128'), ML: Decimal('3785.41'), TSP: Decimal('768'), TBSP: Decimal('256'), PT: Decimal('8'), QT: Decimal('4'), CUP: Decimal('16'), L: Decimal('3.79')}
+        GAL: {OZ: Decimal('128'), ML: Decimal('3785.41'), TSP: Decimal('768'), TBSP: Decimal('256'), PT: Decimal('8'), QT: Decimal('4'), CUP: Decimal('16'), L: Decimal('3.79')},
+    }
+    
+    time_convert_dict = {
+        DAY: {WEEK: Decimal('0.143'), HRS: Decimal('24'), MIN: Decimal('1440')},
+        HRS: {DAY: Decimal('0.042'), WEEK: Decimal('0.0059'), MIN: Decimal('60')},
+        WEEK: {DAY: Decimal('7'), HRS: Decimal('168'), MIN: Decimal('10080')},
+        MIN: {WEEK: Decimal('0.00099'), HOUR: Decimal('0.017'), DAY:Decimal('0.0007')},
     }
     
         
@@ -241,44 +248,62 @@ class Measure():
         else:
             raise ValueError("I'm not sure what type of matter you're trying to measure")
             
-            
-            
     def convert(self, convert_to):
         # have we done this yet?
         if self.converted and self.convert_type == convert_to:
             return self.converted
-            
-        if convert_to in self.timing_parts:
-            self.convert_to = self.timing_parts.index(convert_to)
-            self.convert_type = self.TIME
-        elif convert_to in self.measures:
-            self.convert_to = self.measures.index(convert_to)
-            self.convert_type = self.MATTER
-        elif int(convert_to):
-            if convert_to in self.matters:
-                self.convert_to = convert_to
+        try:    
+            if convert_to in self.timing_parts:
+                self.convert_to = self._getStandardUnit(self.timing_parts.index(convert_to), self.TIME)
+                self.convert_type = self.TIME
+            elif convert_to in self.measures:
+                self.convert_to = self._getStandardUnit(self.measures.index(convert_to), self.MATTER)
                 self.convert_type = self.MATTER
-            elif convert_to in self.times:
-                self.convert_to = convert_to
-                self.convert_type - self.TIME
+            elif convert_to in self.temperatures:
+                self.convert_to = self._getStandardUnit(self.temperatures.index(convert_to), self.TEMPERATURE)
+                self.convert_type = self.TEMPERATURE
+            elif int(convert_to):
+                if convert_to in self.matters:
+                    self.convert_to = self._getStandardUnit(convert_to, self.MATTER)
+                    self.convert_type = self.MATTER
+                elif convert_to in self.times:
+                    self.convert_to = self._getStandardUnit(convert_to, self.TIME)
+                    self.convert_type - self.TIME
+                elif convert_to in self.temps:
+                    self.convert_to = self._getStandardUnit(convert_to, self.TEMPERATURE)
+                    self.convert_type = self.TEMPERATURE
+                else:
+                    raise ValueError("I'm not sure how to convert %s measurement into that %s." % (self.all_strings[self.unit], self.all_strings[convert_to]))
+                    return 0
             else:
-                raise ValueError("I'm not sure how to convert this measurement into that unit.")
+                raise ValueError("%s is not a valid unit that I know how to convert %s to." % (convert_to, self.all_strings[self.unit]))
                 return 0
-        else:
-            raise ValueError("%s is not a valid unit that I know how to convert into." % convert_to)
-            return 0
+        except ValueError:
+            raise ValueError("%s is not a valid unit I know how to convert %s to." % (convert_to, self.all_strings[self.unit]))
     
         if self.convert_type == self.unit_type:
-            convert_value = self.convert_dict[self.unit][self.convert_to]
-            self.converted = convert_value * self.count
-            return self.converted
+            if self.convert_type == self.TEMPERATURE:
+                if self.convert_to == self.C:
+                    return Decimal("%s" % (((self.count*9)/5)+32)) 
+                else:
+                    return Decimal("%s" % (((self.count-32)*5)/9))
+            else:
+                if self.convert_type == self.TIME:
+                    conversions = self.time_convert_dict
+                else:
+                    conversions = self.convert_dict     
+                self.convert_value = conversions[self.unit][self.convert_to]
+                self.converted = self.convert_value * self.count
+                return Decimal("%s" % round(self.converted, 2))
         else:
-            raise ValueError("%s and %s are in compatible types" % (self.all_strings[self.convert_type], self.all_strings[self.unit_type]))
+            raise ValueError("%s and %s are incompatible types" % (self.all_strings[self.convert_type], self.all_strings[self.unit_type]))
             return 0
             
     def __unicode__(self):
         if self.unit_type == self.TIME:
             unit_string = self.timing_parts[self.unit]
+        elif self.unit_type == self.TEMPERATURE:
+            unit_string = self.temperatures[self.unit]
         else:
             unit_string = self.measures[self.unit]
             
