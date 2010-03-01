@@ -24,9 +24,6 @@ from sqlobject import *
 
 import models
 
-import bjcp_import
-import data_import
-
 class DataStore():
     db_filename = os.path.abspath('beermaker.db')
     db_driver = 'sqlite'
@@ -53,6 +50,8 @@ class DataStore():
         sqlhub.processConnection = connection
         
 if __name__ == '__main__':
+    import bjcp_import
+    import data_import
     data = DataStore(True)
     for table in [member[1] for member in inspect.getmembers(models,inspect.isclass) if member[1].__module__ == 'models']:
         if "tableExists" in [member[0] for member in inspect.getmembers(table,inspect.ismethod)]:

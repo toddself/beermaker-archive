@@ -280,10 +280,14 @@ class Measure(object):
                 return 0
         except ValueError:
             raise ValueError("%s is not a valid unit I know how to convert %s to." % (convert_to, self.all_strings[self.unit]))
+
+        # are we already using the right unit
+        if self.convert_to == self.unit:
+            return self.count
     
         if self.convert_type == self.unit_type:
             if self.convert_type == self.TEMPERATURE:
-                if self.convert_to == self.C:
+                if self.convert_to == self.F:
                     return Decimal("%s" % (((self.count*9)/5)+32)) 
                 else:
                     return Decimal("%s" % (((self.count-32)*5)/9))

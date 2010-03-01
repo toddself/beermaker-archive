@@ -32,7 +32,6 @@ import iconsrc
 
 from db import DataStore
 from models import *
-from algorithms import convertToOz
 
 from base import BaseWindow 
 
@@ -65,9 +64,9 @@ class IngredientBrowser(wx.Dialog, BaseWindow):
                         {'widget': wx.TextCtrl, 'var': 'time_used_ctrl'}
                         )
                     },
-                    {'widget': wx.BoxSizer, 'flag': wx.ALIGN_CENTER|wx.TOP|wx.BOTTOM, 'style': wx.HORIZONTAL, 'widgets':
-                        ({'widget': wx.Button, 'id': wx.ID_CANCEL, 'flag': wx.ALL|wx.ALIGN_RIGHT},
-                        {'widget': wx.Button, 'id': wx.ID_OK, 'flag': wx.ALL|wx.ALIGN_RIGHT},)
+                    {'widget': wx.BoxSizer, 'flag': wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM, 'style': wx.HORIZONTAL, 'widgets':
+                        ({'widget': wx.Button, 'id': wx.ID_CANCEL, 'style': wx.ALIGN_RIGHT, 'flag': wx.ALL|wx.ALIGN_RIGHT},
+                        {'widget': wx.Button, 'id': wx.ID_OK, 'style': wx.ALIGN_RIGHT, 'flag': wx.ALL|wx.ALIGN_RIGHT},)
                     },)
                 },)
 
@@ -109,7 +108,7 @@ class IngredientBrowser(wx.Dialog, BaseWindow):
         elif ing_type == 'Misc':
             pass
             
-        
+
         self.ingredients_ctrl.oddRowsBackColor = wx.WHITE
         self.ingredients_ctrl.SetColumns(columns)
         
@@ -133,11 +132,9 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.status_bar = self.CreateStatusBar(1,0)
         self.tools = self.buildToolbar()
         
-        # set up if this is a batch or a master recipe
-        # by default we're never editing a batch
+        # unless we pass a recipe id to edit, we're making a new recipe
         if recipe_id == 0:
-            self.is_batch = False
-            self.recipe_id = 0
+            self.recipe = Recipe()
         
         # set up the main view
         self.main_panel = wx.Panel(self, -1)
@@ -146,7 +143,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self._setupIngredients()
         self._setupMashes()
 
-        if self.is_batch:
+        if self.recipe.is_batch:
             self._gatherIngredients()
      
     def layoutData(self):
@@ -158,8 +155,8 @@ class RecipeEditor(wx.Frame, BaseWindow):
                     {'widget': wx.Choice, 'size': (200,-1), 'var': 'recipe_style', 'choices': self._getStyleChoices()},
                     {'widget': wx.StaticText, 'label': 'Brewer:', 'flag': self.ST_STYLE},
                     {'widget': wx.TextCtrl, 'var': 'recipe_brewer', 'event': {'event_type': wx.EVT_TEXT, 'method': self.onTextEvent}},
-                    {'widget': wx.StaticText, 'label': 'Brewed on:', 'display': self.is_batch, 'flag': self.ST_STYLE},
-                    {'widget': wx.DatePickerCtrl, 'var': 'recipe_brewed_on', 'style': wx.DP_DEFAULT, 'display': self.is_batch},
+                    {'widget': wx.StaticText, 'label': 'Brewed on:', 'display': self.recipe.is_batch, 'flag': self.ST_STYLE},
+                    {'widget': wx.DatePickerCtrl, 'var': 'recipe_brewed_on', 'style': wx.DP_DEFAULT, 'display': self.recipe.is_batch},
                     {'widget': wx.StaticText, 'label': 'Type:', 'flag': self.ST_STYLE},
                     {'widget': wx.Choice, 'var': 'recipe_type', 'choices': self._getRecipeTypeChoices()},
                     )
@@ -256,42 +253,25 @@ class RecipeEditor(wx.Frame, BaseWindow):
         if inventory.ShowModal() == wx.ID_OK:
             ingredient = inventory.ingredients_ctrl.GetSelectedObject()
             ingredient_type = inventory.inventory_types[inventory.ing_choices.GetCurrentSelection()]
-            amount = inventory.amount_ctrl.GetValue()
+            amount = Measure(inventory.amount_ctrl.GetValue())
+            time_used = Measure(inventory.time_used_ctrl.GetValue())
             use_in = inventory.use_choices.GetCurrentSelection()
-            time_used = inventory.time_used_ctrl.GetValue()
-            if ingredient_type == 'Hop' or ingredient_type == 'Grain':
-                percentage = self._getPercentOfTotalBill(amount, ingredient_type)
-            else:
-                percentage = ''
             
-            ing = RecipeIngredient(recipe=self.recipe_id, ingredient_id=ingredient, amount=amount, use_in=use_in, time_used=time_used, percentage=percentage)
+            ing = RecipeIngredient(recipe=self.recipe.id, ingredient_id=ingredient, amount=amount, use_in=use_in, time_used=time_used)
+            self.recipe.add_to_total_weight(amount.convert('oz'), ingredient_type.lower())
+            self.ingredients_ctrl.AddObject(ing)
             
             for ingredient in self.ingredients_ctrl.GetObjects():
-                ingredient.percentage = self._getPercentOfTotalBill(amount, ingredient_type)
+                ingredient.percentage = self._getPercentOfTotalBill(ingredient.amount, ingredient_type)
                 self.ingredients_ctrl.RefreshObject(ingredient)
-                
-            self.ingredients_ctrl.AddObject(ing)
+
             self.ingredients_ctrl.AutoSizeColumns()
             
         inventory.Destroy()
 
-    def _getPercentOfTotalBill(self, amount, ingredient_type):
-        (new_ing_amount, unit) = getAmountFromString(amount)
-        new_ing_amount = convertToOz(new_ing_amount, unit)
-        
-        # we haven't actually added the new ingredient to the list, so we'll seed with the new ingredient amount
-        total_ingredient = new_ing_amount
-                
-        for ingredient in self.ingredients_ctrl.GetObjects():
-            if ingredient.ingredient_type == ingredient_type:
-                if ingredient.amount_units != Measure.OZ:
-                     amt = convertToOz(ingredient.amount, unit)
-                total_ingredient = total_ingredient + amt
-                
-        if new_ing_amount > total_ingredient:
-            return ((float(total_ingredient) / float(new_ing_amount)) * 100.0)
-        else:
-            return ((float(new_ing_amount) / float(total_ingredient)) * 100.0)
+    def _getPercentOfTotalBill(self, new_amount, ingredient_type):
+        total_ingredient = getattr(self.recipe, '%s_total_weight' % ingredient_type.lower())
+        return (new_amount.convert('oz') / total_ingredient) * Decimal('100.0')
                 
         
     def InventoryDelete(self, event):
@@ -334,8 +314,8 @@ class RecipeEditor(wx.Frame, BaseWindow):
         typec= ColumnDefn('Type', 'left', 100, 'ingredient_type')
         use_inc = ColumnDefn('Use', 'left', 100, 'use_in', stringConverter=getUseIn)
         percentc = ColumnDefn('%', 'left', 100, 'percentage', stringConverter="%.2f")
-        timec = ColumnDefn('Time', 'left', 100, 'time_used')
-        amountc = ColumnDefn('Amount', 'left', 100, 'amount_string')
+        timec = ColumnDefn('Time', 'left', 100, 'time_used', stringConverter=stringFromMeasure)
+        amountc = ColumnDefn('Amount', 'left', 100, 'amount', stringConverter=stringFromMeasure)
         
         namec.freeSpaceProportion = 2
         

@@ -20,7 +20,8 @@
 from xml.dom import minidom
 
 import db
-from models import Hop, Grain, Extract, HoppedExtract, Yeast, Measures, Fining, Mineral, Flavor, Spice, Herb, Misc
+from measures import Measure
+from models import Hop, Grain, Extract, HoppedExtract, Yeast, Fining, Mineral, Flavor, Spice, Herb, Misc
 from algorithms import sg_from_yield, c2f
     
 def process_bt_database():
@@ -301,13 +302,13 @@ def process_yeasts(d):
             pass
         try:
             if g('AMOUNT_IS_WEIGHT')[0].firstChild.data == 'FALSE':
-                amount_units = Measures.ML
+                amount_units = Measure.ML
             else:
-                amount_units = Measures.GM
+                amount_units = Measure.GM
         except AttributeError:
             pass
 
-        temp_units = Measures.FAHRENHEIT            
+        temp_units = Measure.FAHRENHEIT            
         if yeast_type == Yeast.yeast_forms.index('Liquid'):
             use_starter = True
         else:

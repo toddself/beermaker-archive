@@ -438,14 +438,14 @@ class Recipe(SQLObject, Measure):
     carbonation_types = ['Forced CO2', 'Table Sugar', 'Corn Sugar', 'Dried Malt Extract', 'Krausen',]
     
     name = UnicodeCol(length=64, default=None)
-    style = ForeignKey('BJCPStyle')
+    style = ForeignKey('BJCPStyle', default=None)
     brewer = UnicodeCol(length=255, default=None)
     recipe_type = IntCol(default=EXTRACT)
     boil_volume = DecimalCol(size=5, precision=2, default=0)
     boil_volume_units = IntCol(default=Measure.GAL)
     batch_volume = DecimalCol(size=5, precision=2, default=0)
     batch_volume_units = IntCol(default=Measure.GAL)
-    equipment = ForeignKey('EquipmentSet')
+    equipment = ForeignKey('EquipmentSet', default=None)
     base_boil_on_equipment = BoolCol(default=True)
     og = SGCol(default=0)
     fg = SGCol(default=0)
@@ -456,27 +456,46 @@ class Recipe(SQLObject, Measure):
     fermentation_stage_1 = IntCol(default=0)
     fermentation_stage_2 = IntCol(default=0)
     fermentation_stage_3 = IntCol(default=0)
-    mash = ForeignKey('MashProfile')
+    mash = ForeignKey('MashProfile', default=None)
     carbonation_type = IntCol(default=FORCED_CO2)
     carbonation_volume = DecimalCol(size=3, precision=1, default=0)
     carbonation_amount = DecimalCol(size=4, precision=2, default=0)
     brewed_on = DateCol(default=datetime.now())
     is_batch = BoolCol(default=False)
     master_recipe = IntCol(default=0)
+    grain_total_weight = DecimalCol(size=5, precision=2, default=0)
+    hops_total_weight = DecimalCol(size=5, precision=2, default=0)
+    
+    def add_to_total_weight(self, amount, ingredient_type):
+        # try:
+        if ingredient_type.lower() == 'grain':
+            new = self.grain_total_weight + amount
+            self.grain_total_weight = new
+        elif ingredient_type.lower() == 'hop':
+            new = self.hop_total_weight + amount
+            self.hop_total_weight = new
+        # current_weight = getattr(self, "%s_total_weight" % ingredient_type.lower())
+        # new_weight = current_weight + amount
+        # print new_weight
+        # setattr(self, "%s_total_weight", new_weight)
+        # # except AttributeError:
+        # #     return
     
     def _set_master_recipe(self, value):
-        valid_master_id = False
-        for item in list(self.select()):
-            if item.id == value and item.is_batch == False:
-                valid_master_id = True
+        if self.is_batch:
+            for item in list(self.select()):
+                if item.id == value and item.is_batch == False:
+                    valid_master_id = True
                 
-        if valid_master_id:
-            self.is_batch = True
-            self._SO_set_master_recipe(value)
+            if valid_master_id:
+                self.is_batch = True
+                self._SO_set_master_recipe(value)
+            else:
+                raise BatchIsNotMaster('The master recipe cannot be a batch and it must exist')
         else:
-            raise BatchIsNotMaster('The master recipe cannot be a batch and it must exist')
+            self._SO_set_master_recipe(0)
 
-class RecipeIngredient(SQLObject, Measure):
+class RecipeIngredient(SQLObject):
     recipe = ForeignKey('Recipe')
     ingredient_id = IntCol(default=0)
     ingredient_type = UnicodeCol(default=None)
@@ -484,7 +503,7 @@ class RecipeIngredient(SQLObject, Measure):
     amount_units = IntCol(default=Measure.LB)
     percentage  = PercentCol(default=0)
     use_in = IntCol(default=Misc.BOIL)
-    time_used = IntCol(default=0)
+    time_used = DecimalCol(size=5, precision=2, default=0)
     time_used_units = IntCol(default=Measure.MIN)
     
     def _get_name(self):
@@ -502,10 +521,10 @@ class RecipeIngredient(SQLObject, Measure):
         self._SO_set_time_used(value.count)
                 
     def _get_time_used(self):
-        return Measure("%s %s", self._SO_get_time_used(), self.time_used_units)
+        return Measure("%s %s" % (self._SO_get_time_used(), Measure.timing_parts[self.time_used_units]))
     
     def _get_amount(self):
-        return Measure("%s %s", self._SO_get_amount, self.amount_units)
+        return Measure("%s %s" % (self._SO_get_amount(), Measure.measures[self.amount_units]))
     
     def _set_amount(self, value):
         if type(value) == type(''):
@@ -531,7 +550,6 @@ class Inventory(SQLObject):
         self.inventory_type = value.sqlmeta.table.title()
         self._SO_set_inventory_item_id(value.id)
 
-        
 def getHopType(hop_idx):
     try:
         hop_type = Hop.hop_types[hop_idx]
@@ -573,43 +591,10 @@ def getUseIn(use_in):
     else:
         use_in_name = ''
     return use_in_name
-    
-def getTimeFromString(time_str):
-    try:
-        (time, time_unit_str) = time_str.split(' ')
-    except ValueError:
-        raise AmountSetError('You must specify the amount of time as well as the unit of time.  I.E.: 1 min, 2 sec, 3 hrs')
-        return (None, None)
+
+def stringFromMeasure(measure):
+    if measure != None:
+        string = measure.__unicode__()
     else:
-        if time_unit_str.lower() not in Measure.timing_parts:
-            time_units = Measure.MIN
-        else:
-            time_units = Measure.timing_parts.index(time_unit_str)
-
-        try:
-            time = int(time)
-        except ValueError:
-            raise ('The amount of time must be a positive integer and it must preceed the unit. IE: 1 min, 2 sec, 3 hrs')    
-            return (None, None)
-
-    return (time, time_units)
-
-def getAmountFromString(amount_str):
-    try:
-        (amount, amount_unit_str) = amount_str.split(' ')
-    except ValueError:
-        raise AmountSetError('You must specify the unit of measurement as well as the amount.  I.E.: 12 OZ, 3 GAL')
-        return (None, None)
-    else:            
-        if amount_unit_str.lower() not in Measure.Measure:
-            amount_unit = Measure.OZ
-        else:
-            amount_unit = Measure.Measure.index(amount_unit_str)
-
-        try:
-            amount = Decimal(amount)
-        except ValueError:
-            raise AmountSetError('The amount of the ingredient must preceed the unit. IE: 12 OZ, 3 GAL')
-            return (None, None)
-
-    return (amount, amount_unit)
+        string = ''
+    return string
