@@ -18,6 +18,22 @@
 
 from sqlobject import *
 from sqlobject.col import pushKey
+from decimal import Decimal
+
+SG_QUANT = Decimal(10) ** -3
+PERCENT_QUANT = Decimal(10) ** -2
+
+def sg_from_yield(y):
+    return Decimal("%.1fe-3" % (y / 100.0 * 46.0)).quantize(SG_QUANT) + Decimal(1)
+
+def yield_from_sg(sg):
+    return ((sg/46)*100)
+    
+def f2c(f):
+    return ((f-32)*5)/9
+
+def c2f(c):
+    return ((c*9)/5)+32     
 
 class SGCol(DecimalCol):
     """ Stores Specific Gravity in a decimal column
@@ -57,7 +73,6 @@ class SRMCol(DecimalCol):
         pushKey(kw, 'size', 5)
         pushKey(kw, 'precision', 1)
         super(DecimalCol, self).__init__(**kw)
-        
 
 class BatchIsNotMaster(Exception):
     def __init__(self,value):
@@ -69,4 +84,4 @@ class AmountSetError(Exception):
     def __init__(self, value):
         self.value = value
     def __unicode__(self, value):
-        return repr(self.value)        
+        return repr(self.value)  

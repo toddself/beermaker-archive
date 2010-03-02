@@ -30,7 +30,7 @@ from models import Recipe
 
 # import gui elements
 from base import BaseWindow
-from editors import RecipeEditor
+from recipe_editor import RecipeEditor
 
 class RecipeData():
     def __init__(self, name, category, number, ibu, srm, abv, og, fg, brewed_on):

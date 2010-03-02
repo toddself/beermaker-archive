@@ -22,7 +22,7 @@ from xml.dom import minidom
 import db
 from measures import Measure
 from models import Hop, Grain, Extract, HoppedExtract, Yeast, Fining, Mineral, Flavor, Spice, Herb, Misc
-from algorithms import sg_from_yield, c2f
+from beerutils import sg_from_yield, c2f
     
 def process_bt_database():
     ds = db.DataStore()

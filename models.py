@@ -22,7 +22,7 @@ from decimal import Decimal
 from sqlobject import *
 from sqlobject.versioning import Versioning
 
-from beersql import *
+from beerutils import *
 from measures import *
 
 class Hop(SQLObject):
@@ -485,19 +485,12 @@ class Recipe(SQLObject, Measure):
     versions = Versioning()
     
     def add_to_total_weight(self, amount, ingredient_type):
-        # try:
         if ingredient_type.lower() == 'grain':
             new = self.grain_total_weight + amount
             self.grain_total_weight = new
         elif ingredient_type.lower() == 'hop':
             new = self.hop_total_weight + amount
             self.hop_total_weight = new
-        # current_weight = getattr(self, "%s_total_weight" % ingredient_type.lower())
-        # new_weight = current_weight + amount
-        # print new_weight
-        # setattr(self, "%s_total_weight", new_weight)
-        # # except AttributeError:
-        # #     return
     
     def _set_master_recipe(self, value):
         if self.is_batch:
@@ -514,7 +507,7 @@ class Recipe(SQLObject, Measure):
             self._SO_set_master_recipe(0)
 
 class RecipeIngredient(SQLObject):
-    recipe = ForeignKey('Recipe')
+    recipe = ForeignKey('Recipe', default=0)
     ingredient_id = IntCol(default=0)
     ingredient_type = UnicodeCol(default=None)
     amount = DecimalCol(size=5, precision=2, default=0)
@@ -529,25 +522,30 @@ class RecipeIngredient(SQLObject):
         return eval(self.ingredient_type).get(self.ingredient_id).name
     
     def _set_ingredient_id(self, value):
-        self.ingredient_type = value.sqlmeta.table.title()
-        self._SO_set_ingredient_id(value.id)
+        try:
+            self.ingredient_type = value.sqlmeta.table.title()
+            self._SO_set_ingredient_id(value.id)
+        except AttributeError:
+            self.ingredient_type = 'Grain'
+            self._SO_set_ingredient_id(value)
+
     
     def _set_time_used(self, value):
-        if type(value) == type(''):
-            value = Measure(value)
+        if type(value) == type(int()):
+            value = Measure("%s min" % value)
             
         self.time_used_units = value.unit
         self._SO_set_time_used(value.count)
                 
-    def _get_time_used(self):
+    def _get_time_used_m(self):
         return Measure("%s %s" % (self._SO_get_time_used(), Measure.timing_parts[self.time_used_units]))
     
-    def _get_amount(self):
+    def _get_amount_m(self):
         return Measure("%s %s" % (self._SO_get_amount(), Measure.measures[self.amount_units]))
     
     def _set_amount(self, value):
-        if type(value) == type(''):
-            value = Measure(value)
+        if type(value) == type(int()):
+            value = Measure("%s oz" % value)
 
         self.amount_units = value.unit
         self._SO_set_amount(value.count)
@@ -569,6 +567,22 @@ class Inventory(SQLObject):
     def _set_inventory_item_id(self, value):
         self.inventory_type = value.sqlmeta.table.title()
         self._SO_set_inventory_item_id(value.id)
+
+def cloneRecipe(clone, master):
+    clone = cloneSQLObject(clone, master)
+    for ing in master.ingredient:
+        cloned_ing = cloneSQLObject(RecipeIngredient(), ing)
+        cloned_ing.recipeID = clone
+
+    return clone
+
+def cloneSQLObject(clone, master):
+    for attr in master.__dict__:
+        if "_SO_val_" in attr:
+            attribute_name = '_'.join(attr.split('_')[3:])
+            value = getattr(master, attribute_name)
+            setattr(clone, attribute_name, value)   
+    return clone
 
 def getHopType(hop_idx):
     try:
@@ -610,11 +624,4 @@ def getUseIn(use_in):
         use_in_name = Misc.misc_use_ins[use_in]
     else:
         use_in_name = ''
-    return use_in_name
-
-def stringFromMeasure(measure):
-    if measure != None:
-        string = measure.__unicode__()
-    else:
-        string = ''
-    return string
+    return use_in_name   

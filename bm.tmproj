@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>editors.py</string>
+	<string>recipe_editor.py</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -14,19 +14,13 @@
 			<key>filename</key>
 			<string>bjcp_import.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-02T18:55:35Z</date>
+			<date>2010-03-02T19:11:11Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>data_import.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-01T16:15:10Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>algorithms.py</string>
-			<key>lastUsed</key>
-			<date>2010-03-01T16:09:20Z</date>
+			<date>2010-03-02T19:11:10Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -60,9 +54,15 @@
 		</dict>
 		<dict>
 			<key>filename</key>
-			<string>editors.py</string>
+			<string>ingredient_browser.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-02T17:14:18Z</date>
+			<date>2010-03-02T18:55:17Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>recipe_editor.py</string>
+			<key>lastUsed</key>
+			<date>2010-03-02T20:52:33Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -70,25 +70,25 @@
 			<key>filename</key>
 			<string>beermaker.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-01T19:58:12Z</date>
+			<date>2010-03-02T20:37:38Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>guid.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-08T15:30:07Z</date>
+			<date>2010-03-02T19:13:01Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>iconsrc.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-08T15:30:06Z</date>
+			<date>2010-03-02T19:13:00Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>db.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-01T16:15:11Z</date>
+			<date>2010-03-02T19:11:12Z</date>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -100,21 +100,21 @@
 		</dict>
 		<dict>
 			<key>filename</key>
-			<string>beersql.py</string>
+			<string>beerutils.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-01T16:09:16Z</date>
+			<date>2010-03-02T20:52:12Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>measures.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-01T16:27:19Z</date>
+			<date>2010-03-02T19:11:13Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-01T19:54:35Z</date>
+			<date>2010-03-02T20:52:33Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -125,77 +125,33 @@
 	<integer>200</integer>
 	<key>metaData</key>
 	<dict>
-		<key>algorithms.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>17</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
 		<key>beermaker.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>18</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>32</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>102</integer>
+			<integer>8</integer>
 		</dict>
-		<key>beersql.py</key>
+		<key>beerutils.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>23</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>35</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
-		</dict>
-		<key>editors.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>72</integer>
-				<key>line</key>
-				<integer>73</integer>
-			</dict>
-			<key>columnSelection</key>
-			<false/>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>39</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>20</integer>
-				<key>line</key>
-				<integer>74</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>72</integer>
-				<key>line</key>
-				<integer>73</integer>
-			</dict>
 		</dict>
 		<key>measures.py</key>
 		<dict>
@@ -216,28 +172,41 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>4</integer>
+				<integer>30</integer>
 				<key>line</key>
-				<integer>524</integer>
+				<integer>580</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>491</integer>
+			<integer>562</integer>
+		</dict>
+		<key>recipe_editor.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>59</integer>
+				<key>line</key>
+				<integer>56</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>45</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>editors.py</string>
+		<string>recipe_editor.py</string>
 		<string>models.py</string>
+		<string>beerutils.py</string>
 		<string>beermaker.py</string>
 		<string>measures.py</string>
-		<string>beersql.py</string>
-		<string>algorithms.py</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{10, 0}, {1192, 878}}</string>
+	<string>{{0, 0}, {1195, 878}}</string>
 </dict>
 </plist>
