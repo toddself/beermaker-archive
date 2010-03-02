@@ -20,6 +20,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from sqlobject import *
+from sqlobject.versioning import Versioning
 
 from beersql import *
 from measures import *
@@ -43,6 +44,7 @@ class Hop(SQLObject):
     name = UnicodeCol(length=64, default=None)
     description = UnicodeCol(default=None)
     substitutes = UnicodeCol(default=None)
+    versions = Versioning()
     
     def _get_inventory(self):
         try:
@@ -67,6 +69,7 @@ class Grain(SQLObject):
     add_after_boil = BoolCol(default=False)
     notes = UnicodeCol(default=None)
     maltster = UnicodeCol(default=None, length=128)
+    versions = Versioning()
             
     def _get_inventory(self):
         try:
@@ -85,6 +88,7 @@ class Extract(SQLObject):
     add_after_boil = BoolCol(default=False)
     notes = UnicodeCol(default=None)
     supplier = UnicodeCol(default=None, length=128)
+    versions = Versioning()
     
     def _get_inventory(self):
         try:
@@ -100,6 +104,7 @@ class HoppedExtract(Extract, Measure):
     hop_usage_unit = IntCol(default=Measure.MIN)
     hop_by_weight = DecimalCol(size=4, precision=2, default=0.0)
     hop_by_weight_unit = IntCol(default=Measure.LB)
+    versions = Versioning()
     
     def _get_inventory(self):
         try:
@@ -150,6 +155,7 @@ class Yeast(SQLObject, Measure):
     notes = UnicodeCol(default=None)
     use_starter = BoolCol(default=False)
     secondary = BoolCol(default=False)
+    versions = Versioning()
     
     def _get_inventory(self):
         try:
@@ -172,6 +178,7 @@ class Water(SQLObject):
     cl = DecimalCol(size=8, precision=8, default=0.0)
     hco3 = DecimalCol(size=8, precision=8, default=0.0)
     notes = UnicodeCol(default=None)
+    versions = Versioning()
         
     def _get_inventory(self):
         try:
@@ -207,11 +214,13 @@ class Misc(SQLObject, Measure):
     use_time_units = IntCol(default=Measure.MIN)
     misc_type = IntCol(default=SPICE)
     notes = UnicodeCol(default=None)
+    versions = Versioning()
 
 class Mineral(Misc):
     def __init__(self, *args, **kw):
         misc_type = Misc.WATER_AGENT
         Misc.__init__(self, *args, **kw)
+        versions = Versioning()
         
     def _get_inventory(self):
         try:
@@ -296,6 +305,7 @@ class BJCPStyle(SQLObject):
     srm_high = SRMCol(default=None)
     abv_low = DecimalCol(size=3, precision=1, default=None)
     abv_high = DecimalCol(size=3, precision=1, default=None)
+    versions = Versioning()
     
     def _get_combined_category_id(self):
         return "%s%s" % (self.category.category_id, self.subcategory)
@@ -350,6 +360,7 @@ class BJCPCategory(SQLObject):
     name = UnicodeCol(length=48, default=None)
     category_id = IntCol(default=None)  
     notes = UnicodeCol()
+    versions = Versioning()
 
 class MashTun(SQLObject, Measure):
     volume = DecimalCol(size=5, precision=2, default=0.0)
@@ -359,6 +370,7 @@ class MashTun(SQLObject, Measure):
     dead_space_unit = IntCol(default=Measure.GAL)
     top_up_water = DecimalCol(size=5, precision=2, default=0.0)
     top_up_water_unit = IntCol(default=Measure.GAL)
+    versions = Versioning()
     
 class BoilKettle(SQLObject, Measure):
     boil_volume = DecimalCol(size=5, precision=2, default=0.0)
@@ -377,6 +389,7 @@ class BoilKettle(SQLObject, Measure):
     cooling_loss = PercentCol(default=0.0)
     cooling_loss_vol = DecimalCol(size=3, precision=2, default=0.0)
     cooling_loss_unit = IntCol(default=Measure.GAL)
+    versions = Versioning()
     
 class EquipmentSet(SQLObject):
     name = UnicodeCol(length=64, default=None)
@@ -384,6 +397,7 @@ class EquipmentSet(SQLObject):
     mash_tun = ForeignKey('MashTun')
     boil_kettle = ForeignKey('BoilKettle')
     hop_utilization_factor = PercentCol(default=100)
+    versions = Versioning()
     
 class MashProfile(SQLObject):
     BATCH = 0
@@ -395,6 +409,7 @@ class MashProfile(SQLObject):
     sparge_type = IntCol(default=BATCH)
     num_sparges = IntCol(default=1)
     notes = UnicodeCol(default=None)
+    versions = Versioning()
     
 class MashStep(SQLObject, Measure):
     INFUSION = 0
@@ -414,10 +429,12 @@ class MashStep(SQLObject, Measure):
     step_time = DecimalCol(size=3, precision=1, default=0.0)
     rise_time = DecimalCol(size=3, precision=1, default=0.0)
     mash_steps = ForeignKey('MashStepOrder')
+    versions = Versioning()
 
 class MashStepOrder(SQLObject):
     position = IntCol(default=1)
     step = ForeignKey('MashStep')
+    versions = Versioning()
 
 class Recipe(SQLObject, Measure):
     EXTRACT = 0
@@ -465,6 +482,7 @@ class Recipe(SQLObject, Measure):
     master_recipe = IntCol(default=0)
     grain_total_weight = DecimalCol(size=5, precision=2, default=0)
     hops_total_weight = DecimalCol(size=5, precision=2, default=0)
+    versions = Versioning()
     
     def add_to_total_weight(self, amount, ingredient_type):
         # try:
@@ -505,6 +523,7 @@ class RecipeIngredient(SQLObject):
     use_in = IntCol(default=Misc.BOIL)
     time_used = DecimalCol(size=5, precision=2, default=0)
     time_used_units = IntCol(default=Measure.MIN)
+    versions = Versioning()
     
     def _get_name(self):
         return eval(self.ingredient_type).get(self.ingredient_id).name
@@ -542,6 +561,7 @@ class Inventory(SQLObject):
     price = CurrencyCol(default=0)
     notes = UnicodeCol(default=None)
     inventory_type = UnicodeCol(default=None)
+    versions = Versioning()
 
     def _get_name(self):
         return eval(self.inventory_type).get(self.inventory_item_id).name
