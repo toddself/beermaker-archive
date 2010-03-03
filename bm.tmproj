@@ -27,6 +27,8 @@
 			<string>LICENSE</string>
 		</dict>
 		<dict>
+			<key>expanded</key>
+			<true/>
 			<key>name</key>
 			<string>old</string>
 			<key>regexFolderFilter</key>
@@ -62,7 +64,7 @@
 			<key>filename</key>
 			<string>recipe_editor.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-02T20:52:33Z</date>
+			<date>2010-03-03T21:23:13Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -70,13 +72,13 @@
 			<key>filename</key>
 			<string>beermaker.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-02T20:37:38Z</date>
+			<date>2010-03-03T21:21:39Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>guid.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-02T19:13:01Z</date>
+			<date>2010-03-03T21:04:39Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -102,19 +104,19 @@
 			<key>filename</key>
 			<string>beerutils.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-02T20:52:12Z</date>
+			<date>2010-03-03T21:22:04Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>measures.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-02T19:11:13Z</date>
+			<date>2010-03-03T21:21:38Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-02T20:52:33Z</date>
+			<date>2010-03-03T21:23:13Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -130,23 +132,23 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>18</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>32</integer>
+				<integer>78</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>8</integer>
+			<integer>24</integer>
 		</dict>
 		<key>beerutils.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>23</integer>
+				<integer>36</integer>
 				<key>line</key>
-				<integer>35</integer>
+				<integer>28</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -172,28 +174,28 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>30</integer>
+				<integer>27</integer>
 				<key>line</key>
-				<integer>580</integer>
+				<integer>355</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>562</integer>
+			<integer>305</integer>
 		</dict>
 		<key>recipe_editor.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>59</integer>
+				<integer>35</integer>
 				<key>line</key>
-				<integer>56</integer>
+				<integer>311</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>45</integer>
+			<integer>260</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
@@ -207,6 +209,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{0, 0}, {1195, 878}}</string>
+	<string>{{11, 22}, {1411, 999}}</string>
 </dict>
 </plist>

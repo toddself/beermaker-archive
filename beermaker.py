@@ -62,8 +62,8 @@ class MainFrame(wx.Frame, BaseWindow):
 
 
     def layoutData(self):
-        return ({'widget': wx.BoxSizer, 'style:': wx.VERTICAL, 'proportion': 1, 'flag': wx.EXPAND|wx.ALL, 'border': 3, 'widgets':
-            ({'widget': ObjectListView, 'var': 'recipes_ctrl', 'style': wx.LC_REPORT, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},)
+        return ({'widget': wx.BoxSizer, 'style:': wx.VERTICAL, 'proportion': 1, 'flag': wx.EXPAND, 'border': 3, 'widgets':
+            ({'widget': ObjectListView, 'var': 'recipes_ctrl', 'style': wx.LC_REPORT, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND, 'proportion': 1},)
         },)
 
     def _setupRecipeList(self):
@@ -76,7 +76,6 @@ class MainFrame(wx.Frame, BaseWindow):
         ogc = ColumnDefn('OG', 'left', 80, 'time')
         fgc = ColumnDefn('FG', 'left', 80, 'time')
         boc = ColumnDefn('Brewed On', 'left', 80, 'time')
-
 
         self.recipes_ctrl.SetColumns([namec, catc, numberc, ibuc, srmc, abvc, ogc, fgc, boc])
         

@@ -23,6 +23,11 @@ from decimal import Decimal
 SG_QUANT = Decimal(10) ** -3
 PERCENT_QUANT = Decimal(10) ** -2
 
+def calculateBitternessRatio(sg, ibu):
+    gu = (sg - 1) * 1000
+    br = Decimal("%s" % ibu) / gu
+    return br.quantize(PERCENT_QUANT)
+
 def sg_from_yield(y):
     return Decimal("%.1fe-3" % (y / 100.0 * 46.0)).quantize(SG_QUANT) + Decimal(1)
 

@@ -317,7 +317,7 @@ class BJCPStyle(SQLObject):
         if low == 0 and high == 0:
             return "varies"
         else:
-            return "%.3f SG - %.3f SG" % (low, high)
+            return "%.3f - %.3f" % (low, high)
 
     def _get_fg_range(self):
         low = self._SO_get_fg_low()
@@ -326,7 +326,7 @@ class BJCPStyle(SQLObject):
         if low == 0 and high == 0:
             return "varies"
         else:
-            return "%.3f SG - %.3f SG" % (low, high)
+            return "%.3f - %.3f" % (low, high)
 
     def _get_srm_range(self):
         low = self._SO_get_srm_low()
@@ -335,7 +335,7 @@ class BJCPStyle(SQLObject):
         if low == 0 and high == 0:
             return "varies"
         else:
-            return "%.1f SRM - %.1f SRM" % (low, high)
+            return "%.1f - %.1f" % (low, high)
 
     def _get_abv_range(self):
         low = self._SO_get_abv_low()
@@ -353,7 +353,7 @@ class BJCPStyle(SQLObject):
         if low == 0 and high == 0:
             return "varies"
         else:
-            return "%i IBU - %i IBU" % (low, high)
+            return "%i - %i" % (low, high)
 
 
 class BJCPCategory(SQLObject):
