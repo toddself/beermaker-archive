@@ -429,6 +429,7 @@ class MashStep(SQLObject, Measure):
     step_time = DecimalCol(size=3, precision=1, default=0.0)
     rise_time = DecimalCol(size=3, precision=1, default=0.0)
     mash_steps = ForeignKey('MashStepOrder')
+    mash = ForeignKey('MashProfile')
     versions = Versioning()
 
 class MashStepOrder(SQLObject):
@@ -471,19 +472,125 @@ class Recipe(SQLObject, Measure):
     ibu = IntCol(default=0)
     ingredient = MultipleJoin('RecipeIngredient')
     fermentation_type = IntCol(default=SINGLE)
-    fermentation_stage_1 = IntCol(default=0)
-    fermentation_stage_2 = IntCol(default=0)
-    fermentation_stage_3 = IntCol(default=0)
+    fermentation_stage_1_temp = DecimalCol(size=5, precision=2, default=0)
+    fermentation_stage_1_temp_units = IntCol(default=Measure.F)
+    fermentation_stage_2_temp = DecimalCol(size=5, precision=2, default=0)
+    fermentation_stage_2_temp_units = IntCol(default=Measure.F)
+    fermentation_stage_3_temp = DecimalCol(size=5, precision=2, default=0)
+    fermentation_stage_3_temp_units = IntCol(default=Measure.F)
+    fermentation_stage_1_length = IntCol(default=0)
+    fermentation_stage_2_length = IntCol(default=0)
+    fermentation_stage_3_length = IntCol(default=0)
+    fermentation_stage_1_length_units = IntCol(default=0)
+    fermentation_stage_2_length_units = IntCol(default=0)
+    fermentation_stage_3_length_units = IntCol(default=0)
     mash = ForeignKey('MashProfile', default=None)
     carbonation_type = IntCol(default=FORCED_CO2)
     carbonation_volume = DecimalCol(size=3, precision=1, default=0)
     carbonation_amount = DecimalCol(size=4, precision=2, default=0)
+    carbonation_amount_units = IntCol(default=Measure.OZ)
     brewed_on = DateCol(default=datetime.now())
     is_batch = BoolCol(default=False)
     master_recipe = IntCol(default=0)
     grain_total_weight = DecimalCol(size=5, precision=2, default=0)
     hops_total_weight = DecimalCol(size=5, precision=2, default=0)
     versions = Versioning()
+
+    def _set_primary_fermentation_temp(self, value):
+        if type(value) == type(int()):
+            value = Measure("%s C" % value)
+        else:
+            value = Measure(value)
+            
+        self.fermentation_stage_1_temp_units = value.unit
+        self.fermentation_stage_1_temp(value.count)
+    
+    def _get_primary_fermentation_temp(self):
+        return Measure('%s %s' % (self.fermentation_stage_1_temp, Measure.measures[self.fermentation_stage_1_temp_units]))
+
+    def _set_secondary_fermentation_temp(self, value):
+        if type(value) == type(int()):
+            value = Measure("%s C" % value)
+        else:
+            value = Measure(value)            
+
+        self.fermentation_stage_2_temp_units = value.unit
+        self.fermentation_stage_2_temp(value.count)
+
+    def _get_secondary_fermentation_temp(self):
+        return Measure('%s %s' % (self.fermentation_stage_2_temp, Measure.measures[self.fermentation_stage_2_temp_units]))
+
+    def _set_tertiary_fermentation_temp(self, value):
+        if type(value) == type(int()):
+            value = Measure("%s C" % value)
+        else:
+            value = Measure(value)    
+
+        self.fermentation_stage_3_temp_units = value.unit
+        self.fermentation_stage_3_temp(value.count)
+
+    def _get_tertiary_fermentation_temp(self):
+        return Measure('%s %s' % (self.fermentation_stage_3_temp, Measure.measures[self.fermentation_stage_3_temp_units]))
+
+    def _set_primary_fermentation_length(self, value):
+        if type(value) == type(int()):
+            value = Measure("%s days" % value)
+        else:
+            value = Measure(value)            
+        
+        self.fermentation_stage_1_length = value.count
+        self.fermentation_stage_1_length_units = value.unit
+        
+    def _get_primary_fermentation_length(self):
+        return Measure('%s %s' % (self.fermentation_stage_1_length, Measure.measures[self.fermentation_stage_1_length_units]))
+   
+    def _set_secondary_fermentation_length(self, value):
+        if type(value) == type(int()):
+            value = Measure("%s days" % value)
+        else:
+            value = Measure(value)
+
+        self.fermentation_stage_2_length = value.count
+        self.fermentation_stage_2_length_units = value.unit
+
+    def _get_secondary_fermentation_length(self):
+        return Measure('%s %s' % (self.fermentation_stage_2_length, Measure.measures[self.fermentation_stage_2_length_units]))
+
+    def _set_tertiary_fermentation_length(self, value):
+        if type(value) == type(int()):
+            value = Measure("%s days" % value)
+        else:
+            value = Measure(value)
+
+        self.fermentation_stage_3_length = value.count
+        self.fermentation_stage_3_length_units = value.unit
+
+    def _get_tertiary_fermentation_length(self):
+        return Measure('%s %s' % (self.fermentation_stage_3_length, Measure.measures[self.fermentation_stage_3_length_units]))
+        
+    def _set_boil_volume(self, value):
+        if type(value) == type(int()):
+            value = Measure("%s gal" % value)
+        else:
+            value = Measure(value)
+
+        self.boil_volume_units = value.unit
+        self._SO_set_boil_volume(value.count)
+    
+    def _get_boil_volume_m(self):
+        return Measure('%s %s' % (self._SO_get_boil_volume, Measure.measures[self.boil_volume_units]))
+
+    def _set_batch_volume(self, value):
+        if type(value) == type(int()):
+            value = Measure("%s gal" % value)
+        else:
+            value = Measure(value)    
+
+        self.batch_volume_units = value.unit
+        self._SO_set_batch_volume(value.count)
+
+    def _get_batch_volume_m(self):
+        return Measure('%s %s' % (self._SO_get_batch_volume, Measure.measures[self.batch_volume_units]))
     
     def add_to_total_weight(self, amount, ingredient_type):
         if ingredient_type.lower() == 'grain':

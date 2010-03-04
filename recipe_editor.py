@@ -70,7 +70,12 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self._setupIngredients()
         self._setupMashes()
         self._updateStyleInfo()
+        
+        # set up save information
         self.timer_running = False
+        self.dirty_data = []
+        
+        # populate the current recipe if necessary
         if recipe_id != 0:
             self._gatherIngredients()        
      
@@ -103,7 +108,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
                     )
                 }, # end second row
                 {'widget': wx.BoxSizer, 'title': 'Ingredients', 'flag': wx.ALL|wx.EXPAND, 'proportion': 1, 'style': wx.VERTICAL, 'widgets':
-                    ({'widget': GroupListView, 'var': 'ingredients_ctrl', 'style': wx.LC_REPORT, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
+                    ({'widget': ObjectListView, 'var': 'ingredients_ctrl', 'style': wx.LC_REPORT, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
                     {'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
                         (
                         {'widget': wx.Button, 'label': '+', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.InventoryAdd}},
@@ -227,9 +232,27 @@ class RecipeEditor(wx.Frame, BaseWindow):
     def updateRecipeStats(self, event):
         pass
         
-    def _updateStyleInfo(self, event=None):
+    def getStyleFromSelection(self):
         (style_id, style_name) = self.style_choices[self.recipe_style.GetCurrentSelection()].split(":")
         style = BJCPStyle.select(BJCPStyle.q.name==style_name.strip()).getOne()
+        return style
+        
+    def getEquipmentFromSelection(self):
+        try:
+            equipment = EquipmentSet.select(EquipmentSet.q.name==self.equipment_choices[self.recipe_equipment.GetCurrentSelection()].strip()).getOne()
+        except:
+            equipment = None
+        return equipment
+    
+    def getMashFromSelection(self):
+        try:
+            mash = MashProfile.select(MashProfile.q.name==self.mash_profiles[self.recipe_mash_choice.GetCurrentSelection()].strip()).getOne()
+        except:
+            mash = None
+        return mash
+        
+    def _updateStyleInfo(self, event=None):
+        style = self.getStyleFromSelection()
         self.style_og.SetValue(style.og_range)
         self.style_fg.SetValue(style.fg_range)
         self.style_srm.SetValue(style.srm_range)
@@ -262,9 +285,10 @@ class RecipeEditor(wx.Frame, BaseWindow):
 
     def _getMashChoices(self):
         if MashProfile.select().count() == 0:
-            return ['No Mashes Defined',]
+            self.mash_profiles =  ['No Mashes Defined',]
         else:
-            return ['%s' % m.name for m in list(MashProfile.select())]
+            self.mash_profiles = ['%s' % m.name for m in list(MashProfile.select())]
+        return self.mash_profiles
                 
     def _gatherIngredients(self):
         ing1 = Ingredient("Test", "Hop", 10, "Boil", 60, 0, 'oz', 'min')
@@ -278,8 +302,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
         percentc = ColumnDefn('%', 'left', 100, 'percentage', stringConverter="%.2f")
         timec = ColumnDefn('Time', 'left', 100, 'time_used_m', stringConverter="%s")
         amountc = ColumnDefn('Amount', 'left', 100, 'amount_m', stringConverter="%s")
-        
-        
+
         namec.freeSpaceProportion = 2
         
         self.ingredients_ctrl.oddRowsBackColor = wx.WHITE        
@@ -303,35 +326,77 @@ class RecipeEditor(wx.Frame, BaseWindow):
             
     def _getEquipmentChoices(self):
         if EquipmentSet.select().count() == 0:
-            return ['Equipment Not Set',]
+            self.equipment_choices =  ['Equipment Not Set',]
         else:
-            return ['%s' % e.name for e in list(EquipmentSet.select())]
+            self.equpiment_choices =  ['%s' % e.name for e in list(EquipmentSet.select())]
+        
+        return self.equipment_choices
 
     def DataChanged(self, event):
         # are we gonna save?
+        self.dirty_data.append(event.GetId())
         if self.timer_running:
             self.save_timer.Restart()
         else:
             self.save_timer = wx.FutureCall(1500, self.SaveRecipe)
             self.timer_running = True
-            
-        # is there anything else we need to update in the ui?
-        # if the widget dict has 'var' set, buildLayout will 
-        # generate an id and attach it to the object as var_id
-        # event_id = event.GetId()
-        # if event_id == self.recipe_style_id:
-        #     self._updateStyleInfo()
-        # elif event_id == self.recipe_type_id:
-        #     self._setupRecipeType(event)
-        # elif event_id == self.recipe_boil_set_to_equipment_id or event_id == self.recipe_equipment_id:
-        #     self._setupBoilVolume(event)
-        # elif event_id == self.mash_choice_id:
-        #     self._setupMashChoices(event)
-        # elif event_id
         event.Skip()
   
     def SaveRecipe(self):
-        self.recipe.name = self.recipe_name.GetValue()
+        # ugh.  there's probably some pythonic way to do this better
+        # that i'm just not fucking remembering.  but who doesn't love
+        # a massively long if/elif/else statement!
+        
+        try:
+            self.recipe_brewed_on_id
+        except:
+            self.recipe_brewed_on_id = False
+        
+        for data in self.dirty_data:
+            if data == self.recipe_name_id:
+                self.recipe.name = self.recipe_name.GetValue()
+            elif data == self.recipe_style_id:
+                self.recipe.style = self.getStyleFromSelection()
+            elif data == self.recipe_brewer_id:
+                self.recipe.brewer = self.recipe_brewer.GetValue()
+            elif data == self.recipe_brewed_on_id:
+                self.recipe.brewed_on = self.recipe_brewed_on.GetValue()
+            elif data == self.recipe_type_id:
+                self.recipe.recipe_type = self.recipe.recipe_types[self.recipe_type.GetCurrentSelection()]
+            elif data == self.recipe_boil_volume_id:
+                self.recipe.boil_volume = self.recipe_boil_volume.GetValue()
+            elif data == self.recipe_batch_volume_id:
+                self.batch_volume = self.recipe_batch_volume.GetValue()
+            elif data == self.recipe_equipment_id:
+                self.recipe.equipment = self.getEquipmentFromSelection()
+            elif data == self.recipe_boil_set_to_equipment_id:
+                self.recipe.boil_set_to_equipment = self.recipe_boil_set_to_equipment.GetValue()
+            elif data == self.recipe_efficiency_id:
+                self.recipe.efficiency = self.recipe_efficiency.GetValue()
+            elif data == self.mash_choice_id:
+                self.recipe.mash = self.getMashFromSelection()
+            elif data == self.fermentation_type_id:
+                self.recipe.fermentation_type = self.recipe.fermentation_types[self.fermentation_type.GetCurrentSelection()]
+            elif data == self.primary_length_id:
+                self.recipe.primary_fermentation_length = self.primary_length.GetValue()
+            elif data == self.primary_temp_id:
+                self.recipe.primary_fermentation_temp = self.primary_temp.GetValue()
+            elif data == self.secondary_length_id:
+                self.recipe.secondary_fermentation_length = self.secondary_length.GetValue()
+            elif data == self.secondary_temp_id:
+                self.recipe.secondary_fermentation_temp = self.secondary_temp.GetValue()
+            elif data == self.tertiary_length_id:
+                self.recipe.tertiary_fermentation_length = self.tertiary_length.GetValue()
+            elif data == self.tertiary_temp_id:
+                self.recipe.tertiary_fermentation_temp = self.tertiary_temp.GetValue()
+            elif data == self.carbonation_type_id:
+                self.recipe.carbonation_type = self.recipe.carbonation_types[self.carbonation_type.GetCurrentSelection()]
+            elif data == self.carbonation_volumes_id: 
+                self.recipe.carbonation_volume = self.carbonation_volumes.GetValue()
+            elif data == self.carbonation_used_id:
+                self.recipe.carbonation_amount = self.carbonation_used.GetValue()
+
+        self.dirty_data = []
   
     def newRecipe(self):
         pass

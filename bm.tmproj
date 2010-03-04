@@ -64,7 +64,7 @@
 			<key>filename</key>
 			<string>recipe_editor.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-04T16:16:37Z</date>
+			<date>2010-03-04T21:53:34Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -116,7 +116,7 @@
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-04T16:16:37Z</date>
+			<date>2010-03-04T21:53:34Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -132,28 +132,28 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>38</integer>
+				<integer>27</integer>
 				<key>line</key>
-				<integer>466</integer>
+				<integer>591</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>508</integer>
+			<integer>571</integer>
 		</dict>
 		<key>recipe_editor.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>64</integer>
+				<integer>36</integer>
 				<key>line</key>
-				<integer>275</integer>
+				<integer>352</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>134</integer>
+			<integer>342</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
@@ -164,6 +164,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{11, 22}, {1411, 999}}</string>
+	<string>{{11, 45}, {1376, 976}}</string>
 </dict>
 </plist>
