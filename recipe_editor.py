@@ -19,7 +19,7 @@
 import wx
 import wx.calendar as cal
 
-from ObjectListView import ObjectListView, ColumnDefn
+from ObjectListView import ObjectListView, ColumnDefn, GroupListView
 
 import guid
 import iconsrc
@@ -41,6 +41,12 @@ class RecipeEditor(wx.Frame, BaseWindow):
             batch = True
         else:
             batch = False
+        # since i'm still not so good at this layout shit
+        # we're gonna prevent resizing the recipe editor
+        if kw.has_key('style'):
+            kw['style'] = kw['style'] ^ wx.RESIZE_BORDER
+        else:
+            kw['style'] = wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER
         wx.Frame.__init__(self, *args, **kw)
         
         # are we making a new recipe, a new batch, or editing an
@@ -74,7 +80,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
                     {'widget': wx.StaticText, 'label': 'Name:', 'flag': self.ST_STYLE, 'proportion': 0, 'border': 3},
                     {'widget': wx.TextCtrl, 'proportion': 1, 'var': 'recipe_name', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
                     {'widget': wx.StaticText, 'label': 'Style:', 'flag': self.ST_STYLE},
-                    {'widget': wx.Choice, 'id': guid.STYLE_SELECT, 'size': (200,-1), 'var': 'recipe_style', 'choices': self._getStyleChoices(), 'event': {'event_type': wx.EVT_CHOICE, 'method': self.DataChanged}},
+                    {'widget': wx.Choice, 'size': (200,-1), 'var': 'recipe_style', 'choices': self._getStyleChoices(), 'event': ({'event_type': wx.EVT_CHOICE, 'method': self.DataChanged}, {'event_type': wx.EVT_CHOICE, 'method': self._updateStyleInfo})},
                     {'widget': wx.StaticText, 'label': 'Brewer:', 'flag': self.ST_STYLE},
                     {'widget': wx.TextCtrl, 'var': 'recipe_brewer', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
                     {'widget': wx.StaticText, 'label': 'Brewed on:', 'display': self.recipe.is_batch, 'flag': self.ST_STYLE},
@@ -92,10 +98,12 @@ class RecipeEditor(wx.Frame, BaseWindow):
                     {'widget': wx.StaticText, 'label': 'Equipment:', 'flag': self.ST_STYLE},
                     {'widget': wx.Choice, 'var': 'recipe_equipment', 'choices': self._getEquipmentChoices(), 'event': {'event_type': wx.EVT_CHOICE, 'method': self.DataChanged}},
                     {'widget': wx.CheckBox, 'var': 'recipe_boil_set_to_equipment', 'proportion': 1, 'label': 'Boil volume set to equipment', 'event': {'event_type': wx.EVT_CHECKBOX, 'method': self.DataChanged}},
+                    {'widget': wx.Button, 'label': 'Efficiency:', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.ViewEfficiency}},
+                    {'widget': wx.TextCtrl, 'size': (50, -1), 'var': 'recipe_efficiency', 'event':({'event_type': wx.EVT_TEXT, 'method': self.DataChanged}, {'event_type': wx.EVT_TEXT, 'method': self.updateRecipeStats})}
                     )
                 }, # end second row
                 {'widget': wx.BoxSizer, 'title': 'Ingredients', 'flag': wx.ALL|wx.EXPAND, 'proportion': 1, 'style': wx.VERTICAL, 'widgets':
-                    ({'widget': ObjectListView, 'var': 'ingredients_ctrl', 'style': wx.LC_REPORT, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
+                    ({'widget': GroupListView, 'var': 'ingredients_ctrl', 'style': wx.LC_REPORT, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
                     {'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
                         (
                         {'widget': wx.Button, 'label': '+', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.InventoryAdd}},
@@ -120,17 +128,17 @@ class RecipeEditor(wx.Frame, BaseWindow):
                         {'widget': wx.TextCtrl, 'editable': False, 'var': 'style_br'},
                         {'widget': wx.StaticText, 'label': 'Recipe', 'font': self.GetNewFont(pointSize=13, style=wx.ITALIC), 'style': wx.ALL, 'border': 3, 'proportion': 0},
                         {'widget': wx.StaticText, 'label': 'OG:' , 'style': self.ST_STYLE},
-                        {'widget': wx.TextCtrl, 'var': 'recipe_og', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                        {'widget': wx.TextCtrl, 'var': 'recipe_og', 'editable': False},
                         {'widget': wx.StaticText, 'label': 'FG:' , 'style': self.ST_STYLE},
-                        {'widget': wx.TextCtrl, 'var': 'recipe_fg', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                        {'widget': wx.TextCtrl, 'var': 'recipe_fg',  'editable': False},
                         {'widget': wx.StaticText, 'label': 'Color:' , 'style': self.ST_STYLE},
-                        {'widget': wx.TextCtrl, 'var': 'recipe_srm', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                        {'widget': wx.TextCtrl, 'var': 'recipe_srm',  'editable': False},
                         {'widget': wx.StaticText, 'label': 'ABV:' , 'style': self.ST_STYLE},
-                        {'widget': wx.TextCtrl, 'var': 'recipe_abv', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                        {'widget': wx.TextCtrl, 'var': 'recipe_abv', 'editable': False},
                         {'widget': wx.StaticText, 'label': 'IBU:' , 'style': self.ST_STYLE},
-                        {'widget': wx.TextCtrl, 'var': 'recipe_ibu', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},                        
+                        {'widget': wx.TextCtrl, 'var': 'recipe_ibu',  'editable': False},                        
                         {'widget': wx.StaticText, 'label': 'Bitterness Ratio:' , 'style': self.ST_STYLE},
-                        {'widget': wx.TextCtrl, 'var': 'recipe_br', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                        {'widget': wx.TextCtrl, 'var': 'recipe_br',  'editable': False},
                         )},
                     )
                 }, # end fourth row  
@@ -216,10 +224,10 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.updateRecipePercentage()
         event.Skip()
         
-    def updateRecipeStats(self):
+    def updateRecipeStats(self, event):
         pass
         
-    def _updateStyleInfo(self):
+    def _updateStyleInfo(self, event=None):
         (style_id, style_name) = self.style_choices[self.recipe_style.GetCurrentSelection()].split(":")
         style = BJCPStyle.select(BJCPStyle.q.name==style_name.strip()).getOne()
         self.style_og.SetValue(style.og_range)
@@ -271,6 +279,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
         timec = ColumnDefn('Time', 'left', 100, 'time_used_m', stringConverter="%s")
         amountc = ColumnDefn('Amount', 'left', 100, 'amount_m', stringConverter="%s")
         
+        
         namec.freeSpaceProportion = 2
         
         self.ingredients_ctrl.oddRowsBackColor = wx.WHITE        
@@ -298,30 +307,39 @@ class RecipeEditor(wx.Frame, BaseWindow):
         else:
             return ['%s' % e.name for e in list(EquipmentSet.select())]
 
-    def BoilSetToEquipment(self, event):
-        pass
-
     def DataChanged(self, event):
+        # are we gonna save?
         if self.timer_running:
             self.save_timer.Restart()
         else:
             self.save_timer = wx.FutureCall(1500, self.SaveRecipe)
             self.timer_running = True
             
-        if event.GetId() == guid.STYLE_SELECT:
-            self._updateStyleInfo()
-        
+        # is there anything else we need to update in the ui?
+        # if the widget dict has 'var' set, buildLayout will 
+        # generate an id and attach it to the object as var_id
+        # event_id = event.GetId()
+        # if event_id == self.recipe_style_id:
+        #     self._updateStyleInfo()
+        # elif event_id == self.recipe_type_id:
+        #     self._setupRecipeType(event)
+        # elif event_id == self.recipe_boil_set_to_equipment_id or event_id == self.recipe_equipment_id:
+        #     self._setupBoilVolume(event)
+        # elif event_id == self.mash_choice_id:
+        #     self._setupMashChoices(event)
+        # elif event_id
         event.Skip()
   
     def SaveRecipe(self):
         self.recipe.name = self.recipe_name.GetValue()
-        
-
   
     def newRecipe(self):
         pass
 
     def newBatch(self):
+        pass
+
+    def ViewEfficiency(self, event):
         pass
 
     def viewInventory(self):

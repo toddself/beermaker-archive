@@ -52,7 +52,7 @@
 			<key>filename</key>
 			<string>base.py</string>
 			<key>lastUsed</key>
-			<date>2010-02-23T20:34:37Z</date>
+			<date>2010-03-04T16:08:59Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -64,7 +64,7 @@
 			<key>filename</key>
 			<string>recipe_editor.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-03T21:23:13Z</date>
+			<date>2010-03-04T16:16:37Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -72,7 +72,7 @@
 			<key>filename</key>
 			<string>beermaker.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-03T21:21:39Z</date>
+			<date>2010-03-04T15:09:58Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -104,19 +104,19 @@
 			<key>filename</key>
 			<string>beerutils.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-03T21:22:04Z</date>
+			<date>2010-03-04T15:09:56Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>measures.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-03T21:21:38Z</date>
+			<date>2010-03-04T15:09:59Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-03T21:23:13Z</date>
+			<date>2010-03-04T16:16:37Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -127,84 +127,39 @@
 	<integer>200</integer>
 	<key>metaData</key>
 	<dict>
-		<key>beermaker.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>78</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>24</integer>
-		</dict>
-		<key>beerutils.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>36</integer>
-				<key>line</key>
-				<integer>28</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>measures.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>9</integer>
-				<key>line</key>
-				<integer>287</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>75</integer>
-		</dict>
 		<key>models.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>27</integer>
+				<integer>38</integer>
 				<key>line</key>
-				<integer>355</integer>
+				<integer>466</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>305</integer>
+			<integer>508</integer>
 		</dict>
 		<key>recipe_editor.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>35</integer>
+				<integer>64</integer>
 				<key>line</key>
-				<integer>311</integer>
+				<integer>275</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>260</integer>
+			<integer>134</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>recipe_editor.py</string>
 		<string>models.py</string>
-		<string>beerutils.py</string>
-		<string>beermaker.py</string>
-		<string>measures.py</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>

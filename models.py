@@ -464,6 +464,7 @@ class Recipe(SQLObject, Measure):
     batch_volume_units = IntCol(default=Measure.GAL)
     equipment = ForeignKey('EquipmentSet', default=None)
     base_boil_on_equipment = BoolCol(default=True)
+    efficiency = PercentCol(default=0)
     og = SGCol(default=0)
     fg = SGCol(default=0)
     color = SRMCol(default=0)

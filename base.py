@@ -42,7 +42,7 @@ class BaseWindow():
     TC_STYLE = wx.ALL|wx.ALIGN_CENTER_VERTICAL
     ST_STYLE = wx.ALL|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL
     ui_font = None
-    _not_editable_color = wx.Colour(224, 224, 224)
+    _not_editable_color = wx.Colour(240, 240, 240)
     
     def __init__(self):
         pass
@@ -373,7 +373,11 @@ class BaseWindow():
             editable = widget.pop('editable')
         except:
             editable = True
-
+            
+        if not widget.has_key('id') and var:
+            var_id = wx.NewId()
+            widget['id'] = var_id
+            
         gui_element = wxMethod(parent, **widget)
     
         if self.ui_font and not font:
@@ -387,14 +391,20 @@ class BaseWindow():
     
         if var:
             setattr(self, var, gui_element)
+            setattr(self, '%s_id' % var, var_id)
     
         if event:
-            self.Bind(event['event_type'], event['method'], 
-                gui_element)
+            if type(event) == type(()):
+                for evt in event:
+                    self._bindEvent(evt, gui_element)
+            else:
+                self._bindEvent(event, gui_element)
 
         return gui_element
-                
-    
+
+    def _bindEvent(self, event, element):
+        self.Bind(event['event_type'], event['method'], element)
+        
     def _createSectionHeader(self, parent, title, font=None, scale=-1):
         """
         _createSectionHeader returns a horizontal wx.BoxSizer
