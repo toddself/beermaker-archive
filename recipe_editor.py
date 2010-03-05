@@ -20,6 +20,7 @@ import wx
 import wx.calendar as cal
 
 from ObjectListView import ObjectListView, ColumnDefn, GroupListView
+from sqlobject import SQLObjectNotFound
 
 import guid
 import iconsrc
@@ -32,7 +33,9 @@ from ingredient_browser import IngredientBrowser
 from base import BaseWindow 
 
 class RecipeEditor(wx.Frame, BaseWindow):
-    def __init__(self, *args, **kw):        
+    def __init__(self, *args, **kw):   
+        
+        # lets pull out some stuff we need for the recipe   
         if kw.has_key('recipe_id'):
             recipe_id = kw.pop('recipe_id')
         else:
@@ -41,6 +44,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
             batch = True
         else:
             batch = False
+            
         # since i'm still not so good at this layout shit
         # we're gonna prevent resizing the recipe editor
         if kw.has_key('style'):
@@ -48,17 +52,21 @@ class RecipeEditor(wx.Frame, BaseWindow):
         else:
             kw['style'] = wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER
         wx.Frame.__init__(self, *args, **kw)
+        self.Centre()
         
         # are we making a new recipe, a new batch, or editing an
         # existing recipe; if existing, populate the fields
         if recipe_id == 0:
             self.recipe = Recipe()
         else:
-            if batch:
-                self.recipe = cloneRecipe(Recipe(), Recipe.get(recipe_id))
-                self.master_recipe = recipe_id
-            else:
-                self.recipe = Recipe.get(recipe_id)
+            try:
+                if batch:
+                    self.recipe = cloneRecipe(Recipe(), Recipe.get(recipe_id))
+                    self.master_recipe = recipe_id
+                else:
+                    self.recipe = Recipe.get(recipe_id)
+            except SQLObjectNotFound:
+                self.recipe= Recipe()
         
         # set up the ui basics
         self.status_bar = self.CreateStatusBar(1,0)
@@ -76,8 +84,8 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.dirty_data = []
         
         # populate the current recipe if necessary
-        if recipe_id != 0:
-            self._gatherIngredients()        
+        # if recipe_id != 0:
+        #     self._gatherIngredients()        
      
     def layoutData(self):
         return ({'widget': wx.BoxSizer, 'title': 'Recipe Basics', 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
@@ -195,15 +203,16 @@ class RecipeEditor(wx.Frame, BaseWindow):
                 
     def InventoryAdd(self, event):
         inventory = IngredientBrowser(self, -1, "Ingredient Browser", pos=(50,50), size=(800,600))
+        inventory.CentreOnParent()
         if inventory.ShowModal() == wx.ID_OK:
-            ingredient = inventory.ingredients_ctrl.GetSelectedObject()
-            ingredient_type = inventory.inventory_types[inventory.ing_choices.GetCurrentSelection()]
-            amount = Measure(inventory.amount_ctrl.GetValue())
-            time_used = Measure(inventory.time_used_ctrl.GetValue())
-            use_in = inventory.use_choices.GetCurrentSelection()
-            
-            ing = RecipeIngredient(recipe=self.recipe.id, ingredient_id=ingredient, amount=amount, use_in=use_in, time_used=time_used)
-            self.recipe.add_to_total_weight(amount.convert('oz'), ingredient_type.lower())
+
+            ing = RecipeIngredient(recipe=self.recipe.id, 
+                ingredient_id=inventory.ingredients_ctrl.GetSelectedObject(), 
+                amount=Measure(inventory.amount_ctrl.GetValue()), 
+                use_in=inventory.use_choices.GetCurrentSelection(), 
+                time_used=Measure(inventory.time_used_ctrl.GetValue()))
+                
+            self.recipe.add_to_total_weight(ing.amount.convert('oz'), ing.ingredient_type.lower())
             self.ingredients_ctrl.AddObject(ing)
             self.updateRecipePercentage()
             self.ingredients_ctrl.AutoSizeColumns()
@@ -224,7 +233,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
 
     def InventoryDelete(self, event):
         ingredient = self.ingredients_ctrl.GetSelectedObject()
-        self.recipe.remove_from_total_weigt(ingredient.amount.convert('oz'), ingredient.ingredient_type.lower())
+        self.recipe.remove_from_total_weight(ingredient.amount.convert('oz'), ingredient.ingredient_type.lower())
         self.ingredients_ctrl.RemoveObject(ingredient)
         self.updateRecipePercentage()
         event.Skip()
@@ -261,6 +270,9 @@ class RecipeEditor(wx.Frame, BaseWindow):
         br_high = calculateBitternessRatio(style.og_high, style.ibu_high)
         br_low = calculateBitternessRatio(style.og_low, style.ibu_low)
         self.style_br.SetValue("%s - %s" % (br_high, br_low))
+        
+        if event:
+            event.Skip()
 
     def MashAdd(self, event):
         """docstring for MashAdd"""
@@ -329,17 +341,23 @@ class RecipeEditor(wx.Frame, BaseWindow):
             self.equipment_choices =  ['Equipment Not Set',]
         else:
             self.equpiment_choices =  ['%s' % e.name for e in list(EquipmentSet.select())]
-        
         return self.equipment_choices
 
     def DataChanged(self, event):
         # are we gonna save?
+        # we need to make list of things we've "dirtied"
+        # with unsaved data
         self.dirty_data.append(event.GetId())
+        
+        # if the timer is running, reset.  this makes it so we're
+        # not saving while you're actually editing
         if self.timer_running:
             self.save_timer.Restart()
         else:
             self.save_timer = wx.FutureCall(1500, self.SaveRecipe)
             self.timer_running = True
+            
+        # we need to make sure that any other method bound to this object gets called
         event.Skip()
   
     def SaveRecipe(self):
@@ -352,7 +370,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
         except:
             self.recipe_brewed_on_id = False
         
-        for data in self.dirty_data:
+        for data in list(set(self.dirty_data)):
             if data == self.recipe_name_id:
                 self.recipe.name = self.recipe_name.GetValue()
             elif data == self.recipe_style_id:
@@ -362,7 +380,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
             elif data == self.recipe_brewed_on_id:
                 self.recipe.brewed_on = self.recipe_brewed_on.GetValue()
             elif data == self.recipe_type_id:
-                self.recipe.recipe_type = self.recipe.recipe_types[self.recipe_type.GetCurrentSelection()]
+                self.recipe.recipe_type = self.recipe_type.GetCurrentSelection()
             elif data == self.recipe_boil_volume_id:
                 self.recipe.boil_volume = self.recipe_boil_volume.GetValue()
             elif data == self.recipe_batch_volume_id:
@@ -376,7 +394,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
             elif data == self.mash_choice_id:
                 self.recipe.mash = self.getMashFromSelection()
             elif data == self.fermentation_type_id:
-                self.recipe.fermentation_type = self.recipe.fermentation_types[self.fermentation_type.GetCurrentSelection()]
+                self.recipe.fermentation_type = self.fermentation_type.GetCurrentSelection()
             elif data == self.primary_length_id:
                 self.recipe.primary_fermentation_length = self.primary_length.GetValue()
             elif data == self.primary_temp_id:
@@ -390,7 +408,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
             elif data == self.tertiary_temp_id:
                 self.recipe.tertiary_fermentation_temp = self.tertiary_temp.GetValue()
             elif data == self.carbonation_type_id:
-                self.recipe.carbonation_type = self.recipe.carbonation_types[self.carbonation_type.GetCurrentSelection()]
+                self.recipe.carbonation_type = self.carbonation_type.GetCurrentSelection()
             elif data == self.carbonation_volumes_id: 
                 self.recipe.carbonation_volume = self.carbonation_volumes.GetValue()
             elif data == self.carbonation_used_id:
@@ -458,7 +476,7 @@ class RE(wx.App):
     def OnInit(self):
         wx.InitAllImageHandlers()
         ds = DataStore()
-        reditor = RecipeEditor(None, -1, "", size=(1024,768))
+        reditor = RecipeEditor(None, -1, "", size=(1024,768), recipe_id=1)
         self.SetTopWindow(reditor)
         reditor.Show()
         return 1

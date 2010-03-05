@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>currentDocument</key>
-	<string>recipe_editor.py</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -27,8 +25,6 @@
 			<string>LICENSE</string>
 		</dict>
 		<dict>
-			<key>expanded</key>
-			<true/>
 			<key>name</key>
 			<string>old</string>
 			<key>regexFolderFilter</key>
@@ -52,7 +48,7 @@
 			<key>filename</key>
 			<string>base.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-04T16:08:59Z</date>
+			<date>2010-03-05T16:58:33Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -64,7 +60,7 @@
 			<key>filename</key>
 			<string>recipe_editor.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-04T21:53:34Z</date>
+			<date>2010-03-05T18:59:21Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -116,7 +112,7 @@
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-04T21:53:34Z</date>
+			<date>2010-03-05T16:58:33Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -126,44 +122,10 @@
 	<key>fileHierarchyDrawerWidth</key>
 	<integer>200</integer>
 	<key>metaData</key>
-	<dict>
-		<key>models.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>27</integer>
-				<key>line</key>
-				<integer>591</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>571</integer>
-		</dict>
-		<key>recipe_editor.py</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>36</integer>
-				<key>line</key>
-				<integer>352</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>342</integer>
-		</dict>
-	</dict>
-	<key>openDocuments</key>
-	<array>
-		<string>recipe_editor.py</string>
-		<string>models.py</string>
-	</array>
+	<dict/>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{11, 45}, {1376, 976}}</string>
+	<string>{{11, 46}, {1376, 976}}</string>
 </dict>
 </plist>

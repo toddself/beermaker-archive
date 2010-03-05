@@ -592,12 +592,12 @@ class Recipe(SQLObject, Measure):
     def _get_batch_volume_m(self):
         return Measure('%s %s' % (self._SO_get_batch_volume, Measure.measures[self.batch_volume_units]))
     
-    def add_to_total_weight(self, amount, ingredient_type):
-        if ingredient_type.lower() == 'grain':
-            new = self.grain_total_weight + amount
+    def add_to_total_weight(self, ing):
+        if ing.ingredient_type.lower() == 'grain':
+            new = self.grain_total_weight + ing.amount_m.convert('oz')
             self.grain_total_weight = new
-        elif ingredient_type.lower() == 'hop':
-            new = self.hop_total_weight + amount
+        elif ing.ingredient_type.lower() == 'hop':
+            new = self.hop_total_weight + ing.amount_m.convert('oz')
             self.hop_total_weight = new
     
     def _set_master_recipe(self, value):
@@ -636,7 +636,6 @@ class RecipeIngredient(SQLObject):
         except AttributeError:
             self.ingredient_type = 'Grain'
             self._SO_set_ingredient_id(value)
-
     
     def _set_time_used(self, value):
         if type(value) == type(int()):
@@ -681,7 +680,6 @@ def cloneRecipe(clone, master):
     for ing in master.ingredient:
         cloned_ing = cloneSQLObject(RecipeIngredient(), ing)
         cloned_ing.recipeID = clone
-
     return clone
 
 def cloneSQLObject(clone, master):

@@ -18,7 +18,7 @@
 
 import wx        
 
-class BaseWindow():
+class BaseWindow(object):
     """
     BaseWindow provides a rudementary layout engine for building wxpython guis.
     
