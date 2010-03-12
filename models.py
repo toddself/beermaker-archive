@@ -15,7 +15,7 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+import logging
 from datetime import datetime
 from decimal import Decimal
 
@@ -496,80 +496,90 @@ class Recipe(SQLObject, Measure):
     hops_total_weight = DecimalCol(size=5, precision=2, default=0)
     versions = Versioning()
 
+    def _set_carbonation_used(self, value):
+        if type(value) == type(int()) or type(value) == type(float()):
+            value = Measure("%s oz" % value)
+        else:
+            value = Measure(value)
+            
+        self.carbonation_amount = value.count
+        self.carbonation_amount_units = value.unit
+            
+
     def _set_primary_fermentation_temp(self, value):
-        if type(value) == type(int()):
+        if type(value) == type(int()) or type(value) == type(float()):
             value = Measure("%s C" % value)
         else:
             value = Measure(value)
             
         self.fermentation_stage_1_temp_units = value.unit
-        self.fermentation_stage_1_temp(value.count)
+        self.fermentation_stage_1_temp = value.count
     
     def _get_primary_fermentation_temp(self):
-        return Measure('%s %s' % (self.fermentation_stage_1_temp, Measure.measures[self.fermentation_stage_1_temp_units]))
+        return Measure('%s %s' % (self.fermentation_stage_1_temp, Measure.temperatures[self.fermentation_stage_1_temp_units]))
 
     def _set_secondary_fermentation_temp(self, value):
-        if type(value) == type(int()):
+        if type(value) == type(int()) or type(value) == type(float()):
             value = Measure("%s C" % value)
         else:
             value = Measure(value)            
 
         self.fermentation_stage_2_temp_units = value.unit
-        self.fermentation_stage_2_temp(value.count)
+        self.fermentation_stage_2_temp = value.count
 
     def _get_secondary_fermentation_temp(self):
-        return Measure('%s %s' % (self.fermentation_stage_2_temp, Measure.measures[self.fermentation_stage_2_temp_units]))
+        return Measure('%s %s' % (self.fermentation_stage_2_temp, Measure.temperatures[self.fermentation_stage_2_temp_units]))
 
     def _set_tertiary_fermentation_temp(self, value):
-        if type(value) == type(int()):
+        if type(value) == type(int()) or type(value) == type(float()):
             value = Measure("%s C" % value)
         else:
             value = Measure(value)    
 
         self.fermentation_stage_3_temp_units = value.unit
-        self.fermentation_stage_3_temp(value.count)
+        self.fermentation_stage_3_temp = value.count
 
     def _get_tertiary_fermentation_temp(self):
-        return Measure('%s %s' % (self.fermentation_stage_3_temp, Measure.measures[self.fermentation_stage_3_temp_units]))
+        return Measure('%s %s' % (self.fermentation_stage_3_temp, Measure.temperatures[self.fermentation_stage_3_temp_units]))
 
     def _set_primary_fermentation_length(self, value):
-        if type(value) == type(int()):
+        if type(value) == type(int()) or type(value) == type(float()):
             value = Measure("%s days" % value)
         else:
             value = Measure(value)            
         
-        self.fermentation_stage_1_length = value.count
+        self.fermentation_stage_1_length = int(value.count)
         self.fermentation_stage_1_length_units = value.unit
         
     def _get_primary_fermentation_length(self):
-        return Measure('%s %s' % (self.fermentation_stage_1_length, Measure.measures[self.fermentation_stage_1_length_units]))
+        return Measure('%s %s' % (self.fermentation_stage_1_length, Measure.timing_parts[self.fermentation_stage_1_length_units]))
    
     def _set_secondary_fermentation_length(self, value):
-        if type(value) == type(int()):
+        if type(value) == type(int()) or type(value) == type(float()):
             value = Measure("%s days" % value)
         else:
             value = Measure(value)
 
-        self.fermentation_stage_2_length = value.count
+        self.fermentation_stage_2_length = int(value.count)
         self.fermentation_stage_2_length_units = value.unit
 
     def _get_secondary_fermentation_length(self):
-        return Measure('%s %s' % (self.fermentation_stage_2_length, Measure.measures[self.fermentation_stage_2_length_units]))
+        return Measure('%s %s' % (self.fermentation_stage_2_length, Measure.timing_parts[self.fermentation_stage_2_length_units]))
 
     def _set_tertiary_fermentation_length(self, value):
-        if type(value) == type(int()):
+        if type(value) == type(int()) or type(value) == type(float()):
             value = Measure("%s days" % value)
         else:
             value = Measure(value)
 
-        self.fermentation_stage_3_length = value.count
+        self.fermentation_stage_3_length = int(value.count)
         self.fermentation_stage_3_length_units = value.unit
 
     def _get_tertiary_fermentation_length(self):
-        return Measure('%s %s' % (self.fermentation_stage_3_length, Measure.measures[self.fermentation_stage_3_length_units]))
+        return Measure('%s %s' % (self.fermentation_stage_3_length, Measure.timing_parts[self.fermentation_stage_3_length_units]))
         
     def _set_boil_volume(self, value):
-        if type(value) == type(int()):
+        if type(value) == type(int()) or type(value) == type(float()):
             value = Measure("%s gal" % value)
         else:
             value = Measure(value)
@@ -581,7 +591,7 @@ class Recipe(SQLObject, Measure):
         return Measure('%s %s' % (self._SO_get_boil_volume, Measure.measures[self.boil_volume_units]))
 
     def _set_batch_volume(self, value):
-        if type(value) == type(int()):
+        if type(value) == type(int()) or type(value) == type(float()):
             value = Measure("%s gal" % value)
         else:
             value = Measure(value)    

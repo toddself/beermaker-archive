@@ -2,17 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>currentDocument</key>
+	<string>recipe_editor.py</string>
 	<key>documents</key>
 	<array>
-		<dict>
-			<key>filename</key>
-			<string>beermaker.db</string>
-		</dict>
 		<dict>
 			<key>filename</key>
 			<string>bjcp_import.py</string>
 			<key>lastUsed</key>
 			<date>2010-03-02T19:11:11Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -60,9 +60,7 @@
 			<key>filename</key>
 			<string>recipe_editor.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-05T18:59:21Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2010-03-12T21:43:27Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -86,7 +84,7 @@
 			<key>filename</key>
 			<string>db.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-02T19:11:12Z</date>
+			<date>2010-03-12T19:40:29Z</date>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -106,13 +104,13 @@
 			<key>filename</key>
 			<string>measures.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-04T15:09:59Z</date>
+			<date>2010-03-12T21:38:13Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-05T16:58:33Z</date>
+			<date>2010-03-12T21:43:27Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -122,10 +120,59 @@
 	<key>fileHierarchyDrawerWidth</key>
 	<integer>200</integer>
 	<key>metaData</key>
-	<dict/>
+	<dict>
+		<key>measures.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>31</integer>
+				<key>line</key>
+				<integer>167</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>155</integer>
+		</dict>
+		<key>models.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>567</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>541</integer>
+		</dict>
+		<key>recipe_editor.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>44</integer>
+				<key>line</key>
+				<integer>462</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>380</integer>
+		</dict>
+	</dict>
+	<key>openDocuments</key>
+	<array>
+		<string>recipe_editor.py</string>
+		<string>models.py</string>
+		<string>measures.py</string>
+	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{11, 46}, {1376, 976}}</string>
+	<string>{{49, 40}, {1376, 976}}</string>
 </dict>
 </plist>

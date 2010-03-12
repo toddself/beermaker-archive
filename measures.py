@@ -165,6 +165,7 @@ class Measure(object):
     def _parseAmount(self):
         if ' ' in self.amount_str:
             (val, unit) = self.amount_str.split(' ')
+            unit = unit.lower()
         else:
             matched = False
             for x, c in enumerate(self.amount_str):

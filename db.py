@@ -25,7 +25,7 @@ from sqlobject import *
 import models
 
 class DataStore():
-    db_filename = os.path.abspath('beermaker.db')
+    db_filename = os.path.abspath('beermaker.sqlite')
     db_driver = 'sqlite'
 
     def __init__(self, debug=False):

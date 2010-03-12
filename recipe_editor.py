@@ -16,20 +16,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import wx
-import wx.calendar as cal
+import logging
 
+import wx
 from ObjectListView import ObjectListView, ColumnDefn, GroupListView
 from sqlobject import SQLObjectNotFound
 
 import guid
 import iconsrc
-
 from db import DataStore
 from models import *
 from beerutils import *
 from ingredient_browser import IngredientBrowser
-
 from base import BaseWindow 
 
 class RecipeEditor(wx.Frame, BaseWindow):
@@ -38,12 +36,15 @@ class RecipeEditor(wx.Frame, BaseWindow):
         # lets pull out some stuff we need for the recipe   
         if kw.has_key('recipe_id'):
             recipe_id = kw.pop('recipe_id')
+            logging.debug('editing existing recipe: %s' % recipe_id)        
         else:
             recipe_id = 0
         if kw.has_key('batch'):
             batch = True
+            logging.debug('this is a batch')
         else:
             batch = False
+            logging.debug('this is not a batch')
             
         # since i'm still not so good at this layout shit
         # we're gonna prevent resizing the recipe editor
@@ -58,15 +59,19 @@ class RecipeEditor(wx.Frame, BaseWindow):
         # existing recipe; if existing, populate the fields
         if recipe_id == 0:
             self.recipe = Recipe()
+            logging.debug('New recipe')
         else:
             try:
                 if batch:
                     self.recipe = cloneRecipe(Recipe(), Recipe.get(recipe_id))
                     self.master_recipe = recipe_id
+                    logging.debug('cloning existing recipe %s' % recipe_id)
                 else:
                     self.recipe = Recipe.get(recipe_id)
+                    logging.debug('editing pre-existing recipe: %s' % recipe_id)
             except SQLObjectNotFound:
                 self.recipe= Recipe()
+                logging.debug("Thought this was a existing recipe, but it wasn't")
         
         # set up the ui basics
         self.status_bar = self.CreateStatusBar(1,0)
@@ -182,7 +187,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
                             {'widget': wx.StaticText, 'label': 'Tertiary:', 'style': self.ST_STYLE},
                             {'widget': wx.TextCtrl, 'var': 'tertiary_length', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
                             {'widget': wx.StaticText, 'label': 'Temperature:', 'style': self.ST_STYLE},
-                            {'widget': wx.TextCtrl, 'var': 'teritary_temp', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},)},)},
+                            {'widget': wx.TextCtrl, 'var': 'tertiary_temp', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},)},)},
                     {'widget': wx.BoxSizer, 'style': wx.VERTICAL, 'title': 'Carbonation', 'border': 3, 'flag': wx.ALL|wx.EXPAND, 'widgets':
                         ({'widget': wx.FlexGridSizer, 'vgap': 3, 'hgap': 3, 'rows': 2, 'cols': 4, 'widgets':
                             ({'widget': wx.StaticText, 'label': 'Type:', 'style': self.ST_STYLE},
@@ -365,6 +370,8 @@ class RecipeEditor(wx.Frame, BaseWindow):
         # that i'm just not fucking remembering.  but who doesn't love
         # a massively long if/elif/else statement!
         
+        logging.debug('in the save function')
+        
         try:
             self.recipe_brewed_on_id
         except:
@@ -372,47 +379,89 @@ class RecipeEditor(wx.Frame, BaseWindow):
         
         for data in list(set(self.dirty_data)):
             if data == self.recipe_name_id:
+                logging.debug('saving name: %s' % self.recipe_name.GetValue())
                 self.recipe.name = self.recipe_name.GetValue()
+                logging.debug('new value: %s' % self.recipe.name)
             elif data == self.recipe_style_id:
+                logging.debug('saving recipe style: %s' % self.getStyleFromSelection())
                 self.recipe.style = self.getStyleFromSelection()
+                logging.debug('new value: %s' % self.recipe.style)
             elif data == self.recipe_brewer_id:
+                logging.debug('saving brewer: %s' % self.recipe_brewer.GetValue())
                 self.recipe.brewer = self.recipe_brewer.GetValue()
+                logging.debug('new value: %s' % self.recipe.brewer)
             elif data == self.recipe_brewed_on_id:
+                logging.debug('saving brewed on: %s' % self.recipe_brewed_on.GetValue())
                 self.recipe.brewed_on = self.recipe_brewed_on.GetValue()
+                logging.debug('new value: %s' % self.recipe.brewed_on)
             elif data == self.recipe_type_id:
+                logging.debug('saving recipe type: %s' % self.recipe_type.GetCurrentSelection())
                 self.recipe.recipe_type = self.recipe_type.GetCurrentSelection()
+                logging.debug('new value: %s' % self.recipe.recipe_type)
             elif data == self.recipe_boil_volume_id:
+                logging.debug('saving boil volume: %s' % self.recipe_boil_volume.GetValue())
                 self.recipe.boil_volume = self.recipe_boil_volume.GetValue()
+                logging.debug('new value: %s' % self.recipe.boil_volume)
             elif data == self.recipe_batch_volume_id:
-                self.batch_volume = self.recipe_batch_volume.GetValue()
+                logging.debug('saving batch volume: %s' % self.recipe_batch_volume.GetValue())
+                self.recipe.batch_volume = self.recipe_batch_volume.GetValue()
+                logging.debug('new value: %s' % self.recipe.batch_volume)
             elif data == self.recipe_equipment_id:
+                logging.debug('saving recipe equipment: %s' % self.getEquipmentFromSelection())
                 self.recipe.equipment = self.getEquipmentFromSelection()
+                logging.debug('new value: %s' % self.recipe.equipment)
             elif data == self.recipe_boil_set_to_equipment_id:
+                logging.debug('saving recipe boil set to equipment: %s' % self.recipe_boil_set_to_equipment.GetValue())
                 self.recipe.boil_set_to_equipment = self.recipe_boil_set_to_equipment.GetValue()
+                logging.debug('new value: %s' % self.recipe.boil_set_to_equipment)
             elif data == self.recipe_efficiency_id:
+                logging.debug('saving efficiency: %s' % self.recipe_efficiency.GetValue())
                 self.recipe.efficiency = self.recipe_efficiency.GetValue()
+                logging.debug('new value: %s' % self.recipe.efficiency)
             elif data == self.mash_choice_id:
+                logging.debug('saving mash choice: %s' % self.getMashFromSelection())
                 self.recipe.mash = self.getMashFromSelection()
+                logging.debug('new value: %s' % self.recipe.mash)
             elif data == self.fermentation_type_id:
+                logging.debug('saving fermentation type: %s' % self.fermentation_type.GetCurrentSelection())
                 self.recipe.fermentation_type = self.fermentation_type.GetCurrentSelection()
+                logging.debug('new value: %s' % self.recipe.fermentation_type)
             elif data == self.primary_length_id:
+                logging.debug('saving primary length: %s' % self.primary_length.GetValue())
                 self.recipe.primary_fermentation_length = self.primary_length.GetValue()
+                logging.debug('new value: %s' % self.recipe.primary_fermentation_length)
             elif data == self.primary_temp_id:
+                logging.debug('saving primary temp: %s' % self.primary_temp.GetValue())
                 self.recipe.primary_fermentation_temp = self.primary_temp.GetValue()
+                logging.debug('new value: %s' % self.recipe.primary_fermentation_temp)
             elif data == self.secondary_length_id:
+                logging.debug('saving secondary length: %s' % self.secondary_length.GetValue())
                 self.recipe.secondary_fermentation_length = self.secondary_length.GetValue()
+                logging.debug('new value: %s' % self.recipe.secondary_fermentation_length)
             elif data == self.secondary_temp_id:
+                logging.debug('saving 2nd temp: %s' % self.secondary_temp.GetValue())
                 self.recipe.secondary_fermentation_temp = self.secondary_temp.GetValue()
+                logging.debug('new value: %s' % self.recipe.secondary_fermentation_temp)
             elif data == self.tertiary_length_id:
+                logging.debug('saving 3rd len: %s' % self.tertiary_length.GetValue())
                 self.recipe.tertiary_fermentation_length = self.tertiary_length.GetValue()
+                logging.debug('new value: %s' % self.recipe.tertiary_fermentation_length)
             elif data == self.tertiary_temp_id:
+                logging.debug('saving 3rd temp: %s' % self.tertiary_temp.GetValue())
                 self.recipe.tertiary_fermentation_temp = self.tertiary_temp.GetValue()
+                logging.debug('new value: %s' % self.recipe.tertiary_fermentation_temp)
             elif data == self.carbonation_type_id:
+                logging.debug('saving carb type: %s' % self.carbonation_type.GetCurrentSelection())
                 self.recipe.carbonation_type = self.carbonation_type.GetCurrentSelection()
+                logging.debug('new value: %s' % self.recipe.carbonation_type)
             elif data == self.carbonation_volumes_id: 
+                logging.debug('saving carb vol: %s' % self.carbonation_volumes.GetValue())
                 self.recipe.carbonation_volume = self.carbonation_volumes.GetValue()
+                logging.debug('new value: %s' % self.recipe.carbonation_volume)
             elif data == self.carbonation_used_id:
-                self.recipe.carbonation_amount = self.carbonation_used.GetValue()
+                logging.debug('saving carb used: %s' % self.carbonation_used.GetValue())
+                self.recipe.carbonation_used = self.carbonation_used.GetValue()
+                logging.debug('new value: %s' % self.recipe.carbonation_amount)
 
         self.dirty_data = []
   
@@ -482,5 +531,8 @@ class RE(wx.App):
         return 1
 
 if __name__ == "__main__":
+    LOG_FILENAME = '/tmp/editor.out'
+    logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
+    
     R = RE(0)
     R.MainLoop()
