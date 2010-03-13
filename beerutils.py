@@ -19,9 +19,61 @@
 from sqlobject import *
 from sqlobject.col import pushKey
 from decimal import Decimal
+from math import exp
 
 SG_QUANT = Decimal(10) ** -3
 PERCENT_QUANT = Decimal(10) ** -2
+
+def tinseth_utilization(bg, t):
+    return (1.65 * (0.000125 ** (bg - 1))) * ((1 - exp(-0.04 * t)) / 4.15)
+    
+def daniels_utilization(form, time):
+    hop_utilizations = {'Leaf': [0, 5, 12, 15, 19, 22, 24, 27], 'Pellet':  [0, 6 ,15, 19, 24, 27, 30, 34]}
+    if form == 'Plug':
+        form = 'Leaf'
+    
+    if time < 1:
+        utilization = hop_utilizations[form][0]
+    elif time >= 1 and time < 10:
+        utilization = hop_utilizations[form][1]
+    elif time >= 10 and time < 20:
+        utilization = hop_utilizations[form][2]
+    elif time >= 20 and time < 30:
+        utilization = hop_utilizations[form][3]
+    elif time >= 30 and time < 45:
+        utilization = hop_utilizations[form][4]
+    elif time >= 45 and time < 60:
+        utilization = hop_utilizations[form][5]
+    elif time >= 60 and time < 75:
+        utilization = hop_utilizations[form][6]
+    else:
+        utilization = hop_utilizations[form][7]
+        
+    return Decimal("%.2f" % (float(utilization)/100.0))    
+
+
+def get_ibu(hop, boil_volume, boil_gravity, method='daniels'):
+    alpha = Hop.get(hop.ingredient_id).alpha
+    logger.debug('hop used: %s [%.2f]' % (hop.name, alpha))
+    if method == 'daniels':
+        logger.debug('we are using the daniels equation for hop utilization')        
+        if wort_gravity > Decimal('1.050'):
+            correction = 1 + ((wort_gravity - Decimal('1.050')) / Decimal('0.2'))
+        else:
+            correction = 1
+        logger.debug('correction: %s' % correction)
+        ibu = ((hop.amount_m.convert('oz') * hop.utilization * alpha * Decimal('7489')) / (boil_volume.convert('gal') * correction))
+        logger.debug('ibus: %.2f' % ibu)
+    elif method == 'tinseth':
+        logger.debug('we are using the tinseth curve equation for hop utilization')
+        aau = (hop.amount_m.convert('oz') * alpha)
+        logger.debug('aau: %s' % aau)
+        utilization = tinseth_utilization(boil_gravity, hop.time_used_m.convert('min'))
+        logger.debug('utilization: %s' % utilization)
+        ibu = (aau * utilization * 75) / boil_volume
+      
+    logger.debug('ibus: %s' % ibu)  
+    return ibu
 
 def gu_from_sg(sg):
     return int((sg - 1) * 1000)

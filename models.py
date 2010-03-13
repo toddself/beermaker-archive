@@ -34,7 +34,7 @@ class Hop(SQLObject):
     PLUG = 2
     hop_types = ['Bittering', 'Aroma', 'Both',]
     hop_forms = ['Leaf', 'Pellet', 'Plug',]
-    
+
     hop_type = IntCol(default=BITTERING)
     hop_form = IntCol(default=LEAF)
     alpha = PercentCol(default=0.0)
@@ -637,6 +637,30 @@ class RecipeIngredient(SQLObject):
     time_used = DecimalCol(size=5, precision=2, default=0)
     time_used_units = IntCol(default=Measure.MIN)
     versions = Versioning()
+        
+    def get_ibu(self, boil_volume, boil_gravity, method='daniels'):
+        alpha = Hop.get(self.ingredient_id).alpha
+        # logger.debug('hop used: %s [%.2f]' % (self.name, alpha))
+        if method == 'daniels':
+            # logger.debug('we are using the daniels equation for hop utilization')        
+            if boil_gravity > Decimal('1.050'):
+                correction = 1 + ((boil_gravity - Decimal('1.050')) / Decimal('0.2'))
+            else:
+                correction = 1
+            # logger.debug('correction: %s' % correction)
+            hop_form = Hop.hop_forms[(Hop.get(self.ingredient_id).hop_form)]
+            ibu = ((self.amount_m.convert('oz') * daniels_utilization(hop_form, self.time_used) * alpha * Decimal('7489')) / (boil_volume * correction))
+            # logger.debug('ibus: %.2f' % ibu)
+        elif method == 'tinseth':
+            # logger.debug('we are using the tinseth curve equation for hop utilization')
+            aau = (self.amount_m.convert('oz') * alpha)
+            # logger.debug('aau: %s' % aau)
+            utilization = tinseth_utilization(boil_gravity, self.time_used_m.convert('min'))
+            # logger.debug('utilization: %s' % utilization)
+            ibu = (aau * utilization * 75) / boil_volume
+
+        # logger.debug('ibus: %s' % ibu)  
+        return ibu
     
     def _get_gravity_units(self):
         if self.ingredient_type in self.sugar_types:
