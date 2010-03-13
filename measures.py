@@ -250,6 +250,11 @@ class Measure(object):
             raise ValueError("I'm not sure what type of matter you're trying to measure")
             
     def convert(self, convert_to):
+        try:
+            convert_to = convert_to.lower()
+        except SyntaxError:
+            pass
+            
         # have we done this yet?
         if self.converted and self.convert_type == convert_to:
             return self.converted

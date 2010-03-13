@@ -80,9 +80,9 @@ class RecipeEditor(wx.Frame, BaseWindow):
         # set up the main view
         self.main_panel = wx.Panel(self, -1)
         self.main_panel.SetSizer(self.buildLayout(self.main_panel))
-        self._setupIngredients()
-        self._setupMashes()
-        self._updateStyleInfo()
+        self.setupIngredients()
+        self.setupMashes()
+        self.updateStyleInfo()
         
         # set up save information
         self.timer_running = False
@@ -90,42 +90,45 @@ class RecipeEditor(wx.Frame, BaseWindow):
         
         # populate the current recipe if necessary
         # if recipe_id != 0:
-        #     self._gatherIngredients()        
+        #     self.gatherIngredients() 
+        self.setRecipeType()       
+        self.setFermentationType()
      
     def layoutData(self):
         return ({'widget': wx.BoxSizer, 'title': 'Recipe Basics', 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
                     (
                     {'widget': wx.StaticText, 'label': 'Name:', 'flag': self.ST_STYLE, 'proportion': 0, 'border': 3},
-                    {'widget': wx.TextCtrl, 'proportion': 1, 'var': 'recipe_name', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                    {'widget': wx.TextCtrl, 'proportion': 1, 'var': 'recipe_name', 'event': {'event_type': wx.EVT_TEXT, 'method': self.dataChanged}},
                     {'widget': wx.StaticText, 'label': 'Style:', 'flag': self.ST_STYLE},
-                    {'widget': wx.Choice, 'size': (200,-1), 'var': 'recipe_style', 'choices': self._getStyleChoices(), 'event': ({'event_type': wx.EVT_CHOICE, 'method': self.DataChanged}, {'event_type': wx.EVT_CHOICE, 'method': self._updateStyleInfo})},
+                    {'widget': wx.Choice, 'size': (200,-1), 'var': 'recipe_style', 'choices': self.getStyleChoices(), 'event': ({'event_type': wx.EVT_CHOICE, 'method': self.dataChanged}, {'event_type': wx.EVT_CHOICE, 'method': self.updateStyleInfo})},
                     {'widget': wx.StaticText, 'label': 'Brewer:', 'flag': self.ST_STYLE},
-                    {'widget': wx.TextCtrl, 'var': 'recipe_brewer', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                    {'widget': wx.TextCtrl, 'var': 'recipe_brewer', 'event': {'event_type': wx.EVT_TEXT, 'method': self.dataChanged}},
                     {'widget': wx.StaticText, 'label': 'Brewed on:', 'display': self.recipe.is_batch, 'flag': self.ST_STYLE},
-                    {'widget': wx.DatePickerCtrl, 'var': 'recipe_brewed_on', 'style': wx.DP_DEFAULT, 'display': self.recipe.is_batch, 'event': {'event_type': wx.EVT_DATE_CHANGED, 'method': self.DataChanged}},
+                    {'widget': wx.DatePickerCtrl, 'var': 'recipe_brewed_on', 'style': wx.DP_DEFAULT, 'display': self.recipe.is_batch, 'event': {'event_type': wx.EVT_DATE_CHANGED, 'method': self.dataChanged}},
                     {'widget': wx.StaticText, 'label': 'Type:', 'flag': self.ST_STYLE},
-                    {'widget': wx.Choice, 'var': 'recipe_type', 'choices': self._getRecipeTypeChoices(), 'event': {'event_type': wx.EVT_CHOICE, 'method': self.DataChanged}},
+                    {'widget': wx.Choice, 'var': 'recipe_type', 'choices': self.getRecipeTypeChoices(), 'event': ({'event_type': wx.EVT_CHOICE, 'method': self.dataChanged}, {'event_type': wx.EVT_CHOICE, 'method': self.setRecipeType})},
                     )
                 }, # end top row
                 {'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
                     (
                     {'widget': wx.StaticText, 'label': 'Boil Volume:', 'flag': self.ST_STYLE},
-                    {'widget': wx.TextCtrl, 'var': 'recipe_boil_volume','event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                    {'widget': wx.TextCtrl, 'var': 'recipe_boil_volume','event': {'event_type': wx.EVT_TEXT, 'method': self.dataChanged}},
                     {'widget': wx.StaticText, 'label': 'Batch Volume:', 'flag': self.ST_STYLE},
-                    {'widget': wx.TextCtrl, 'var': 'recipe_batch_volume', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                    {'widget': wx.TextCtrl, 'value': '5 gal', 'var': 'recipe_batch_volume', 'event': {'event_type': wx.EVT_TEXT, 'method': self.dataChanged}},
                     {'widget': wx.StaticText, 'label': 'Equipment:', 'flag': self.ST_STYLE},
-                    {'widget': wx.Choice, 'var': 'recipe_equipment', 'choices': self._getEquipmentChoices(), 'event': {'event_type': wx.EVT_CHOICE, 'method': self.DataChanged}},
-                    {'widget': wx.CheckBox, 'var': 'recipe_boil_set_to_equipment', 'proportion': 1, 'label': 'Boil volume set to equipment', 'event': {'event_type': wx.EVT_CHECKBOX, 'method': self.DataChanged}},
-                    {'widget': wx.Button, 'label': 'Efficiency:', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.ViewEfficiency}},
-                    {'widget': wx.TextCtrl, 'size': (50, -1), 'var': 'recipe_efficiency', 'event':({'event_type': wx.EVT_TEXT, 'method': self.DataChanged}, {'event_type': wx.EVT_TEXT, 'method': self.updateRecipeStats})}
+                    {'widget': wx.Choice, 'var': 'recipe_equipment', 'choices': self.getEquipmentChoices(), 'event': {'event_type': wx.EVT_CHOICE, 'method': self.dataChanged}},
+                    {'widget': wx.CheckBox, 'var': 'recipe_boil_set_to_equipment', 'proportion': 1, 'label': 'Boil volume set to equipment', 'event': {'event_type': wx.EVT_CHECKBOX, 'method': self.dataChanged}},
+                    {'widget': wx.Button, 'label': 'Efficiency:', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.viewEfficiency}},
+                    {'widget': wx.TextCtrl, 'size': (50, -1), 'var': 'recipe_efficiency', 'value': '75', 'event':({'event_type': wx.EVT_TEXT, 'method': self.dataChanged}, {'event_type': wx.EVT_TEXT, 'method': self.updateRecipeStats})},
+                    {'widget': wx.StaticText, 'label': '%', 'flag': wx.ALL}
                     )
                 }, # end second row
                 {'widget': wx.BoxSizer, 'title': 'Ingredients', 'flag': wx.ALL|wx.EXPAND, 'proportion': 1, 'style': wx.VERTICAL, 'widgets':
-                    ({'widget': ObjectListView, 'var': 'ingredients_ctrl', 'style': wx.LC_REPORT, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
+                    ({'widget': ObjectListView, 'var': 'ingredients_ctrl', 'style': wx.LC_REPORT, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1, 'event': ({'event_type': wx.EVT_LIST_INSERT_ITEM, 'method': self.updateRecipeStats}, {'event_type': wx.EVT_LIST_DELETE_ITEM, 'method': self.updateRecipeStats})},
                     {'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
                         (
-                        {'widget': wx.Button, 'label': '+', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.InventoryAdd}},
-                        {'widget': wx.Button, 'label': '-', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.InventoryDelete}},
+                        {'widget': wx.Button, 'label': '+', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.inventoryAdd}},
+                        {'widget': wx.Button, 'label': '-', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.inventoryDelete}},
                         )},                        
                     )
                 }, # end third row
@@ -164,40 +167,42 @@ class RecipeEditor(wx.Frame, BaseWindow):
                     ({'widget': wx.BoxSizer, 'title': 'Mash', 'proportion': 1, 'flag': wx.ALL|wx.EXPAND, 'style': wx.VERTICAL, 'widgets':
                         ({'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'proportion': 0, 'flag': wx.ALL|wx.EXPAND, 'widgets':
                             ({'widget': wx.StaticText, 'label': 'Mash Type:', 'style': self.ST_STYLE},
-                            {'widget': wx.Choice, 'var': 'mash_choice', 'choices': self._getMashChoices(), 'event': {'event_type': wx.EVT_CHOICE, 'method': self.DataChanged}},)},
+                            {'widget': wx.Choice, 'var': 'mash_choice', 'choices': self.getMashChoices(), 'event': {'event_type': wx.EVT_CHOICE, 'method': self.dataChanged}},)},
                         {'widget': ObjectListView, 'var': 'mash_ctrl', 'style': wx.LC_REPORT|wx.EXPAND, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1},
                         {'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'widgets':
-                            ({'widget': wx.Button, 'id': wx.ID_ADD, 'event': {'event_type': wx.EVT_BUTTON, 'method': self.MashAdd}},
-                            {'widget': wx.Button, 'id': wx.ID_DELETE, 'event': {'event_type': wx.EVT_BUTTON, 'method': self.MashDelete}},
-                            {'widget': wx.Button, 'id': wx.ID_UP, 'event': {'event_type': wx.EVT_BUTTON, 'method': self.MashUp}},
-                            {'widget': wx.Button, 'id': wx.ID_DOWN, 'event': {'event_type': wx.EVT_BUTTON, 'method': self.MashDown}})},)},
+                            ({'widget': wx.Button, 'var': 'mash_add', 'id': wx.ID_ADD, 'event': {'event_type': wx.EVT_BUTTON, 'method': self.mashAdd}},
+                            {'widget': wx.Button, 'var': 'mash_delete', 'id': wx.ID_DELETE, 'event': {'event_type': wx.EVT_BUTTON, 'method': self.mashDelete}},
+                            {'widget': wx.Button, 'var': 'mash_up', 'id': wx.ID_UP, 'event': {'event_type': wx.EVT_BUTTON, 'method': self.mashUp}},
+                            {'widget': wx.Button, 'var': 'mash_down', 'id': wx.ID_DOWN, 'event': {'event_type': wx.EVT_BUTTON, 'method': self.mashDown}})},)},
                     {'widget': wx.BoxSizer, 'style': wx.VERTICAL, 'title': 'Fermentation', 'border': 3, 'flag': wx.ALL, 'widgets':
                         ({'widget': wx.BoxSizer, 'style': wx.HORIZONTAL, 'flag': wx.ALIGN_CENTER, 'widgets':
                         ({'widget': wx.StaticText, 'label': 'Stages:', 'style': self.ST_STYLE},
-                        {'widget': wx.Choice, 'var': 'fermentation_type', 'choices': self._getFermentationStageChoices(), 'event': {'event_type': wx.EVT_CHOICE, 'method': self.DataChanged}},)},
+                        {'widget': wx.Choice, 'var': 'fermentation_type', 'choices': self.getFermentationStageChoices(), 'event': ({'event_type': wx.EVT_CHOICE, 'method': self.dataChanged}, {'event_type': wx.EVT_CHOICE, 'method': self.setFermentationType})},)},
                         {'widget': wx.FlexGridSizer, 'vgap': 3, 'hgap': 3, 'rows': 4, 'cols': 4, 'widgets':
                             ({'widget': wx.StaticText, 'label': 'Primary:', 'style': self.ST_STYLE},
-                            {'widget': wx.TextCtrl, 'var': 'primary_length', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                            {'widget': wx.TextCtrl, 'var': 'primary_length', 'event': {'event_type': wx.EVT_TEXT, 'method': self.dataChanged}},
                             {'widget': wx.StaticText, 'label': 'Temperature:', 'style': self.ST_STYLE},
-                            {'widget': wx.TextCtrl, 'var': 'primary_temp', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                            {'widget': wx.TextCtrl, 'var': 'primary_temp', 'event': {'event_type': wx.EVT_TEXT, 'method': self.dataChanged}},
                             {'widget': wx.StaticText, 'label': 'Secondard:', 'style': self.ST_STYLE},
-                            {'widget': wx.TextCtrl, 'var': 'secondary_length', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                            {'widget': wx.TextCtrl, 'var': 'secondary_length', 'event': {'event_type': wx.EVT_TEXT, 'method': self.dataChanged}},
                             {'widget': wx.StaticText, 'label': 'Temperature:', 'style': self.ST_STYLE},
-                            {'widget': wx.TextCtrl, 'var': 'secondary_temp', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                            {'widget': wx.TextCtrl, 'var': 'secondary_temp', 'event': {'event_type': wx.EVT_TEXT, 'method': self.dataChanged}},
                             {'widget': wx.StaticText, 'label': 'Tertiary:', 'style': self.ST_STYLE},
-                            {'widget': wx.TextCtrl, 'var': 'tertiary_length', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                            {'widget': wx.TextCtrl, 'var': 'tertiary_length', 'event': {'event_type': wx.EVT_TEXT, 'method': self.dataChanged}},
                             {'widget': wx.StaticText, 'label': 'Temperature:', 'style': self.ST_STYLE},
-                            {'widget': wx.TextCtrl, 'var': 'tertiary_temp', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},)},)},
+                            {'widget': wx.TextCtrl, 'var': 'tertiary_temp', 'event': {'event_type': wx.EVT_TEXT, 'method': self.dataChanged}},)},)},
                     {'widget': wx.BoxSizer, 'style': wx.VERTICAL, 'title': 'Carbonation', 'border': 3, 'flag': wx.ALL|wx.EXPAND, 'widgets':
                         ({'widget': wx.FlexGridSizer, 'vgap': 3, 'hgap': 3, 'rows': 2, 'cols': 4, 'widgets':
                             ({'widget': wx.StaticText, 'label': 'Type:', 'style': self.ST_STYLE},
-                            {'widget': wx.Choice, 'var': 'carbonation_type', 'choices': self._getCarbonationTypeChoices(), 'event': {'event_type': wx.EVT_CHOICE, 'method': self.DataChanged}},
+                            {'widget': wx.Choice, 'var': 'carbonation_type', 'choices': self.getCarbonationTypeChoices(), 'event': {'event_type': wx.EVT_CHOICE, 'method': self.dataChanged}},
                             {'widget': wx.StaticText, 'label': 'Style:', 'style': self.ST_STYLE},
-                            {'widget': wx.TextCtrl, 'var': 'carbonation_style', 'editable': False, 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                            {'widget': wx.TextCtrl, 'var': 'carbonation_style', 'editable': False, 'event': {'event_type': wx.EVT_TEXT, 'method': self.dataChanged}},
                             {'widget': wx.StaticText, 'label': 'Volumes:', 'style': self.ST_STYLE},
-                            {'widget': wx.TextCtrl, 'var': 'carbonation_volumes', 'editable': False, 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                            {'widget': wx.TextCtrl, 'var': 'carbonation_volumes', 'editable': False, 'event': {'event_type': wx.EVT_TEXT, 'method': self.dataChanged}},
+                            {'widget': wx.StaticText, 'label': 'Amount Needed:', 'style': self.ST_STYLE},
+                            {'widget': wx.TextCtrl, 'var': 'carbonation_needed', 'editable': False, 'event': {'event_type': wx.EVT_TEXT, 'method': self.dataChanged}},                            
                             {'widget': wx.StaticText, 'label': 'Amount Used:', 'style': self.ST_STYLE},
-                            {'widget': wx.TextCtrl, 'var': 'carbonation_used', 'event': {'event_type': wx.EVT_TEXT, 'method': self.DataChanged}},
+                            {'widget': wx.TextCtrl, 'var': 'carbonation_used', 'event': {'event_type': wx.EVT_TEXT, 'method': self.dataChanged}},
                             )},
                         )
                     }
@@ -205,8 +210,59 @@ class RecipeEditor(wx.Frame, BaseWindow):
                     )                
                 }, # end fifth row              
                 )
+
+    def toggleMashSection(self, toggle):
+        logging.debug('Setting mash editability to: %s' % toggle)
+        self.toggleWidget(self.mash_choice, toggle)
+        self.toggleWidget(self.mash_ctrl, toggle)
+        self.toggleWidget(self.mash_add, toggle)
+        self.toggleWidget(self.mash_delete, toggle)
+        self.toggleWidget(self.mash_up, toggle)
+        self.toggleWidget(self.mash_down, toggle)
+        
+    def toggleFermentationSection(self, number):
+        logging.debug('in toggle fermentation with %s' % number)
+        if number == 3:
+            logging.debug('we have a triple stage fermentation.  you had better be beechwood aging this bitch')
+            self.toggleWidget(self.tertiary_length, True)
+            self.toggleWidget(self.tertiary_length, True)
+            self.toggleWidget(self.tertiary_temp, True)
+            self.toggleWidget(self.secondary_length, True)
+            self.toggleWidget(self.secondary_temp, True)
+        elif number == 2:
+            logging.debug('we have double stage fermentation, setting secondary to true, teritary to false')       
+            self.toggleWidget(self.tertiary_length, False)
+            self.toggleWidget(self.tertiary_temp, False)
+            self.toggleWidget(self.secondary_length, True)
+            self.toggleWidget(self.secondary_temp, True)
+        elif number == 1:
+            logging.debug('we have single stage fermentation, setting everything to false')
+            self.toggleWidget(self.tertiary_length, False)
+            self.toggleWidget(self.tertiary_temp, False)
+            self.toggleWidget(self.secondary_length, False)
+            self.toggleWidget(self.secondary_temp, False)
+
+    def setFermentationType(self, event=None):
+        number = self.fermentation_type.GetSelection() + 1
+        logging.debug('Setting fermentation number: %s' % number)
+        self.toggleFermentationSection(number)
+
+        if event:
+            event.Skip()
                 
-    def InventoryAdd(self, event):
+    def setRecipeType(self, event=None):
+        set_type = self.recipe_type.GetSelection()
+        logging.debug('Recipe type set to: %s' % set_type)
+        
+        if set_type == self.recipe.EXTRACT:
+            self.toggleMashSection(False)
+        else:
+            self.toggleMashSection(True)
+
+        if event:           
+            event.Skip()
+        
+    def inventoryAdd(self, event):
         inventory = IngredientBrowser(self, -1, "Ingredient Browser", pos=(50,50), size=(800,600))
         inventory.CentreOnParent()
         if inventory.ShowModal() == wx.ID_OK:
@@ -217,26 +273,26 @@ class RecipeEditor(wx.Frame, BaseWindow):
                 use_in=inventory.use_choices.GetCurrentSelection(), 
                 time_used=Measure(inventory.time_used_ctrl.GetValue()))
                 
-            self.recipe.add_to_total_weight(ing.amount.convert('oz'), ing.ingredient_type.lower())
+            self.recipe.add_to_total_weight(ing)
             self.ingredients_ctrl.AddObject(ing)
             self.updateRecipePercentage()
             self.ingredients_ctrl.AutoSizeColumns()
             
-            self.updateRecipeStats()
+            # self.updateRecipeStats()
             
         inventory.Destroy()
         event.Skip()
 
     def updateRecipePercentage(self):
         for ingredient in self.ingredients_ctrl.GetObjects():
-            ingredient.percentage = self._getPercentOfTotalBill(ingredient.amount_m, ingredient_type)
+            ingredient.percentage = self.getPercentOfTotalBill(ingredient.amount_m, ingredient.ingredient_type)
             self.ingredients_ctrl.RefreshObject(ingredient)
 
-    def _getPercentOfTotalBill(self, new_amount, ingredient_type):
+    def getPercentOfTotalBill(self, new_amount, ingredient_type):
         total_ingredient = getattr(self.recipe, '%s_total_weight' % ingredient_type.lower())
         return (new_amount.convert('oz') / total_ingredient) * Decimal('100.0')
 
-    def InventoryDelete(self, event):
+    def inventoryDelete(self, event):
         ingredient = self.ingredients_ctrl.GetSelectedObject()
         self.recipe.remove_from_total_weight(ingredient.amount.convert('oz'), ingredient.ingredient_type.lower())
         self.ingredients_ctrl.RemoveObject(ingredient)
@@ -244,6 +300,31 @@ class RecipeEditor(wx.Frame, BaseWindow):
         event.Skip()
         
     def updateRecipeStats(self, event):
+        logging.debug('updating recipe stats')
+        potential_in_gu = 0
+        bitterness = 0
+        color = 0
+        for ingredient in self.ingredients_ctrl.GetObjects():
+            if ingredient.ingredient_type in ingredient.sugar_types:
+                ingredient_potential = ingredient.gravity_units * ingredient.amount_m.convert('lbs')
+                logging.debug('potential for %s: %s' % (ingredient.name, ingredient_potential))
+                if ingredient.ingredient_type == 'Grain':
+                    eff = Decimal("%s" % self.recipe_efficiency.GetValue())
+                    logging.debug('got some grain here so we need to calculate an efficiency: %s' % eff)
+                    ingredient_potential = ingredient_potential * (eff / Decimal('100.0'))
+                    logging.debug('the ingredient is only giving us %s gravity units' % ingredient_potential)
+                batch_volume = Measure(self.recipe_batch_volume.GetValue()).convert('gal')
+                logging.debug('now we dilute this with the batch volume in gallons: %s' % batch_volume)
+                diluted_potential = ingredient_potential / batch_volume
+                logging.debug('which gives us %s g.u. in this batch' % diluted_potential)
+                potential_in_gu = potential_in_gu + diluted_potential
+                logging.debug('total potential after adding: %s' % potential_in_gu)
+            elif ingredient.ingredient_type in ingredient.hop_types:
+                pass
+        
+        final_sg = sg_from_gu(potential_in_gu)
+        logging.debug('final gravity: %s' % final_sg)
+        self.recipe_og.SetValue("%s" % final_sg)
         pass
         
     def getStyleFromSelection(self):
@@ -265,7 +346,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
             mash = None
         return mash
         
-    def _updateStyleInfo(self, event=None):
+    def updateStyleInfo(self, event=None):
         style = self.getStyleFromSelection()
         self.style_og.SetValue(style.og_range)
         self.style_fg.SetValue(style.fg_range)
@@ -279,40 +360,40 @@ class RecipeEditor(wx.Frame, BaseWindow):
         if event:
             event.Skip()
 
-    def MashAdd(self, event):
-        """docstring for MashAdd"""
+    def mashAdd(self, event):
+        """docstring for mashAdd"""
         pass
     
-    def MashDelete(self, event):
-        """docstring for MashDelete"""
+    def mashDelete(self, event):
+        """docstring for mashDelete"""
         pass
         
-    def MashUp(self, event):
-        """docstring for MashUp"""
+    def mashUp(self, event):
+        """docstring for mashUp"""
         pass
         
-    def MashDown(self, event):
+    def mashDown(self, event):
         pass
         
-    def _getCarbonationTypeChoices(self):
+    def getCarbonationTypeChoices(self):
         return Recipe.carbonation_types
 
-    def _getFermentationStageChoices(self):
+    def getFermentationStageChoices(self):
         return Recipe.fermentation_types
 
-    def _getMashChoices(self):
+    def getMashChoices(self):
         if MashProfile.select().count() == 0:
             self.mash_profiles =  ['No Mashes Defined',]
         else:
             self.mash_profiles = ['%s' % m.name for m in list(MashProfile.select())]
         return self.mash_profiles
                 
-    def _gatherIngredients(self):
+    def gatherIngredients(self):
         ing1 = Ingredient("Test", "Hop", 10, "Boil", 60, 0, 'oz', 'min')
         self.ingredient_list = [ing1, ]
         self.ingredients_ctrl.SetObjects(self.ingredient_list)
 
-    def _setupIngredients(self):
+    def setupIngredients(self):
         namec = ColumnDefn('Ingredient', 'left', 200, 'name', minimumWidth=200, isSpaceFilling=True)
         typec= ColumnDefn('Type', 'left', 100, 'ingredient_type')
         use_inc = ColumnDefn('Use', 'left', 100, 'use_in', stringConverter=getUseIn)
@@ -325,7 +406,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.ingredients_ctrl.oddRowsBackColor = wx.WHITE        
         self.ingredients_ctrl.SetColumns([namec, typec, amountc, use_inc, percentc, timec])
 
-    def _setupMashes(self):
+    def setupMashes(self):
         namec = ColumnDefn('Name', 'left', -1, 'name', isSpaceFilling=True)
         startc = ColumnDefn('Start Temp', 'left', 80, 'start_temp')
         endc = ColumnDefn('End Temp', 'left', 80, 'end_temp')
@@ -334,21 +415,21 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.mash_ctrl.oddRowsBackColor = wx.WHITE
         self.mash_ctrl.SetColumns([namec, startc, endc, timec])
                     
-    def _getStyleChoices(self):
+    def getStyleChoices(self):
         self.style_choices =  ["%s: %s" % (st.combined_category_id, st.name) for st in list(BJCPStyle.select())]
         return self.style_choices
   
-    def _getRecipeTypeChoices(self):
+    def getRecipeTypeChoices(self):
         return Recipe.recipe_types
             
-    def _getEquipmentChoices(self):
+    def getEquipmentChoices(self):
         if EquipmentSet.select().count() == 0:
             self.equipment_choices =  ['Equipment Not Set',]
         else:
             self.equpiment_choices =  ['%s' % e.name for e in list(EquipmentSet.select())]
         return self.equipment_choices
 
-    def DataChanged(self, event):
+    def dataChanged(self, event):
         # are we gonna save?
         # we need to make list of things we've "dirtied"
         # with unsaved data
@@ -359,13 +440,13 @@ class RecipeEditor(wx.Frame, BaseWindow):
         if self.timer_running:
             self.save_timer.Restart()
         else:
-            self.save_timer = wx.FutureCall(1500, self.SaveRecipe)
+            self.save_timer = wx.FutureCall(1500, self.saveRecipe)
             self.timer_running = True
             
         # we need to make sure that any other method bound to this object gets called
         event.Skip()
   
-    def SaveRecipe(self):
+    def saveRecipe(self):
         # ugh.  there's probably some pythonic way to do this better
         # that i'm just not fucking remembering.  but who doesn't love
         # a massively long if/elif/else statement!
@@ -471,7 +552,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
     def newBatch(self):
         pass
 
-    def ViewEfficiency(self, event):
+    def viewEfficiency(self, event):
         pass
 
     def viewInventory(self):
@@ -525,7 +606,7 @@ class RE(wx.App):
     def OnInit(self):
         wx.InitAllImageHandlers()
         ds = DataStore()
-        reditor = RecipeEditor(None, -1, "", size=(1024,768), recipe_id=1)
+        reditor = RecipeEditor(None, -1, "", size=(1024,768))
         self.SetTopWindow(reditor)
         reditor.Show()
         return 1

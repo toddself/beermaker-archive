@@ -23,6 +23,12 @@ from decimal import Decimal
 SG_QUANT = Decimal(10) ** -3
 PERCENT_QUANT = Decimal(10) ** -2
 
+def gu_from_sg(sg):
+    return int((sg - 1) * 1000)
+
+def sg_from_gu(gu):
+    return Decimal("%s" % ((float(gu)/1000.0) + 1))
+
 def calculateBitternessRatio(sg, ibu):
     gu = (sg - 1) * 1000
     br = Decimal("%s" % ibu) / gu

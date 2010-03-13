@@ -504,7 +504,6 @@ class Recipe(SQLObject, Measure):
             
         self.carbonation_amount = value.count
         self.carbonation_amount_units = value.unit
-            
 
     def _set_primary_fermentation_temp(self, value):
         if type(value) == type(int()) or type(value) == type(float()):
@@ -625,6 +624,9 @@ class Recipe(SQLObject, Measure):
             self._SO_set_master_recipe(0)
 
 class RecipeIngredient(SQLObject):
+    sugar_types = ['Grain', 'Extract', 'HoppedExtract']
+    hop_types = ['Hop', 'HoppedExtract']
+        
     recipe = ForeignKey('Recipe', default=0)
     ingredient_id = IntCol(default=0)
     ingredient_type = UnicodeCol(default=None)
@@ -635,6 +637,12 @@ class RecipeIngredient(SQLObject):
     time_used = DecimalCol(size=5, precision=2, default=0)
     time_used_units = IntCol(default=Measure.MIN)
     versions = Versioning()
+    
+    def _get_gravity_units(self):
+        if self.ingredient_type in self.sugar_types:
+            return gu_from_sg(eval(self.ingredient_type).get(self.ingredient_id).potential)            
+        else:
+            return 0
     
     def _get_name(self):
         return eval(self.ingredient_type).get(self.ingredient_id).name

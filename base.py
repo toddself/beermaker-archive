@@ -42,7 +42,7 @@ class BaseWindow(object):
     TC_STYLE = wx.ALL|wx.ALIGN_CENTER_VERTICAL
     ST_STYLE = wx.ALL|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL
     ui_font = None
-    _not_editable_color = wx.Colour(240, 240, 240)
+    _not_editable_color = wx.Colour(220, 220, 220)
     
     def __init__(self):
         pass
@@ -140,6 +140,13 @@ class BaseWindow(object):
             self.ui_font = font
         else:
             print 'fuck off'
+
+    def toggleWidget(self, widget, status):
+        widget.Enable(status)
+        if status:
+            widget.SetBackgroundColour(wx.Colour(255, 255, 255))
+        else:
+            widget.SetBackgroundColour(self._not_editable_color)    
     
     def _createMenu(self, items):
         """ 
@@ -375,8 +382,7 @@ class BaseWindow(object):
             editable = True
             
         if not widget.has_key('id') and var:
-            var_id = wx.NewId()
-            widget['id'] = var_id
+            widget['id'] = wx.NewId()
             
         gui_element = wxMethod(parent, **widget)
     
@@ -386,12 +392,11 @@ class BaseWindow(object):
             gui_element.SetFont(font)
             
         if not editable:
-            gui_element.SetEditable(False)
-            gui_element.SetBackgroundColour(self._not_editable_color)
+            self.toggleWidget(gui_element, False)
     
         if var:
             setattr(self, var, gui_element)
-            setattr(self, '%s_id' % var, var_id)
+            setattr(self, '%s_id' % var, gui_element.GetId())
     
         if event:
             if type(event) == type(()):
