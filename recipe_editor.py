@@ -306,6 +306,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
         color = 0
         for ingredient in self.ingredients_ctrl.GetObjects():
             if ingredient.ingredient_type in ingredient.sugar_types:
+                # gravity stuff
                 ingredient_potential = ingredient.gravity_units * ingredient.amount_m.convert('lbs')
                 logging.debug('potential for %s: %s' % (ingredient.name, ingredient_potential))
                 if ingredient.ingredient_type == 'Grain':
@@ -319,12 +320,19 @@ class RecipeEditor(wx.Frame, BaseWindow):
                 logging.debug('which gives us %s g.u. in this batch' % diluted_potential)
                 potential_in_gu = potential_in_gu + diluted_potential
                 logging.debug('total potential after adding: %s' % potential_in_gu)
+                
+                # color stuff
+                mcu = ingredient.amount_m.convert('lbs') * ingredient.srm / batch_volume
+                color = color + srm_from_mcu(mcu)
             elif ingredient.ingredient_type in ingredient.hop_types:
-                pass
+                bitterness = bitterness + ingredient.ibu
+                
         
         final_sg = sg_from_gu(potential_in_gu)
         logging.debug('final gravity: %s' % final_sg)
         self.recipe_og.SetValue("%s" % final_sg)
+        self.recipe_ibu.SetValue("%s" % bitterness)
+        self.recipe_srm.SetValue("%s" % color)
         pass
         
     def getStyleFromSelection(self):

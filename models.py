@@ -638,33 +638,38 @@ class RecipeIngredient(SQLObject):
     time_used_units = IntCol(default=Measure.MIN)
     versions = Versioning()
         
-    def get_ibu(self, boil_volume, boil_gravity, method='daniels'):
-        alpha = Hop.get(self.ingredient_id).alpha
-        # logger.debug('hop used: %s [%.2f]' % (self.name, alpha))
-        if method == 'daniels':
-            # logger.debug('we are using the daniels equation for hop utilization')        
-            if boil_gravity > Decimal('1.050'):
-                correction = 1 + ((boil_gravity - Decimal('1.050')) / Decimal('0.2'))
+    def _get_ibu(self, method='rager'):
+        if self.ingredient_type != 'Hop':
+            ibu = 0
+        else:
+            recipe = Recipe.get(self.recipe)
+            hop_ounces = self.amount_m.convert('oz')
+            alpha_acids = Decimal('%s' % Hop.get(self.ingredient_id).alpha)
+            usage_minutes = self.time_used_m.convert('min')
+            boil_gallons = recipe.boil_volume_m.convert('gal')
+            if method == 'garetz':
+                batch_gallons = recipe.batch_volume_m.convert('gal')
+                style_ibu_high = BJCPStyle.get(recipe.style).ibu_high
+                style_ibu_low = BJCPStyle.get(recipe.strle).ibu_low
+                target_ibu = Decimal('%s' % (style_ibu_high + style_ibu_low) / 2)
+                elevation_feet = Decimal('0')
+                ibu = garetz(hop_ounces, alpha_acids, boil_gallons, boil_gravity, usage_minutes, batch_gallons, target_ibu, elevation_feet)
+            elif method == 'tinseth':
+                ibu = tinseth(hop_ounces, alpha_acids, boil_gallons, boil_gravity, usage_minutes)
             else:
-                correction = 1
-            # logger.debug('correction: %s' % correction)
-            hop_form = Hop.hop_forms[(Hop.get(self.ingredient_id).hop_form)]
-            ibu = ((self.amount_m.convert('oz') * daniels_utilization(hop_form, self.time_used) * alpha * Decimal('7489')) / (boil_volume * correction))
-            # logger.debug('ibus: %.2f' % ibu)
-        elif method == 'tinseth':
-            # logger.debug('we are using the tinseth curve equation for hop utilization')
-            aau = (self.amount_m.convert('oz') * alpha)
-            # logger.debug('aau: %s' % aau)
-            utilization = tinseth_utilization(boil_gravity, self.time_used_m.convert('min'))
-            # logger.debug('utilization: %s' % utilization)
-            ibu = (aau * utilization * 75) / boil_volume
+                ibu = rager(hop_ounces, alpha_acids, boil_gallons, boil_gravity, usage_minutes)
 
-        # logger.debug('ibus: %s' % ibu)  
         return ibu
     
     def _get_gravity_units(self):
         if self.ingredient_type in self.sugar_types:
             return gu_from_sg(eval(self.ingredient_type).get(self.ingredient_id).potential)            
+        else:
+            return 0
+    
+    def _get_srm(self):
+        if ingredient_type in sugar_types:
+            return eval(self.ingredient_type).get(self.ingredient_id).color
         else:
             return 0
     

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>beerutils.py</string>
+	<string>recipe_editor.py</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -58,7 +58,9 @@
 			<key>filename</key>
 			<string>recipe_editor.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-13T20:54:57Z</date>
+			<date>2010-03-14T19:20:36Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -96,9 +98,7 @@
 			<key>filename</key>
 			<string>beerutils.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-13T20:58:02Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2010-03-14T19:18:23Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -110,7 +110,7 @@
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-13T20:58:02Z</date>
+			<date>2010-03-14T19:20:36Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -118,7 +118,7 @@
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
-	<integer>200</integer>
+	<integer>188</integer>
 	<key>metaData</key>
 	<dict>
 		<key>beerutils.py</key>
@@ -126,42 +126,42 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>33</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>36</integer>
+				<integer>28</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>10</integer>
+			<integer>0</integer>
 		</dict>
 		<key>models.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>137</integer>
+				<integer>75</integer>
 				<key>line</key>
-				<integer>651</integer>
+				<integer>671</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>623</integer>
+			<integer>647</integer>
 		</dict>
 		<key>recipe_editor.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>16</integer>
+				<integer>45</integer>
 				<key>line</key>
-				<integer>618</integer>
+				<integer>334</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>493</integer>
+			<integer>291</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
@@ -173,6 +173,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{49, 31}, {1376, 976}}</string>
+	<string>{{217, 111}, {1376, 900}}</string>
 </dict>
 </plist>

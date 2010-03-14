@@ -19,62 +19,84 @@
 from sqlobject import *
 from sqlobject.col import pushKey
 from decimal import Decimal
-from math import exp
+from math import exp, tanh
 
 SG_QUANT = Decimal(10) ** -3
 PERCENT_QUANT = Decimal(10) ** -2
 
-def tinseth_utilization(bg, t):
-    return (1.65 * (0.000125 ** (bg - 1))) * ((1 - exp(-0.04 * t)) / 4.15)
-    
-def daniels_utilization(form, time):
-    hop_utilizations = {'Leaf': [0, 5, 12, 15, 19, 22, 24, 27], 'Pellet':  [0, 6 ,15, 19, 24, 27, 30, 34]}
-    if form == 'Plug':
-        form = 'Leaf'
-    
-    if time < 1:
-        utilization = hop_utilizations[form][0]
-    elif time >= 1 and time < 10:
-        utilization = hop_utilizations[form][1]
-    elif time >= 10 and time < 20:
-        utilization = hop_utilizations[form][2]
-    elif time >= 20 and time < 30:
-        utilization = hop_utilizations[form][3]
-    elif time >= 30 and time < 45:
-        utilization = hop_utilizations[form][4]
-    elif time >= 45 and time < 60:
-        utilization = hop_utilizations[form][5]
-    elif time >= 60 and time < 75:
-        utilization = hop_utilizations[form][6]
+def srm_from_mcu(mcu):
+    return Decimal('1.4922') * (mcu ** Decimal('0.6859'))
+
+def rager(hop_ounces, alpha_acids, boil_gallons, boil_gravity, usage_minutes):
+    utilization = Decimal('18.11') + Decimal('13.86') * (Decimal('%s' % tanh(((usage_minutes - Decimal('31.32')) / Decimal('18.27')))))
+    utilization = utilization / Decimal('100')
+
+    adjustment_limit = Decimal('1.050')
+    if boil_gravity > adjustment_limit:
+        gravity_adjustment = (boil_gravity - adjustment_limit) / Decimal('0.2')
     else:
-        utilization = hop_utilizations[form][7]
-        
-    return Decimal("%.2f" % (float(utilization)/100.0))    
+        gravity_adjustment = 0
 
+    alpha_acids = alpha_acids / Decimal('100')
+    
+    ibu = (hop_ounces * utilization * alpha_acids * Decimal('7462')) / (boil_gallons * (Decimal('1') + gravity_adjustment ))
 
-def get_ibu(hop, boil_volume, boil_gravity, method='daniels'):
-    alpha = Hop.get(hop.ingredient_id).alpha
-    logger.debug('hop used: %s [%.2f]' % (hop.name, alpha))
-    if method == 'daniels':
-        logger.debug('we are using the daniels equation for hop utilization')        
-        if wort_gravity > Decimal('1.050'):
-            correction = 1 + ((wort_gravity - Decimal('1.050')) / Decimal('0.2'))
-        else:
-            correction = 1
-        logger.debug('correction: %s' % correction)
-        ibu = ((hop.amount_m.convert('oz') * hop.utilization * alpha * Decimal('7489')) / (boil_volume.convert('gal') * correction))
-        logger.debug('ibus: %.2f' % ibu)
-    elif method == 'tinseth':
-        logger.debug('we are using the tinseth curve equation for hop utilization')
-        aau = (hop.amount_m.convert('oz') * alpha)
-        logger.debug('aau: %s' % aau)
-        utilization = tinseth_utilization(boil_gravity, hop.time_used_m.convert('min'))
-        logger.debug('utilization: %s' % utilization)
-        ibu = (aau * utilization * 75) / boil_volume
-      
-    logger.debug('ibus: %s' % ibu)  
     return ibu
+    
 
+def tinseth(hop_ounces, alpha_acids, boil_gallons, boil_gravity, usage_minutes):
+    bigness = Decimal('1.65') * Decimal('0.000125') ** (boil_gravity - Decimal('1'))
+    boil_time_factor = (Decimal('1') - Decimal("%s" % exp(Decimal('-0.04') * usage_minutes))) / Decimal('4.15')
+    decimal_aa = bigness * boil_time_factor
+    
+    alpha_acids = alpha_acids / Decimal('100')
+    
+    mgl_aa = alpha_acids * hop_ounces * Decimal('7490') / boil_gallons
+    
+    ibu = decimal_aa * mgl_aa
+    
+    return ibu
+    
+def garetz(hop_ounces, alpha_acids, boil_gallons, boil_gravity, usage_minutes, batch_gallons, target_ibu, elevation_feet):
+    cf = batch_gallons / boil_gallons
+    bg = (cf * (boil_gravity - Decimal('1')) + Decimal('1'))
+    gf = ((bg - Decimal('1.050')) / Decimal('0.2')) + 1
+    hf = ((cf * target_ibu) / Decimal('260')) + 1
+    tf = ((elevation_feet / Decimal('550')) * Decimal('0.02')) + 1
+    
+    ca = gf * hf * tf
+
+    if usage_minutes <= 10:
+        utilization = Decimal('0')
+    elif usage_minutes > 10 and usage_minutes < 16:
+        utilization = Decimal('2')
+    elif usage_minutes > 15 and usage_minutes < 21:
+        utilization = Decimal('5')
+    elif usage_minutes > 20 and usage_minutes < 26:
+        utilization = Decimal('8')
+    elif usage_minutes > 25 and usage_minutes < 31:
+        utilization = Decimal('11')
+    elif usage_minutes > 30 and usage_minutes < 36:
+        utilization = Decimal('14')
+    elif usage_minutes > 35 and usage_minutes < 41:
+        utilization = Decimal('16')
+    elif usage_minutes > 40 and usage_minutes < 46:
+        utilization = Decimal('18')
+    elif usage_minutes > 45 and usage_minutes < 51:
+        utilization = Decimal('19')
+    elif usage_minutes > 50 and usage_minutes < 61:
+        utilization = Decimal('20')
+    elif usage_minutes > 60 and usage_minutes < 71:
+        utilization = Decimal('21')
+    elif usage_minutes > 70 and usage_minutes < 81:
+        utilization = Decimal('22')
+    else:
+        utilization = Decimal('23')
+
+    ibu = utilization * alpha_acids * hop_ounces * Decimal('0.749') / (boil_gallons * ca)
+    
+    return ibu
+    
 def gu_from_sg(sg):
     return int((sg - 1) * 1000)
 
