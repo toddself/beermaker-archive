@@ -127,8 +127,11 @@ class RecipeEditor(wx.Frame, BaseWindow):
                     ({'widget': ObjectListView, 'var': 'ingredients_ctrl', 'style': wx.LC_REPORT, 'cellEditMode': ObjectListView.CELLEDIT_DOUBLECLICK, 'flag': wx.EXPAND|wx.ALL, 'proportion': 1, 'event': ({'event_type': wx.EVT_LIST_INSERT_ITEM, 'method': self.updateRecipeStats}, {'event_type': wx.EVT_LIST_DELETE_ITEM, 'method': self.updateRecipeStats})},
                     {'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
                         (
-                        {'widget': wx.Button, 'label': '+', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.inventoryAdd}},
-                        {'widget': wx.Button, 'label': '-', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.inventoryDelete}},
+                        {'widget': wx.Button, 'label': 'Add Grain', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.grainAdd}},
+                        {'widget': wx.Button, 'label': 'Add Hops', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.hopsAdd}},
+                        {'widget': wx.Button, 'label': 'Add Yeast', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.yeastAdd}},
+                        {'widget': wx.Button, 'label': 'Add Misc', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.miscAdd}}, 
+                        {'widget': wx.Button, 'label': 'Delete Item', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.inventoryDelete}},                 
                         )},                        
                     )
                 }, # end third row
@@ -261,9 +264,26 @@ class RecipeEditor(wx.Frame, BaseWindow):
 
         if event:           
             event.Skip()
+
+    def grainAdd(self, event):
+        self.inventoryAdd(event, 'Grain')
+        event.Skip()
         
-    def inventoryAdd(self, event):
-        inventory = IngredientBrowser(self, -1, "Ingredient Browser", pos=(50,50), size=(800,600))
+    def hopsAdd(self, event):
+        self.inventoryAdd(event, 'Hop')
+        event.Skip()
+
+    def yeastAdd(self, event):
+        self.inventoryAdd(event, 'Yeast')
+        event.Skip()
+
+    def miscAdd(self, event):
+        self.inventoryAdd(event, 'Misc')
+        event.Skip()
+        
+    def inventoryAdd(self, event, ingtype=None):            
+        logging.debug('launching the ingredient browser, seeding with: %s' % ingtype)
+        inventory = IngredientBrowser(self, -1, "Ingredient Browser", pos=(50,50), size=(800,600), ingtype=ingtype)
         inventory.CentreOnParent()
         if inventory.ShowModal() == wx.ID_OK:
 

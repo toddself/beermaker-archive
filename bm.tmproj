@@ -52,13 +52,13 @@
 			<key>filename</key>
 			<string>ingredient_browser.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-02T18:55:17Z</date>
+			<date>2010-03-15T21:53:05Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>recipe_editor.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-15T19:22:26Z</date>
+			<date>2010-03-15T21:53:05Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -110,7 +110,7 @@
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-03-15T19:22:26Z</date>
+			<date>2010-03-15T21:46:55Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -121,43 +121,43 @@
 	<integer>188</integer>
 	<key>metaData</key>
 	<dict>
-		<key>models.py</key>
+		<key>ingredient_browser.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>29</integer>
+				<integer>73</integer>
 				<key>line</key>
-				<integer>18</integer>
+				<integer>113</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>624</integer>
+			<integer>67</integer>
 		</dict>
 		<key>recipe_editor.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>84</integer>
 				<key>line</key>
-				<integer>402</integer>
+				<integer>284</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>54</integer>
+			<integer>292</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>recipe_editor.py</string>
-		<string>models.py</string>
+		<string>ingredient_browser.py</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{209, 48}, {1344, 959}}</string>
+	<string>{{191, 0}, {1202, 878}}</string>
 </dict>
 </plist>

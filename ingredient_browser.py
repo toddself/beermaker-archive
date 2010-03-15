@@ -28,6 +28,8 @@ class IngredientBrowser(wx.Dialog, BaseWindow):
     inventory_types = ['Grain', 'Extract', 'Hop', 'Yeast', 'Misc']
     
     def __init__(self, *args, **kw):
+        if kw.has_key('ingtype'):
+            ingredient_type = kw.pop('ingtype')
         wx.Dialog.__init__(self, *args, **kw)
         
         self.main_panel = wx.Panel(self, -1)
@@ -35,7 +37,7 @@ class IngredientBrowser(wx.Dialog, BaseWindow):
         self.main_panel.SetSizer(sizer)
         
         self._setupIngredientsCtrl()
-        self._populateIngredients()
+        self._populateIngredients(ingredient_type)
 
     def layoutData(self):
         return ({'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'proportion': 1, 'style': wx.VERTICAL, 'widgets':
@@ -109,3 +111,4 @@ class IngredientBrowser(wx.Dialog, BaseWindow):
         self._setupIngredientsCtrl(ing_type)
         self.ingredients_ctrl.SetObjects(inventory)
         self.ingredients_ctrl.AutoSizeColumns()
+        self.ing_choices.SetSelection(self.inventory_types.index(ing_type))
