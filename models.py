@@ -459,15 +459,15 @@ class Recipe(SQLObject, Measure):
     style = ForeignKey('BJCPStyle', default=None)
     brewer = UnicodeCol(length=255, default=None)
     recipe_type = IntCol(default=EXTRACT)
-    boil_volume = DecimalCol(size=5, precision=2, default=0)
+    boil_volume = DecimalCol(size=5, precision=2, default=5.5)
     boil_volume_units = IntCol(default=Measure.GAL)
-    batch_volume = DecimalCol(size=5, precision=2, default=0)
+    batch_volume = DecimalCol(size=5, precision=2, default=5.0)
     batch_volume_units = IntCol(default=Measure.GAL)
     equipment = ForeignKey('EquipmentSet', default=None)
     base_boil_on_equipment = BoolCol(default=True)
     efficiency = PercentCol(default=0)
-    og = SGCol(default=0)
-    fg = SGCol(default=0)
+    og = SGCol(default=1.000)
+    fg = SGCol(default=1.000)
     color = SRMCol(default=0)
     ibu = IntCol(default=0)
     ingredient = MultipleJoin('RecipeIngredient')
@@ -587,7 +587,7 @@ class Recipe(SQLObject, Measure):
         self._SO_set_boil_volume(value.count)
     
     def _get_boil_volume_m(self):
-        return Measure('%s %s' % (self._SO_get_boil_volume, Measure.measures[self.boil_volume_units]))
+        return Measure('%s %s' % (self.boil_volume, Measure.measures[self.boil_volume_units]))
 
     def _set_batch_volume(self, value):
         if type(value) == type(int()) or type(value) == type(float()):
@@ -599,15 +599,15 @@ class Recipe(SQLObject, Measure):
         self._SO_set_batch_volume(value.count)
 
     def _get_batch_volume_m(self):
-        return Measure('%s %s' % (self._SO_get_batch_volume, Measure.measures[self.batch_volume_units]))
+        return Measure('%s %s' % (self.batch_volume, Measure.measures[self.batch_volume_units]))
     
     def add_to_total_weight(self, ing):
         if ing.ingredient_type.lower() == 'grain':
             new = self.grain_total_weight + ing.amount_m.convert('oz')
             self.grain_total_weight = new
         elif ing.ingredient_type.lower() == 'hop':
-            new = self.hop_total_weight + ing.amount_m.convert('oz')
-            self.hop_total_weight = new
+            new = self.hops_total_weight + ing.amount_m.convert('oz')
+            self.hops_total_weight = new
     
     def _set_master_recipe(self, value):
         if self.is_batch:
@@ -642,13 +642,13 @@ class RecipeIngredient(SQLObject):
         if self.ingredient_type != 'Hop':
             ibu = 0
         else:
-            recipe = Recipe.get(self.recipe)
             hop_ounces = self.amount_m.convert('oz')
             alpha_acids = Decimal('%s' % Hop.get(self.ingredient_id).alpha)
             usage_minutes = self.time_used_m.convert('min')
-            boil_gallons = recipe.boil_volume_m.convert('gal')
+            boil_gallons = self.recipe.boil_volume_m.convert('gal')
+            boil_gravity = self.recipe.og
             if method == 'garetz':
-                batch_gallons = recipe.batch_volume_m.convert('gal')
+                batch_gallons = self.recipe.batch_volume_m.convert('gal')
                 style_ibu_high = BJCPStyle.get(recipe.style).ibu_high
                 style_ibu_low = BJCPStyle.get(recipe.strle).ibu_low
                 target_ibu = Decimal('%s' % (style_ibu_high + style_ibu_low) / 2)
@@ -668,7 +668,7 @@ class RecipeIngredient(SQLObject):
             return 0
     
     def _get_srm(self):
-        if ingredient_type in sugar_types:
+        if self.ingredient_type in self.sugar_types:
             return eval(self.ingredient_type).get(self.ingredient_id).color
         else:
             return 0

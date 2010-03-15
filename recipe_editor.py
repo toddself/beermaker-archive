@@ -278,8 +278,6 @@ class RecipeEditor(wx.Frame, BaseWindow):
             self.updateRecipePercentage()
             self.ingredients_ctrl.AutoSizeColumns()
             
-            # self.updateRecipeStats()
-            
         inventory.Destroy()
         event.Skip()
 
@@ -322,17 +320,21 @@ class RecipeEditor(wx.Frame, BaseWindow):
                 logging.debug('total potential after adding: %s' % potential_in_gu)
                 
                 # color stuff
+                logging.debug('color calculations')
                 mcu = ingredient.amount_m.convert('lbs') * ingredient.srm / batch_volume
+                logging.debug('mcu for %s: %s' % (ingredient.name, mcu))
                 color = color + srm_from_mcu(mcu)
+                logging.debug('srm after addition: %s' % color)
+
             elif ingredient.ingredient_type in ingredient.hop_types:
+                logging.debug('going to get bitterness')
                 bitterness = bitterness + ingredient.ibu
-                
         
         final_sg = sg_from_gu(potential_in_gu)
         logging.debug('final gravity: %s' % final_sg)
-        self.recipe_og.SetValue("%s" % final_sg)
+        self.recipe_og.SetValue("%.3f" % final_sg)
         self.recipe_ibu.SetValue("%s" % bitterness)
-        self.recipe_srm.SetValue("%s" % color)
+        self.recipe_srm.SetValue("%.1f" % color)
         pass
         
     def getStyleFromSelection(self):
@@ -397,9 +399,8 @@ class RecipeEditor(wx.Frame, BaseWindow):
         return self.mash_profiles
                 
     def gatherIngredients(self):
-        ing1 = Ingredient("Test", "Hop", 10, "Boil", 60, 0, 'oz', 'min')
-        self.ingredient_list = [ing1, ]
-        self.ingredients_ctrl.SetObjects(self.ingredient_list)
+        self.recipe_name.SetValue(self.recipe.name) 
+        # self.
 
     def setupIngredients(self):
         namec = ColumnDefn('Ingredient', 'left', 200, 'name', minimumWidth=200, isSpaceFilling=True)

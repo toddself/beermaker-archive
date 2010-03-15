@@ -23,38 +23,31 @@ from math import exp, tanh
 
 SG_QUANT = Decimal(10) ** -3
 PERCENT_QUANT = Decimal(10) ** -2
+SRM_QUANT = Decimal(10) ** -1
 
 def srm_from_mcu(mcu):
-    return Decimal('1.4922') * (mcu ** Decimal('0.6859'))
+    srm =  Decimal('1.4922') * (mcu ** Decimal('0.6859'))
+    return srm.quantize(SRM_QUANT)
 
 def rager(hop_ounces, alpha_acids, boil_gallons, boil_gravity, usage_minutes):
     utilization = Decimal('18.11') + Decimal('13.86') * (Decimal('%s' % tanh(((usage_minutes - Decimal('31.32')) / Decimal('18.27')))))
     utilization = utilization / Decimal('100')
-
     adjustment_limit = Decimal('1.050')
     if boil_gravity > adjustment_limit:
         gravity_adjustment = (boil_gravity - adjustment_limit) / Decimal('0.2')
     else:
         gravity_adjustment = 0
-
     alpha_acids = alpha_acids / Decimal('100')
-    
     ibu = (hop_ounces * utilization * alpha_acids * Decimal('7462')) / (boil_gallons * (Decimal('1') + gravity_adjustment ))
-
     return ibu
-    
 
 def tinseth(hop_ounces, alpha_acids, boil_gallons, boil_gravity, usage_minutes):
     bigness = Decimal('1.65') * Decimal('0.000125') ** (boil_gravity - Decimal('1'))
     boil_time_factor = (Decimal('1') - Decimal("%s" % exp(Decimal('-0.04') * usage_minutes))) / Decimal('4.15')
     decimal_aa = bigness * boil_time_factor
-    
     alpha_acids = alpha_acids / Decimal('100')
-    
     mgl_aa = alpha_acids * hop_ounces * Decimal('7490') / boil_gallons
-    
     ibu = decimal_aa * mgl_aa
-    
     return ibu
     
 def garetz(hop_ounces, alpha_acids, boil_gallons, boil_gravity, usage_minutes, batch_gallons, target_ibu, elevation_feet):
@@ -63,9 +56,7 @@ def garetz(hop_ounces, alpha_acids, boil_gallons, boil_gravity, usage_minutes, b
     gf = ((bg - Decimal('1.050')) / Decimal('0.2')) + 1
     hf = ((cf * target_ibu) / Decimal('260')) + 1
     tf = ((elevation_feet / Decimal('550')) * Decimal('0.02')) + 1
-    
     ca = gf * hf * tf
-
     if usage_minutes <= 10:
         utilization = Decimal('0')
     elif usage_minutes > 10 and usage_minutes < 16:
@@ -92,16 +83,14 @@ def garetz(hop_ounces, alpha_acids, boil_gallons, boil_gravity, usage_minutes, b
         utilization = Decimal('22')
     else:
         utilization = Decimal('23')
-
     ibu = utilization * alpha_acids * hop_ounces * Decimal('0.749') / (boil_gallons * ca)
-    
     return ibu
     
 def gu_from_sg(sg):
     return int((sg - 1) * 1000)
 
 def sg_from_gu(gu):
-    return Decimal("%s" % ((float(gu)/1000.0) + 1))
+    return Decimal("%s" % ((float(gu)/1000.0) + 1)).quantize(SRM_QUANT)
 
 def calculateBitternessRatio(sg, ibu):
     gu = (sg - 1) * 1000
