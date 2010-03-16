@@ -24,6 +24,7 @@ from math import exp, tanh
 SG_QUANT = Decimal(10) ** -3
 PERCENT_QUANT = Decimal(10) ** -2
 SRM_QUANT = Decimal(10) ** -1
+IBU_QUANT = Decimal(10) ** -1
 
 def srm_from_mcu(mcu):
     srm =  Decimal('1.4922') * (mcu ** Decimal('0.6859'))
@@ -39,7 +40,7 @@ def rager(hop_ounces, alpha_acids, boil_gallons, boil_gravity, usage_minutes):
         gravity_adjustment = 0
     alpha_acids = alpha_acids / Decimal('100')
     ibu = (hop_ounces * utilization * alpha_acids * Decimal('7462')) / (boil_gallons * (Decimal('1') + gravity_adjustment ))
-    return ibu
+    return ibu.quanitze(IBU_QUANT)
 
 def tinseth(hop_ounces, alpha_acids, boil_gallons, boil_gravity, usage_minutes):
     bigness = Decimal('1.65') * Decimal('0.000125') ** (boil_gravity - Decimal('1'))
@@ -48,7 +49,7 @@ def tinseth(hop_ounces, alpha_acids, boil_gallons, boil_gravity, usage_minutes):
     alpha_acids = alpha_acids / Decimal('100')
     mgl_aa = alpha_acids * hop_ounces * Decimal('7490') / boil_gallons
     ibu = decimal_aa * mgl_aa
-    return ibu
+    return ibu.quanitze(IBU_QUANT)
     
 def garetz(hop_ounces, alpha_acids, boil_gallons, boil_gravity, usage_minutes, batch_gallons, target_ibu, elevation_feet):
     cf = batch_gallons / boil_gallons
@@ -84,7 +85,7 @@ def garetz(hop_ounces, alpha_acids, boil_gallons, boil_gravity, usage_minutes, b
     else:
         utilization = Decimal('23')
     ibu = utilization * alpha_acids * hop_ounces * Decimal('0.749') / (boil_gallons * ca)
-    return ibu
+    return ibu.quanitze(IBU_QUANT)
     
 def gu_from_sg(sg):
     return int((sg - 1) * 1000)
@@ -147,6 +148,19 @@ class SRMCol(DecimalCol):
         pushKey(kw, 'size', 5)
         pushKey(kw, 'precision', 1)
         super(DecimalCol, self).__init__(**kw)
+
+class IBUCol(DecimalCol):
+    """ Stores the International Bitterness Units value in a decimal column
+    Size is fixed at 4, precision is set to 1
+    
+    ex: 2.0, 300.5
+    
+    """
+
+    def __init__(self, **kw):
+        pushKey(kw, 'size', 4)
+        pushKey(kw, 'precision', 1)
+        super(DecimalCol, self).__init__(**kw)        
 
 class BatchIsNotMaster(Exception):
     def __init__(self,value):

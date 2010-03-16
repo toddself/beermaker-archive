@@ -299,8 +299,8 @@ class BJCPStyle(SQLObject):
     og_high = SGCol(default=None)
     fg_low = SGCol(default=None)
     fg_high = SGCol(default=None)
-    ibu_low = IntCol(default=None)
-    ibu_high = IntCol(default=None)
+    ibu_low = IBUCol(default=None)
+    ibu_high = IBUCol(default=None)
     srm_low = SRMCol(default=None)
     srm_high = SRMCol(default=None)
     abv_low = DecimalCol(size=3, precision=1, default=None)
@@ -469,7 +469,7 @@ class Recipe(SQLObject, Measure):
     og = SGCol(default=1.000)
     fg = SGCol(default=1.000)
     color = SRMCol(default=0)
-    ibu = IntCol(default=0)
+    ibu = IBUCol(default=0)
     ingredient = MultipleJoin('RecipeIngredient')
     fermentation_type = IntCol(default=SINGLE)
     fermentation_stage_1_temp = DecimalCol(size=5, precision=2, default=0)
@@ -493,7 +493,7 @@ class Recipe(SQLObject, Measure):
     is_batch = BoolCol(default=False)
     master_recipe = IntCol(default=0)
     grain_total_weight = DecimalCol(size=5, precision=2, default=0)
-    hops_total_weight = DecimalCol(size=5, precision=2, default=0)
+    hop_total_weight = DecimalCol(size=5, precision=2, default=0)
     versions = Versioning()
 
     def _set_carbonation_used(self, value):
@@ -606,8 +606,8 @@ class Recipe(SQLObject, Measure):
             new = self.grain_total_weight + ing.amount_m.convert('oz')
             self.grain_total_weight = new
         elif ing.ingredient_type.lower() == 'hop':
-            new = self.hops_total_weight + ing.amount_m.convert('oz')
-            self.hops_total_weight = new
+            new = self.hop_total_weight + ing.amount_m.convert('oz')
+            self.hop_total_weight = new
     
     def _set_master_recipe(self, value):
         if self.is_batch:

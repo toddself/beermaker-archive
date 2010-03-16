@@ -128,6 +128,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
                     {'widget': wx.BoxSizer, 'flag': wx.ALL|wx.EXPAND, 'style': wx.HORIZONTAL, 'widgets':
                         (
                         {'widget': wx.Button, 'label': 'Add Grain', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.grainAdd}},
+                        {'widget': wx.Button, 'label': 'Add Extract/Sugar', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.extractAdd}},
                         {'widget': wx.Button, 'label': 'Add Hops', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.hopsAdd}},
                         {'widget': wx.Button, 'label': 'Add Yeast', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.yeastAdd}},
                         {'widget': wx.Button, 'label': 'Add Misc', 'event': {'event_type': wx.EVT_BUTTON, 'method': self.miscAdd}}, 
@@ -281,6 +282,10 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.inventoryAdd(event, 'Misc')
         event.Skip()
         
+    def extractAdd(self, event):
+        self.inventoryAdd(event, 'Extract')
+        event.Skip()
+        
     def inventoryAdd(self, event, ingtype=None):            
         logging.debug('launching the ingredient browser, seeding with: %s' % ingtype)
         inventory = IngredientBrowser(self, -1, "Ingredient Browser", pos=(50,50), size=(800,600), ingtype=ingtype)
@@ -289,9 +294,9 @@ class RecipeEditor(wx.Frame, BaseWindow):
 
             ing = RecipeIngredient(recipe=self.recipe.id, 
                 ingredient_id=inventory.ingredients_ctrl.GetSelectedObject(), 
-                amount=Measure(inventory.amount_ctrl.GetValue()), 
+                amount=Measure(inventory.amount_ctrl.GetValue().strip()), 
                 use_in=inventory.use_choices.GetCurrentSelection(), 
-                time_used=Measure(inventory.time_used_ctrl.GetValue()))
+                time_used=Measure(inventory.time_used_ctrl.GetValue().strip()))
                 
             self.recipe.add_to_total_weight(ing)
             self.ingredients_ctrl.AddObject(ing)
@@ -385,7 +390,7 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.style_ibu.SetValue(style.ibu_range)
         br_high = calculateBitternessRatio(style.og_high, style.ibu_high)
         br_low = calculateBitternessRatio(style.og_low, style.ibu_low)
-        self.style_br.SetValue("%s - %s" % (br_high, br_low))
+        self.style_br.SetValue("%s - %s" % (br_low, br_high))
         
         if event:
             event.Skip()
