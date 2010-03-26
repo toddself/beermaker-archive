@@ -26,6 +26,16 @@ PERCENT_QUANT = Decimal(10) ** -2
 SRM_QUANT = Decimal(10) ** -1
 IBU_QUANT = Decimal(10) ** -1
 
+def fg_from_og(og, attenuation=Decimal('75')):    
+    fg = og - (attenuation / Decimal('100'))
+    
+    return fg.quantize(SG_QUANT) + Decimal('1')
+
+def abv_from_fg_and_og(fg, og):
+    abv = (og - fg) * Decimal('131')
+    
+    return abv
+
 def srm_from_mcu(mcu):
     srm =  Decimal('1.4922') * (mcu ** Decimal('0.6859'))
     return srm.quantize(SRM_QUANT)

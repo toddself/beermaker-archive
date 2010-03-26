@@ -320,9 +320,10 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.recipe.remove_from_total_weight(ingredient.amount.convert('oz'), ingredient.ingredient_type.lower())
         self.ingredients_ctrl.RemoveObject(ingredient)
         self.updateRecipePercentage()
+        self.updateRecipeStats()
         event.Skip()
         
-    def updateRecipeStats(self, event):
+    def updateRecipeStats(self, event=None):
         logging.debug('updating recipe stats')
         potential_in_gu = 0
         bitterness = 0
@@ -355,12 +356,24 @@ class RecipeEditor(wx.Frame, BaseWindow):
                 logging.debug('going to get bitterness')
                 bitterness = bitterness + ingredient.ibu
         
-        final_sg = sg_from_gu(potential_in_gu)
-        logging.debug('final gravity: %s' % final_sg)
-        self.recipe_og.SetValue("%.3f" % final_sg)
+        og = sg_from_gu(potential_in_gu)
+        fg = fg_from_og(final_sg)
+        abv = abv_from_fg_and_og(fg, og)
+        logging.debug('total gravity: %s' % og)
+        logging.debug('final gravity: %s' % fg)
+        self.recipe_og.SetValue("%.3f" % og)
+        self.recipe_fg.SetValue("%.3f" % fg)
         self.recipe_ibu.SetValue("%s" % bitterness)
         self.recipe_srm.SetValue("%.1f" % color)
-        pass
+        self.recipe_abv.SetValue("%.1f" % abv)
+        self.recipe.og = final_sg
+        self.recipe.fg = fg
+        self.recipe.ibu = bitterness
+        self.recipe.color = color
+        self.recipe.abv = abv
+
+        if event:
+            event.Skip()
         
     def getStyleFromSelection(self):
         (style_id, style_name) = self.style_choices[self.recipe_style.GetCurrentSelection()].split(":")
