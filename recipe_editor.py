@@ -28,9 +28,9 @@ from db import DataStore
 from models import *
 from beerutils import *
 from ingredient_browser import IngredientBrowser
-from base import BaseWindow 
+from bm_base import BMB
 
-class RecipeEditor(wx.Frame, BaseWindow):
+class RecipeEditor(BMB):
     def __init__(self, *args, **kw):   
         
         # lets pull out some stuff we need for the recipe   
@@ -594,33 +594,19 @@ class RecipeEditor(wx.Frame, BaseWindow):
         self.dirty_data = []
   
     def newRecipe(self):
+        """
+        This is being overridden for this context due to the fact that within the recipe editor we need to do different things
+        """
         pass
 
     def newBatch(self):
+        """
+        This is being overridden for this context due to the fact that within the recipe editor we need to do different things
+        """
         pass
 
     def viewEfficiency(self, event):
         pass
-
-    def viewInventory(self):
-        """docstring for viewIventory"""
-        pass
-
-    def viewMashes(self):
-        """docstring for viewMashes"""
-        pass 
-
-    def viewEquipment(self):
-        """docstring for viewEquipment"""
-        pass
-
-    def viewIngredients(self):
-        """docstring for viewIngredients"""
-        pass
-
-    def viewCalculators(self):
-        """docstring for viewCalculators"""
-        pass        
     
     def checkIngredients(self):
         """docstring for checkIngredients"""

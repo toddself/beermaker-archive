@@ -29,8 +29,7 @@ from db import DataStore
 from models import Recipe
 
 # import gui elements
-from base import BaseWindow
-from recipe_editor import RecipeEditor
+from bm_base import BMB
 
 class RecipeData():
     def __init__(self, name, category, number, ibu, srm, abv, og, fg, brewed_on):
@@ -44,7 +43,7 @@ class RecipeData():
         self.fg = fg
         self.brewed_on = brewed_on
         
-class MainFrame(wx.Frame, BaseWindow):
+class BM_MainFrame(BMB):
     def __init__(self, *args, **kw):
         kw['style'] = wx.DEFAULT_FRAME_STYLE
         wx.Frame.__init__(self, *args, **kw)
@@ -79,69 +78,6 @@ class MainFrame(wx.Frame, BaseWindow):
 
         self.recipes_ctrl.SetColumns([namec, catc, numberc, ibuc, srmc, abvc, ogc, fgc, boc])
         
-    def newRecipe(self, event):
-        recipe_editor = RecipeEditor(self, -1, "", size=(1024,768), pos=(10,50))
-        recipe_editor.Show()
-    
-    def newBatch(self):
-        pass
-        
-    def viewInventory(self):
-        """docstring for viewIventory"""
-        pass
-        
-    def viewMashes(self):
-        """docstring for viewMashes"""
-        pass 
-    
-    def viewEquipment(self):
-        """docstring for viewEquipment"""
-        pass
-
-    def viewIngredients(self):
-        """docstring for viewIngredients"""
-        pass
-
-    def viewCalculators(self):
-        """docstring for viewCalculators"""
-        pass
-        
-    def viewPreferences(self):
-        """docstring for viewPreferences"""
-        pass
-        
-    def printItem(self):
-        """docstring for printItem"""
-        pass
-    
-    def quitApplication(self):
-        """docstring for quitApplication"""
-        pass
-    
-    def visitWebsite(self):
-        """docstring for visitWebsite"""
-        pass
-        
-    def undo(self):
-        """docstring for undo"""
-        pass
-
-    def redo(self):
-        """docstring for redo"""
-        pass
-
-    def copy(self):
-        """docstring for copy"""
-        pass
-
-    def paste(self):
-        """docstring for paste"""
-        pass
-
-    def cut(self):
-        """docstring for cut"""
-        pass
-
     def menuData(self):
         file_menu = {'name': "&File",
         'items': 
@@ -277,17 +213,14 @@ class MainFrame(wx.Frame, BaseWindow):
 
          )
     
-
 class BeerMaker(wx.App):
     def OnInit(self):
         wx.InitAllImageHandlers()
         ds = DataStore()
-        BeerMaker = MainFrame(None, -1, "BeerMaker", size=(800,600))
-        self.SetTopWindow(BeerMaker)
-        BeerMaker.Show()
+        BM_App = BM_MainFrame(None, -1, "BeerMaker", size=(800,600))
+        self.SetTopWindow(BM_App)
+        BM_App.Show()
         return 1
-
-# end of class BeerMaker
 
 if __name__ == "__main__":
     BeerMaker = BeerMaker(0)
