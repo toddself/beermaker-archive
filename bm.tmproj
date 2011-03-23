@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>recipe_editor.py</string>
+	<string>db.py</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -33,6 +33,8 @@
 		<dict>
 			<key>filename</key>
 			<string>README</string>
+			<key>lastUsed</key>
+			<date>2010-08-25T17:08:27Z</date>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -52,21 +54,25 @@
 			<key>filename</key>
 			<string>ingredient_browser.py</string>
 			<key>lastUsed</key>
-			<date>2010-04-02T13:59:19Z</date>
+			<date>2011-01-31T20:49:13Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>recipe_editor.py</string>
 			<key>lastUsed</key>
-			<date>2010-04-27T18:21:21Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2011-03-10T17:58:05Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>xrc/BM_MainInterface.xrc</string>
+			<key>lastUsed</key>
+			<date>2011-01-31T20:47:43Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>beermaker.py</string>
 			<key>lastUsed</key>
-			<date>2010-04-27T18:07:18Z</date>
+			<date>2011-03-10T17:57:55Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -84,7 +90,9 @@
 			<key>filename</key>
 			<string>db.py</string>
 			<key>lastUsed</key>
-			<date>2010-04-02T14:12:16Z</date>
+			<date>2011-03-10T17:58:42Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -98,7 +106,7 @@
 			<key>filename</key>
 			<string>beerutils.py</string>
 			<key>lastUsed</key>
-			<date>2010-04-02T13:59:21Z</date>
+			<date>2010-11-17T20:50:54Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -110,7 +118,7 @@
 			<key>filename</key>
 			<string>models.py</string>
 			<key>lastUsed</key>
-			<date>2010-04-02T14:11:27Z</date>
+			<date>2011-03-10T17:58:42Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -120,13 +128,41 @@
 			<key>filename</key>
 			<string>bm_base.py</string>
 			<key>lastUsed</key>
-			<date>2010-04-27T18:21:21Z</date>
+			<date>2011-01-31T20:49:19Z</date>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
 	<integer>188</integer>
 	<key>metaData</key>
 	<dict>
+		<key>README</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>beermaker.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>52</integer>
+				<key>line</key>
+				<integer>10</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>beerutils.py</key>
 		<dict>
 			<key>caret</key>
@@ -146,28 +182,42 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>27</integer>
+				<integer>9</integer>
 				<key>line</key>
-				<integer>1</integer>
+				<integer>0</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>ingredient_browser.py</key>
+		<key>db.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>37</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
+			<integer>13</integer>
+		</dict>
+		<key>ingredient_browser.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>46</integer>
+				<key>line</key>
+				<integer>59</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
 			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>30</integer>
 		</dict>
 		<key>models.py</key>
 		<dict>
@@ -183,7 +233,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>464</integer>
+			<integer>385</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
@@ -211,7 +261,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>1</integer>
+			<integer>18</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
@@ -221,10 +271,13 @@
 		<string>ingredient_browser.py</string>
 		<string>models.py</string>
 		<string>beerutils.py</string>
+		<string>README</string>
+		<string>beermaker.py</string>
+		<string>db.py</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
-	<true/>
+	<false/>
 	<key>windowFrame</key>
-	<string>{{198, 0}, {1204, 878}}</string>
+	<string>{{13, 21}, {1356, 857}}</string>
 </dict>
 </plist>

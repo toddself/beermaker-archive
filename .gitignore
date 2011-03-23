@@ -1,2 +1,2 @@
-*~ # no backups
-*pyc # no compiled python objects
+*.pyc
+*.sqlite
